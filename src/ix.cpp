@@ -1,15 +1,13 @@
 #include "chapters.hpp"
-#include "utils.hpp"
 #include <algorithm>
 #include <bitset>
 #include <iostream>
+#include <unordered_map>
 #include <unordered_set>
 
 using namespace CTCI;
 
-IX::IX(std::string name) : Chapter(std::move(name)) { tasks = std::vector<Task>{{"isUnique", isUnique}}; };
-
-void IX::isUnique() {
+void isUnique() {
     // Default
     auto isUniqueDefault = [](const std::string &s) -> bool {
         std::unordered_set<char> characters;
@@ -57,3 +55,37 @@ void IX::isUnique() {
     std::cout << std::format(placeholder, largeS, isUniqueO1Space(largeS));
     std::cout << std::format(placeholder, largeS2, isUniqueO1Space(largeS2));
 };
+
+void checkPermutation() {
+    auto checkPermutationDefault = [](const std::string &s1, const std::string &s2) {
+        std::unordered_map<char, unsigned int> freq1;
+        for (const auto &c : s1)
+            ++freq1[c];
+
+        std::unordered_map<char, unsigned int> freq2;
+        for (const auto &c : s2)
+            ++freq2[c];
+
+        if (freq1.size() != freq2.size())
+            return false;
+
+        for (auto [s1Char, s1Freq] : freq1) {
+            const auto &s2Freq = freq2[s1Char];
+            if (s1Freq != s2Freq)
+                return false;
+        }
+
+        return true;
+    };
+
+    constexpr const char *placeholder = "{} and {} are permutations: {}\n";
+    std::string s1{"lucas"};
+    std::string s2{"scalu"};
+    std::string s3{"sunfire-spear"};
+    std::string s4{"pears-firesuns"};
+
+    std::cout << std::format(placeholder, s1, s2, checkPermutationDefault(s1, s2));
+    std::cout << std::format(placeholder, s3, s4, checkPermutationDefault(s3, s4));
+}
+
+IX::IX(std::string name) : Chapter(std::move(name)) { tasks = std::vector<Task>{{"isUnique", isUnique}, {"Check permutation", checkPermutation}}; }

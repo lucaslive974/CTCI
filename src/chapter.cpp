@@ -18,6 +18,7 @@ void Chapter::execute() {
     for (auto &task : tasks) {
         CTCI::utils::printTitle(task.first);
         task.second();
+        CTCI::utils::breakLine();
     }
 }
 

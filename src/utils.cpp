@@ -4,6 +4,6 @@
 
 namespace CTCI::utils {
 void printTitle(std::string msg) { std::cout << std::format("[{}]\n", msg); }
-void breakLine() { std::cout << "\n\n"; }
+void breakLine() { std::cout << "\n"; }
 } // namespace CTCI::utils
   
