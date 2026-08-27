@@ -1,6 +1,7 @@
 #include "chapters.hpp"
 #include <algorithm>
 #include <bitset>
+#include <cstring>
 #include <iostream>
 #include <unordered_map>
 #include <unordered_set>
@@ -88,4 +89,29 @@ void checkPermutation() {
     std::cout << std::format(placeholder, s3, s4, checkPermutationDefault(s3, s4));
 }
 
-IX::IX(std::string name) : Chapter(std::move(name)) { tasks = std::vector<Task>{{"isUnique", isUnique}, {"Check permutation", checkPermutation}}; }
+void urlify() {
+    auto urlifyDefault = [](std::string s, size_t length) {
+        size_t write = s.size() - 1;
+        for (int i = length - 1; i >= 0; --i) {
+            if (!std::isspace(s[i])) {
+                s[write--] = s[i];
+                continue;
+            }
+
+            std::memcpy(&s[write - 2], "%20\0", 3);
+            write -= 3;
+        }
+
+        return s;
+    };
+    constexpr const char *placeholder = "\"{}\" urlified: \"{}\"\n";
+
+    std::string s1 = "Mr John Smith    ";
+    std::string s2 = "  www.youtube    ";
+    std::cout << std::format(placeholder, s1, urlifyDefault(s1, 13));
+    std::cout << std::format(placeholder, s2, urlifyDefault(s2, 13));
+}
+
+IX::IX(std::string name) : Chapter(std::move(name)) {
+    tasks = std::vector<Task>{{"isUnique", isUnique}, {"Check permutation", checkPermutation}, {"URLify", urlify}};
+}
