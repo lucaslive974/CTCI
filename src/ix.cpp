@@ -7,12 +7,9 @@
 
 using namespace CTCI;
 
-IX::IX(std::string name) : Chapter(std::move(name)) {};
-
-void IX::execute() { isUnique(); };
+IX::IX(std::string name) : Chapter(std::move(name)) { tasks = std::vector<Task>{{"isUnique", isUnique}}; };
 
 void IX::isUnique() {
-    utils::printTitle("isUnique");
     // Default
     auto isUniqueDefault = [](const std::string &s) -> bool {
         std::unordered_set<char> characters;

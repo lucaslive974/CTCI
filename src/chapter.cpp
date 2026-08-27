@@ -14,6 +14,13 @@ void Chapter::executeChapters(std::vector<std::shared_ptr<Chapter>> &chapters) {
 
 void Chapter::printChapterName() { CTCI::utils::printTitle(id_name); }
 
+void Chapter::execute() {
+    for (auto &task : tasks) {
+        CTCI::utils::printTitle(task.first);
+        task.second();
+    }
+}
+
 #include "chapters.hpp"
 
 auto Chapter::getAllChapters() -> std::vector<std::shared_ptr<Chapter>> {
