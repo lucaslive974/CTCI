@@ -112,6 +112,45 @@ void urlify() {
     std::cout << std::format(placeholder, s2, urlifyDefault(s2, 13));
 }
 
-IX::IX(std::string name) : Chapter(std::move(name)) {
-    tasks = std::vector<Task>{{"isUnique", isUnique}, {"Check permutation", checkPermutation}, {"URLify", urlify}};
+void palindromePerm() {
+    auto implDefault = [](const std::string &s) {
+        std::unordered_map<char, unsigned int> freq;
+        size_t n = 0;
+        for (const auto &c : s) {
+            if (std::isspace(c))
+                continue;
+            freq[static_cast<unsigned char>(std::tolower(c))]++;
+            ++n;
+        }
+
+        bool isEvenSize = n % 2 == 0;
+        bool oddFreqFound = false;
+
+        for (const auto [key, value] : freq) {
+            bool isOddFreq = value % 2 != 0;
+
+            if (isEvenSize && isOddFreq)
+                return false;
+
+            if (!isEvenSize && oddFreqFound && isOddFreq)
+                return false;
+
+            if (isOddFreq)
+                oddFreqFound = true;
+        }
+
+        return true;
+    };
+
+    constexpr const char *placeholder = "'{}' Is there a permutation that's a palidrome? {}\n";
+
+    std::string s1{"Tact Coa"};
+    std::cout << std::format(placeholder, s1, implDefault(s1));
 }
+
+IX::IX(std::string name) : Chapter(std::move(name)) {
+    tasks = std::vector<Task>{
+#define CHAPTER_IX_QUESTIONS
+#include "ix.cpp.inc"
+    };
+};
