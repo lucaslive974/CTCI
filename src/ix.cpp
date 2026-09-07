@@ -92,7 +92,7 @@ void checkPermutation() {
 void urlify() {
     auto urlifyDefault = [](std::string s, size_t length) {
         size_t write = s.size() - 1;
-        for (int i = length - 1; i >= 0; --i) {
+        for (size_t i = length - 1; i >= 0; --i) {
             if (!std::isspace(s[i])) {
                 s[write--] = s[i];
                 continue;
@@ -119,7 +119,7 @@ void palindromePerm() {
         for (const auto &c : s) {
             if (std::isspace(c))
                 continue;
-            freq[static_cast<unsigned char>(std::tolower(c))]++;
+            freq[static_cast<char>(std::tolower(c))]++;
             ++n;
         }
 
