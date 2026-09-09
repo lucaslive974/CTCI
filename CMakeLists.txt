@@ -8,5 +8,7 @@ include("language_standard")
 
 file(GLOB_RECURSE CTCI_SOURCES "src/*.cpp")
 
-add_executable(CTCI ${CTCI_SOURCES})
+add_library(CTCI ${CTCI_SOURCES})
 target_include_directories(CTCI PRIVATE "include")
+
+include(tests)
