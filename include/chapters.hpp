@@ -9,5 +9,6 @@ class IX : public Chapter {
     static auto checkPermutation(const std::string &s1, const std::string &s2) -> bool;
     static auto urlify(std::string s, size_t length) -> std::string;
     static auto palindromePerm(const std::string &s) -> bool;
+    static auto oneAway(std::string &s1, std::string &s2) -> bool;
 };
 } // namespace CTCI

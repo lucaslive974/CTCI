@@ -41,3 +41,30 @@ TEST(IX, PALINDROME_PERMUTATION) {
     std::string s1{"Tact Coa"};
     EXPECT_TRUE(IX::palindromePerm(s1));
 }
+
+TEST(IX, ONE_AWAY) {
+    // 1
+    std::string s1p1{"pale"};
+    std::string s1p2{"ple"};
+    EXPECT_TRUE(IX::oneAway(s1p1, s1p2));
+
+    // 2
+    std::string s2p1{"pales"};
+    std::string s2p2{"pale"};
+    EXPECT_TRUE(IX::oneAway(s2p1, s2p2));
+
+    // 3
+    std::string s3p1{"pale"};
+    std::string s3p2{"bale"};
+    EXPECT_TRUE(IX::oneAway(s3p1, s3p2));
+
+    // 4
+    std::string s4p1{"pale"};
+    std::string s4p2{"bake"};
+    EXPECT_FALSE(IX::oneAway(s4p1, s4p2));
+
+    // 5
+    std::string s5p1{"ple"};
+    std::string s5p2{"pale"};
+    EXPECT_TRUE(IX::oneAway(s5p1, s5p2));
+}

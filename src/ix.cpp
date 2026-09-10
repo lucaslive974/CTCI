@@ -82,3 +82,23 @@ auto IX::palindromePerm(const std::string &s) -> bool {
 
     return true;
 }
+
+auto IX::oneAway(std::string &s1, std::string &s2) -> bool {
+    auto sizeDiff = static_cast<long long>(s1.size() - s2.size());
+    auto [gs, ss] = sizeDiff < 0 ? std::make_pair(s2, s1) : std::make_pair(s1, s2);
+
+    bool foundDiff = false;
+    for (int i = 0, j = 0; i < gs.size() && i < ss.size(); ++i, ++j) {
+        if (gs[i] == ss[j])
+            continue;
+
+        if (foundDiff)
+            return false;
+
+        foundDiff = true;
+        if (std::abs(sizeDiff) > 0)
+            --j;
+    }
+
+    return std::abs(sizeDiff) <= 1;
+}
