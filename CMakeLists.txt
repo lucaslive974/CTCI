@@ -3,10 +3,11 @@ project(CTCI VERSION 0.1.0 LANGUAGES C CXX)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
+include("utils")
 include("project_version")
 include("language_standard")
 
-file(GLOB_RECURSE CTCI_SOURCES "src/*.cpp")
+file(GLOB_RECURSE CTCI_SOURCES CONFIGURE_DEPENDS "src/*.cpp")
 
 add_library(CTCI ${CTCI_SOURCES})
 target_include_directories(CTCI PRIVATE "include")
