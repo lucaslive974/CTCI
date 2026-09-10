@@ -41,7 +41,7 @@ auto IX::checkPermutation(const std::string &s1, const std::string &s2) -> bool 
 
 auto IX::urlify(std::string s, size_t length) -> std::string {
     size_t write = s.size() - 1;
-    for (size_t i = length - 1; i >= 0; --i) {
+    for (int i = static_cast<int>(length) - 1; i >= 0; --i) {
         if (std::isspace(s[i]) == 0) {
             s[write--] = s[i];
             continue;

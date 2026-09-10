@@ -30,8 +30,11 @@ TEST(IX, CHECK_PERMUTATION) {
 }
 
 TEST(IX, URLIFY) {
-    std::string s1 = "Mr John Smith    ";
-    std::string s2 = "  www.youtube    ";
+    std::string s1{"Mr John Smith    "};
+    std::string s2{"  www.youtube    "};
+
+    EXPECT_EQ(IX::urlify(s1, 13), R"(Mr%20John%20Smith)");
+    EXPECT_EQ(IX::urlify(s2, 13), R"(%20%20www.youtube)");
 }
 
 TEST(IX, PALINDROME_PERMUTATION) {
