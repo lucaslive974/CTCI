@@ -4,7 +4,7 @@
 namespace CTCI {
 class IX : public Chapter {
   public:
-    IX(std::string name = "CTCI::IX::Exercises") : Chapter(std::move(name)) {};
+    IX(std::string name = "CTCI::IX::Exercises");
     static auto isUnique(const std::string &s) -> bool;
     static auto checkPermutation(const std::string &s1, const std::string &s2) -> bool;
     static auto urlify(std::string s, size_t length) -> std::string;

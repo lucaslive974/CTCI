@@ -29,6 +29,20 @@ TEST(IX, CHECK_PERMUTATION) {
     EXPECT_FALSE(IX::checkPermutation(s3, s4));
 }
 
+TEST(IX, CHECK_PERMUTATION_DIFFERENT_LENGTH) {
+    std::string s1{"abcd"};
+    std::string s2{"aabcd"};
+
+    EXPECT_FALSE(IX::checkPermutation(s1, s2));
+}
+
+TEST(IX, CHECK_PERMUTATION_DIFFERENT_CHARS) {
+    std::string s1{"abcde"};
+    std::string s2{"fghi"};
+
+    EXPECT_FALSE(IX::checkPermutation(s1, s2));
+}
+
 TEST(IX, URLIFY) {
     std::string s1{"Mr John Smith    "};
     std::string s2{"  www.youtube    "};
@@ -40,6 +54,12 @@ TEST(IX, URLIFY) {
 TEST(IX, PALINDROME_PERMUTATION) {
     std::string s1{"Tact Coa"};
     EXPECT_TRUE(IX::palindromePerm(s1));
+
+    std::string s2{"abcdbbcd"};
+    EXPECT_FALSE(IX::palindromePerm(s2));
+
+    std::string s3{"aadbc"};
+    EXPECT_FALSE(IX::palindromePerm(s3));
 }
 
 TEST(IX, ONE_AWAY) {

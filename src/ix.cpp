@@ -5,6 +5,8 @@
 
 using namespace CTCI;
 
+IX::IX(std::string name) : Chapter(std::move(name)) {};
+
 auto IX::isUnique(const std::string &s) -> bool {
     // Default
     std::unordered_set<char> characters;
