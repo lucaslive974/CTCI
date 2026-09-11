@@ -23,6 +23,7 @@ gtest_discover_tests(CTCI_TEST
 
 # --- Coverage Target Generation ---
 set(COVERAGE_REPORT_DIR "${CMAKE_BINARY_DIR}/coverage")
+set(COVERAGE_PROFDATA "${CMAKE_BINARY_DIR}/coverage.profdata")
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     # Resolve version-matched or generic LLVM tools
@@ -30,22 +31,32 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     find_program(LLVM_COV_TOOL NAMES llvm-cov llvm-cov-${CMAKE_CXX_COMPILER_VERSION})
 
     if(LLVM_PROFDATA_TOOL AND LLVM_COV_TOOL)
+        set(INSTR_PROFILE "-instr-profile=${COVERAGE_PROFDATA}")
+        set(IGNORE_TEST_RE [=[--ignore-filename-regex=tests/\|.*_deps.*]=])
+
         add_custom_target(generate-coverage-report
-            COMMAND ${CMAKE_COMMAND} -E rm -f ${CMAKE_BINARY_DIR}/*.profraw ${CMAKE_BINARY_DIR}/coverage.profdata
+            COMMAND ${CMAKE_COMMAND} -E rm -f ${CMAKE_BINARY_DIR}/*.profraw ${COVERAGE_PROFDATA}
+
             COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure
-            COMMAND ${LLVM_PROFDATA_TOOL} merge -sparse
-                    ${CMAKE_BINARY_DIR}/*.profraw
-                    -o ${CMAKE_BINARY_DIR}/coverage.profdata
-            COMMAND ${LLVM_COV_TOOL} export $<TARGET_FILE:CTCI_TEST>
-                    -instr-profile=${CMAKE_BINARY_DIR}/coverage.profdata
-                    -format=lcov
-                    --ignore-filename-regex="tests/|.*_deps.*"
-                    > ${CMAKE_BINARY_DIR}/lcov.info
-            COMMAND ${LLVM_COV_TOOL} show $<TARGET_FILE:CTCI_TEST>
-                    -instr-profile=${CMAKE_BINARY_DIR}/coverage.profdata
-                    -format=html
-                    -output-dir=${COVERAGE_REPORT_DIR}
-                    --ignore-filename-regex="tests/|.*_deps.*"
+
+            COMMAND
+            ${LLVM_PROFDATA_TOOL} merge -sparse
+            ${CMAKE_BINARY_DIR}/*.profraw
+            -o ${CMAKE_BINARY_DIR}/coverage.profdata
+
+            COMMAND
+            ${LLVM_COV_TOOL} export $<TARGET_FILE:CTCI_TEST>
+            ${INSTR_PROFILE}
+            ${IGNORE_TEST_RE}
+            -format=lcov
+            > ${CMAKE_BINARY_DIR}/lcov.info
+
+            COMMAND
+            ${LLVM_COV_TOOL} report $<TARGET_FILE:CTCI_TEST>
+            ${INSTR_PROFILE}
+            ${IGNORE_TEST_RE}
+            -format=text
+
             WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
             DEPENDS CTCI_TEST
             COMMENT "Generating LLVM coverage report..."
