@@ -22,8 +22,8 @@ gtest_discover_tests(CTCI_TEST
 )
 
 # --- Coverage Target Generation ---
-set(COVERAGE_REPORT_DIR "${CMAKE_BINARY_DIR}/coverage")
-set(COVERAGE_PROFDATA "${CMAKE_BINARY_DIR}/coverage.profdata")
+set(COVERAGE_REPORT_DIR "${CMAKE_BINARY_DIR}/coverage" CACHE STRING "" FORCE)
+set(COVERAGE_PROFDATA "${CMAKE_BINARY_DIR}/coverage.profdata" CACHE STRING "" FORCE)
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     # Resolve version-matched or generic LLVM tools
@@ -31,8 +31,8 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     find_program(LLVM_COV_TOOL NAMES llvm-cov llvm-cov-${CMAKE_CXX_COMPILER_VERSION})
 
     if(LLVM_PROFDATA_TOOL AND LLVM_COV_TOOL)
-        set(INSTR_PROFILE "-instr-profile=${COVERAGE_PROFDATA}")
-        set(IGNORE_TEST_RE [=[--ignore-filename-regex=tests/\|.*_deps.*]=])
+        set(INSTR_PROFILE "-instr-profile=${COVERAGE_PROFDATA}" CACHE STRING "Instrumentation profile" FORCE)
+        set(IGNORE_TEST_RE [=[--ignore-filename-regex=tests/\|.*_deps.*]=] CACHE STRING "" FORCE)
 
         add_custom_target(generate-coverage-report
             COMMAND ${CMAKE_COMMAND} -E rm -f ${CMAKE_BINARY_DIR}/*.profraw ${COVERAGE_PROFDATA}

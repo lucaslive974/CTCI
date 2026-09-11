@@ -1,5 +1,6 @@
 function(enable_coverage_instrumentation TARGET_NAME)
     message(STATUS "Configuring coverage instrumentation to ${TARGET_NAME}")
+
     if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         target_compile_options(${TARGET_NAME} PRIVATE -fprofile-instr-generate -fcoverage-mapping)
         target_link_options(${TARGET_NAME} PUBLIC -fprofile-instr-generate)
