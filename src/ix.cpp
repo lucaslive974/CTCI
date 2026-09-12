@@ -1,4 +1,5 @@
 #include "chapters.hpp"
+#include <algorithm>
 #include <cstring>
 #include <unistd.h>
 #include <unordered_map>
@@ -131,3 +132,42 @@ auto IX::stringCompression(const std::string &s1) -> std::string {
 
     return res.size() < s1.size() ? res : s1;
 };
+
+namespace internal {
+auto rotateMatrixNonSquare(std::vector<std::vector<int>> &matrix, size_t n, size_t m) -> void {
+    std::vector<std::vector<int>> newMatrix(m, std::vector(n, 0));
+    for (size_t i = 0; i < n; ++i) {
+        for (size_t j = 0; j < m; ++j) {
+            newMatrix[j][i] = matrix[i][j];
+        }
+    }
+
+    for (auto &row : newMatrix)
+        std::ranges::reverse(row);
+
+    matrix = std::move(newMatrix);
+}
+
+auto rotateMatrixSquare(std::vector<std::vector<int>> &matrix, size_t size) -> void {
+    for (size_t i = 0; i < size; ++i) {
+        for (size_t j = i; j < size; ++j) {
+            int tmp = matrix[i][j];
+            matrix[i][j] = matrix[j][i];
+            matrix[j][i] = tmp;
+        }
+    }
+
+    for (auto &row : matrix)
+        std::ranges::reverse(row);
+}
+} // namespace internal
+
+auto IX::rotateMatrix(std::vector<std::vector<int>> &matrix) -> void {
+    size_t n = matrix.size();
+    size_t m = matrix.front().size();
+
+    if (n == m)
+        internal::rotateMatrixSquare(matrix, n);
+    else
+        internal::rotateMatrixNonSquare(matrix, n, m);
+}
