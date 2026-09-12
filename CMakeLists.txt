@@ -19,7 +19,7 @@ if(LINTER_TOOL)
     cmake_host_system_information(RESULT NPROC QUERY NUMBER_OF_LOGICAL_CORES)
 
     set(LINTER_NTHREADS "${NPROC}" CACHE STRING "Number of linter threads")
-    set(CLANG_TIDY_SOURCE_FILTER [=["^(src|tests)/.*\.(cpp|hpp|h)$$"]=] CACHE STRING "" FORCE)
+    set(CLANG_TIDY_SOURCE_FILTER [=[".*CTCI\/src|include|tests.*\.cpp|hpp$$"]=] CACHE STRING "" FORCE)
 
     add_custom_target(lint-and-format
         COMMAND ${LINTER_TOOL}
