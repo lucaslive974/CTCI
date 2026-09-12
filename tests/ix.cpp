@@ -88,3 +88,20 @@ TEST(IX, ONE_AWAY) {
     std::string s5p2{"pale"};
     EXPECT_TRUE(IX::oneAway(s5p1, s5p2));
 }
+
+TEST(IX, STRING_COMPRESSION_EMPTY_STRING) {
+    std::string empty;
+    EXPECT_EQ(IX::stringCompression(empty), "");
+}
+
+TEST(IX, STRING_COMPRESSION) {
+    std::string s1{"aabcccccaaa"};
+    EXPECT_EQ(IX::stringCompression(s1), "a2b1c5a3");
+}
+
+TEST(IX, STRING_COMPRESSION_LONGER_THAN_ORIGINAL) {
+    std::string s1{"abcdefg"};
+    
+    //a1b1c1d1e1f1g1
+    EXPECT_EQ(IX::stringCompression(s1), s1);
+}

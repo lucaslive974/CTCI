@@ -1,5 +1,6 @@
 #include "chapters.hpp"
 #include <cstring>
+#include <unistd.h>
 #include <unordered_map>
 #include <unordered_set>
 
@@ -104,3 +105,29 @@ auto IX::oneAway(std::string &s1, std::string &s2) -> bool {
 
     return std::abs(sizeDiff) <= 1;
 }
+
+auto IX::stringCompression(const std::string &s1) -> std::string {
+    if (s1.empty())
+        return s1;
+
+    std::string res;
+
+    char aCh = s1.front();
+    int count = 1;
+
+    int idx = 1;
+    while (idx < s1.size()) {
+        if (aCh == s1[idx]) {
+            count++;
+        } else {
+            res += aCh + std::to_string(count);
+            aCh = s1[idx];
+            count = 1;
+        }
+        ++idx;
+    }
+
+    res += aCh + std::to_string(count);
+
+    return res.size() < s1.size() ? res : s1;
+};
