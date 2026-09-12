@@ -138,24 +138,17 @@ auto rotateMatrixNonSquare(std::vector<std::vector<int>> &matrix, size_t n, size
     std::vector<std::vector<int>> newMatrix(m, std::vector(n, 0));
     for (size_t i = 0; i < n; ++i) {
         for (size_t j = 0; j < m; ++j) {
-            newMatrix[j][i] = matrix[i][j];
+            newMatrix[j][n - 1 - i] = matrix[i][j];
         }
     }
-
-    for (auto &row : newMatrix)
-        std::ranges::reverse(row);
 
     matrix = std::move(newMatrix);
 }
 
 auto rotateMatrixSquare(std::vector<std::vector<int>> &matrix, size_t size) -> void {
-    for (size_t i = 0; i < size; ++i) {
-        for (size_t j = i; j < size; ++j) {
-            int tmp = matrix[i][j];
-            matrix[i][j] = matrix[j][i];
-            matrix[j][i] = tmp;
-        }
-    }
+    for (size_t i = 0; i < size; ++i)
+        for (size_t j = i + 1; j < size; ++j)
+            std::swap(matrix[i][j], matrix[j][i]);
 
     for (auto &row : matrix)
         std::ranges::reverse(row);
@@ -163,6 +156,9 @@ auto rotateMatrixSquare(std::vector<std::vector<int>> &matrix, size_t size) -> v
 } // namespace internal
 
 auto IX::rotateMatrix(std::vector<std::vector<int>> &matrix) -> void {
+    if (matrix.empty() || matrix.front().empty())
+        return;
+
     size_t n = matrix.size();
     size_t m = matrix.front().size();
 
