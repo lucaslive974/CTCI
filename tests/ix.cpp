@@ -1,7 +1,22 @@
 #include "chapters.hpp"
+#include <chrono>
 #include <gtest/gtest.h>
 
 using IX = CTCI::IX;
+
+namespace {
+namespace internal {
+template <typename T> void testMatrixIsEqual(std::vector<std::vector<T>> &a, std::vector<std::vector<T>> &b) { // NOLINT
+    size_t m = a.size();
+    size_t n = a.front().size();
+    for (size_t i = 0; i < m; ++i) {
+        for (size_t j = 0; j < n; ++j) {
+            EXPECT_EQ(a[i][j], b[i][j]);
+        }
+    }
+}
+} // namespace internal
+} // namespace
 
 TEST(IX, IS_UNIQUE_TESTS) {
     std::string unique{"abcdefg"};
@@ -107,7 +122,7 @@ TEST(IX, STRING_COMPRESSION_LONGER_THAN_ORIGINAL) {
 }
 
 TEST(IX, TRANSPOSE_MATRIX_SQUARED) {
-    std::vector<std::vector<int>> m1{
+    CTCI::Matrix<int> m1{
         {1, 2, 3},
         {4, 5, 6},
         {7, 8, 9},
@@ -115,36 +130,105 @@ TEST(IX, TRANSPOSE_MATRIX_SQUARED) {
 
     IX::rotateMatrix(m1);
 
-    std::vector<std::vector<int>> rotatedM1{
+    CTCI::Matrix<int> rotatedM1{
         {7, 4, 1},
         {8, 5, 2},
         {9, 6, 3},
     };
 
-    for (size_t i = 0; i < 3; ++i) {
-        for (size_t j = 0; j < 3; ++j) {
-            EXPECT_EQ(m1[i][j], rotatedM1[i][j]);
-        }
-    }
+    internal::testMatrixIsEqual(m1, rotatedM1);
 }
 
 TEST(IX, TRANSPOSE_MATRIX_NON_SQUARE) {
-    std::vector<std::vector<int>> m1{
+    CTCI::Matrix<int> m1{
         {1, 2},
         {3, 4},
         {5, 6},
     };
 
-    std::vector<std::vector<int>> rotatedM1{
+    CTCI::Matrix<int> rotatedM1{
         {5, 3, 1},
         {6, 4, 2},
     };
 
     IX::rotateMatrix(m1);
+    internal::testMatrixIsEqual(m1, rotatedM1);
+}
 
-    for (size_t i = 0; i < 2; ++i) {
-        for (size_t j = 0; j < 3; ++j) {
-            EXPECT_EQ(m1[i][j], rotatedM1[i][j]);
-        }
-    }
+TEST(IX, TRANPOSE_MATRIX_EMPTY) {
+    CTCI::Matrix<int> m1;
+    CTCI::Matrix<int> m2{1, CTCI::Row<int>{}};
+
+    EXPECT_NO_THROW(IX::rotateMatrix(m1));
+    EXPECT_NO_THROW(IX::rotateMatrix(m2));
+}
+
+TEST(IX, ZERO_MATRIX_SQUARED_ONE_ZERO) {
+    CTCI::Matrix<int> m1{
+        {1, 2, 3},
+        {4, 0, 6},
+        {7, 8, 9},
+    };
+
+    CTCI::Matrix<int> zeroedM1{
+        {1, 0, 3},
+        {0, 0, 0},
+        {7, 0, 9},
+    };
+
+    IX::zeroMatrix(m1);
+    internal::testMatrixIsEqual(m1, zeroedM1);
+}
+
+TEST(IX, ZERO_MATRIX_FULL_ZERO) {
+    CTCI::Matrix<int> m1{
+        {0, 2, 3},
+        {4, 0, 6},
+        {7, 8, 0},
+    };
+
+    CTCI::Matrix<int> zeroed{
+        {0, 0, 0},
+        {0, 0, 0},
+        {0, 0, 0},
+    };
+
+    IX::zeroMatrix(m1);
+    internal::testMatrixIsEqual(m1, zeroed);
+}
+
+TEST(IX, ZERO_MATRIX_SQUARED_UNITARY) {
+    CTCI::Matrix<int> m1{
+        {0},
+    };
+
+    EXPECT_NO_THROW(IX::zeroMatrix(m1));
+    EXPECT_EQ(m1, m1);
+}
+
+TEST(IX, ZERO_MATRIX_NON_SQUARED_ONE_ZERO) {
+    CTCI::Matrix<int> m1{
+        {1, 2},
+        {4, 0},
+        {7, 8},
+    };
+
+    CTCI::Matrix<int> zeroedM1{
+        {1, 0},
+        {0, 0},
+        {7, 0},
+    };
+
+    IX::zeroMatrix(m1);
+    internal::testMatrixIsEqual(m1, zeroedM1);
+}
+
+TEST(IX, ZERO_MATRIX_EMPTY) {
+    CTCI::Matrix<int> m1;
+    EXPECT_NO_THROW(IX::zeroMatrix(m1));
+}
+
+TEST(IX, ZERO_MATRIX_EMPTY_II) {
+    CTCI::Matrix<int> m1(1, CTCI::Row<int>{});
+    EXPECT_NO_THROW(IX::zeroMatrix(m1));
 }

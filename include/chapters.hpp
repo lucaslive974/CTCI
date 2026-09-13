@@ -3,6 +3,11 @@
 #include <vector>
 
 namespace CTCI {
+
+template <typename T> using Matrix = std::vector<std::vector<T>>;
+// Just for better nomenclature when initializing a Matrix(a.k.a std::vector<std::vector<T>)
+template <typename T> using Row = std::vector<int>;
+
 class IX : public Chapter {
   public:
     IX(std::string name = "CTCI::IX::Exercises");
@@ -13,5 +18,6 @@ class IX : public Chapter {
     static auto oneAway(std::string &s1, std::string &s2) -> bool;
     static auto stringCompression(const std::string &s1) -> std::string;
     static auto rotateMatrix(std::vector<std::vector<int>> &matrix) -> void;
+    static auto zeroMatrix(std::vector<std::vector<int>> &matrix) -> void;
 };
 } // namespace CTCI

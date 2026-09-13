@@ -167,3 +167,32 @@ auto IX::rotateMatrix(std::vector<std::vector<int>> &matrix) -> void {
     else
         internal::rotateMatrixNonSquare(matrix, n, m);
 }
+
+auto IX::zeroMatrix(std::vector<std::vector<int>> &matrix) -> void {
+    if (matrix.empty() || matrix.front().empty())
+        return;
+
+    size_t m = matrix.size();
+    size_t n = matrix.front().size();
+
+    std::vector<std::vector<int>> newMatrix(m, std::vector<int>(n, 0));
+    auto fillZero = [&newMatrix, &m, &n](size_t row, size_t column) {
+        for (size_t i = 0; i < m; ++i)
+            newMatrix[i][column] = 0;
+        for (size_t i = 0; i < n; ++i)
+            newMatrix[row][i] = 0;
+    };
+
+    for (size_t i = 0; i < m; i++) {
+        std::ranges::copy(matrix[i], newMatrix[i].begin());
+    }
+
+    for (size_t i = 0; i < m; ++i) {
+        for (size_t j = 0; j < n; ++j) {
+            if (matrix[i][j] == 0)
+                fillZero(i, j);
+        }
+    }
+
+    matrix = std::move(newMatrix);
+}
