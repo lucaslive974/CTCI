@@ -180,6 +180,23 @@ TEST(IX, ZERO_MATRIX_SQUARED_ONE_ZERO) {
     internal::testMatrixIsEqual(m1, zeroedM1);
 }
 
+TEST(IX, ZERO_MATRIX_SQUARED_MULT_ZERO) {
+    CTCI::Matrix<int> m1{
+        {0, 2, 3},
+        {4, 5, 6},
+        {0, 8, 9},
+    };
+
+    CTCI::Matrix<int> zeroedM1{
+        {0, 0, 0},
+        {0, 5, 6},
+        {0, 0, 0},
+    };
+
+    IX::zeroMatrix(m1);
+    internal::testMatrixIsEqual(m1, zeroedM1);
+}
+
 TEST(IX, ZERO_MATRIX_FULL_ZERO) {
     CTCI::Matrix<int> m1{
         {0, 2, 3},
