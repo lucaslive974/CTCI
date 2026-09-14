@@ -1,5 +1,7 @@
 #pragma once
 #include "chapter.hpp"
+#include <initializer_list>
+#include <memory>
 #include <vector>
 
 namespace CTCI {
@@ -7,6 +9,52 @@ namespace CTCI {
 template <typename T> using Matrix = std::vector<std::vector<T>>;
 // Just for better nomenclature when initializing a Matrix(a.k.a std::vector<std::vector<T>)
 template <typename T> using Row = std::vector<int>;
+
+template <typename T> struct Node {
+    std::shared_ptr<Node> next = nullptr;
+    T val = T{};
+
+    Node() = default;
+    Node(T val) : val(val) {};
+    Node(T val, std::shared_ptr<Node> next) : val(val), next(next) {};
+};
+
+template <typename T> struct List {
+    using value_type = T;
+    using node_type = Node<value_type>;
+
+    std::shared_ptr<node_type> head = nullptr;
+    std::shared_ptr<node_type> tail = nullptr;
+    List(std::shared_ptr<node_type> head = nullptr) : head(head) {};
+    List(std::initializer_list<T> list) { appendToTail(list); }
+    List(std::vector<T> &list) { appendToTail(list); }
+
+    void appendToTail(T val) {
+        auto node = std::make_shared<node_type>(val);
+        if (!head) {
+            head = node;
+            tail = node;
+            return;
+        }
+
+        tail->next = node;
+        tail = node;
+    }
+
+    void appendToTail(std::initializer_list<T> list) {
+        for (T item : list) {
+            appendToTail(item);
+        }
+    }
+
+    void appendToTail(std::vector<T> &list) {
+        for (T &item : list) {
+            appendToTail(item);
+        }
+    }
+
+    bool empty() { return !head; }
+};
 
 class IX : public Chapter {
   public:
@@ -20,5 +68,6 @@ class IX : public Chapter {
     static auto rotateMatrix(std::vector<std::vector<int>> &matrix) -> void;
     static auto zeroMatrix(std::vector<std::vector<int>> &matrix) -> void;
     static auto stringRotation(std::string s1, const std::string &s2) -> bool;
+    static auto removeDups(List<int> &list) -> void;
 };
 } // namespace CTCI

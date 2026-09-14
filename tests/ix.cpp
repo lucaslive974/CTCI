@@ -15,6 +15,23 @@ template <typename T> void testMatrixIsEqual(std::vector<std::vector<T>> &a, std
         }
     }
 }
+
+template <typename T> void testListIsEqual(const CTCI::List<T> &a, const CTCI::List<T> &b) { // NOLINT
+    auto headA = a.head;
+    auto headB = b.head;
+    while (headA != nullptr && headB != nullptr) {
+        EXPECT_EQ(headA->val, headB->val);
+        headA = headA->next;
+        headB = headB->next;
+    }
+
+    if (headA == nullptr && headB != nullptr)
+        EXPECT_TRUE(false) << "List A ended while b yet have nodes";
+
+    if (headB == nullptr && headA != nullptr)
+        EXPECT_TRUE(false) << "List B ended while a yet have nodes";
+}
+
 } // namespace internal
 } // namespace
 
@@ -262,4 +279,48 @@ TEST(IX, STRING_ROTATION_ISNT_SUBSTR) {
     std::string s2{"fabdee"};
 
     EXPECT_FALSE(IX::stringRotation(s1, s2));
+}
+
+TEST(IX, REMOVE_DUPS) {
+    CTCI::List<int> list{1, 2, 3, 4, 3, 5};
+    CTCI::List<int> listWithoutDups{1, 2, 4, 3, 5};
+
+    IX::removeDups(list);
+    internal::testListIsEqual(list, listWithoutDups);
+}
+
+TEST(IX, REMOVE_DUPS_ALL_UNIQUES) {
+    std::vector<int> els{5, 4, 3, 2, 1};
+
+    CTCI::List<int> l1{els};
+    CTCI::List<int> l2{els};
+
+    IX::removeDups(l1);
+    internal::testListIsEqual(l1, l2);
+}
+
+TEST(IX, REMOVE_DUPS_EMPTY) {
+    CTCI::List<int> list;
+
+    EXPECT_NO_THROW(IX::removeDups(list));
+    EXPECT_TRUE(list.empty());
+}
+
+TEST(IX, REMOVE_DUPS_ALL_DUPS) {
+    CTCI::List<int> list{1, 1, 1, 1, 1};
+
+    IX::removeDups(list);
+
+    EXPECT_FALSE(list.empty());
+    EXPECT_EQ(list.head->val, 1);
+    EXPECT_EQ(list.head->next, nullptr);
+}
+
+TEST(IX, REMOVE_DUPS_HEAD_DUP) {
+    CTCI::List<int> list{1, 1, 2};
+    IX::removeDups(list);
+
+    EXPECT_EQ(list.head->val, 1);
+    EXPECT_EQ(list.head->next->val, 2);
+    EXPECT_EQ(list.head->next->next, nullptr);
 }

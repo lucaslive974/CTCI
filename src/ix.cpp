@@ -195,3 +195,26 @@ auto IX::zeroMatrix(std::vector<std::vector<int>> &matrix) -> void {
 }
 
 auto IX::stringRotation(std::string s1, const std::string &s2) -> bool { return (s1 += s1).contains(s2); }
+
+auto IX::removeDups(CTCI::List<int> &list) -> void {
+    if (list.empty())
+        return;
+
+    std::unordered_map<int, int> freq;
+
+    auto head = list.head;
+    while (head != nullptr) {
+        freq[head->val]++;
+        head = head->next;
+    }
+
+    head = list.head;
+    while (head->next != nullptr) {
+        if (freq[head->next->val] > 1) {
+            freq[head->next->val]--;
+            head->next = head->next->next;
+            continue;
+        }
+        head = head->next;
+    }
+}
