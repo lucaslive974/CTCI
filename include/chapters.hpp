@@ -19,5 +19,6 @@ class IX : public Chapter {
     static auto stringCompression(const std::string &s1) -> std::string;
     static auto rotateMatrix(std::vector<std::vector<int>> &matrix) -> void;
     static auto zeroMatrix(std::vector<std::vector<int>> &matrix) -> void;
+    static auto stringRotation(std::string s1, const std::string &s2) -> bool;
 };
 } // namespace CTCI

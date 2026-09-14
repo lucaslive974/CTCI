@@ -249,3 +249,17 @@ TEST(IX, ZERO_MATRIX_EMPTY_II) {
     CTCI::Matrix<int> m1(1, CTCI::Row<int>{});
     EXPECT_NO_THROW(IX::zeroMatrix(m1));
 }
+
+TEST(IX, STRING_ROTATION_SUBSTR) {
+    std::string s1{"waterbottle"};
+    std::string s2{"erbottlewat"};
+
+    EXPECT_TRUE(IX::stringRotation(s1, s2));
+}
+
+TEST(IX, STRING_ROTATION_ISNT_SUBSTR) {
+    std::string s1{"abcdef"};
+    std::string s2{"fabdee"};
+
+    EXPECT_FALSE(IX::stringRotation(s1, s2));
+}

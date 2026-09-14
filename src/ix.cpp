@@ -193,3 +193,5 @@ auto IX::zeroMatrix(std::vector<std::vector<int>> &matrix) -> void {
     for (auto &[row, col] : zerosPos)
         fillZero(row, col);
 }
+
+auto IX::stringRotation(std::string s1, const std::string &s2) -> bool { return (s1 += s1).contains(s2); }
