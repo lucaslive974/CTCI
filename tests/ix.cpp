@@ -1,5 +1,6 @@
 #include "chapters.hpp"
 #include <gtest/gtest.h>
+#include <stdexcept>
 
 using IX = CTCI::IX;
 
@@ -322,4 +323,25 @@ TEST(IX, REMOVE_DUPS_HEAD_DUP) {
     EXPECT_EQ(list.head->val, 1);
     EXPECT_EQ(list.head->next->val, 2);
     EXPECT_EQ(list.head->next->next, nullptr);
+}
+
+TEST(IX, RETURN_KTH_TO_LAST_ELEMEMENT) {
+    CTCI::List<int> list{1, 2, 3, 4, 5};
+
+    EXPECT_EQ(IX::kthLast(list, 0), 5);
+    EXPECT_EQ(IX::kthLast(list, 1), 4);
+    EXPECT_EQ(IX::kthLast(list, 2), 3);
+    EXPECT_EQ(IX::kthLast(list, 3), 2);
+    EXPECT_EQ(IX::kthLast(list, 4), 1);
+}
+
+TEST(IX, RETURN_KTH_TO_LAST_ELEMENT_K_GREATER_THAN_LIST_SHOULD_THROW) {
+    CTCI::List<int> list{1, 2, 3, 4, 5};
+
+    EXPECT_THROW(IX::kthLast(list, 5), std::invalid_argument);
+}
+
+TEST(IX, RETURN_KTH_TO_LAST_ELEMENT_EMPTY_LIST_THROWS) {
+    CTCI::List<int> list;
+    EXPECT_THROW(IX::kthLast(list, 2), std::invalid_argument);
 }

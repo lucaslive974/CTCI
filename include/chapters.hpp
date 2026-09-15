@@ -53,12 +53,13 @@ template <typename T> struct List {
         }
     }
 
-    bool empty() { return !head; }
+    [[nodiscard]] bool empty() const { return !head; }
 };
 
 class IX : public Chapter {
   public:
     IX(std::string name = "CTCI::IX::Exercises");
+    /* Arrays */
     static auto isUnique(const std::string &s) -> bool;
     static auto checkPermutation(const std::string &s1, const std::string &s2) -> bool;
     static auto urlify(std::string s, size_t length) -> std::string;
@@ -68,6 +69,9 @@ class IX : public Chapter {
     static auto rotateMatrix(std::vector<std::vector<int>> &matrix) -> void;
     static auto zeroMatrix(std::vector<std::vector<int>> &matrix) -> void;
     static auto stringRotation(std::string s1, const std::string &s2) -> bool;
+
+    /* Lists */
     static auto removeDups(List<int> &list) -> void;
+    static auto kthLast(const List<int> &list, size_t k) -> int;
 };
 } // namespace CTCI

@@ -1,6 +1,8 @@
 #include "chapters.hpp"
 #include <algorithm>
 #include <cstring>
+#include <format>
+#include <stdexcept>
 #include <unistd.h>
 #include <unordered_map>
 #include <unordered_set>
@@ -217,4 +219,28 @@ auto IX::removeDups(CTCI::List<int> &list) -> void {
         }
         head = head->next;
     }
+}
+
+auto IX::kthLast(const List<int> &list, size_t k) -> int {
+    if (list.empty())
+        throw std::invalid_argument("Empty list");
+
+    auto head = list.head;
+
+    size_t listSize = 0;
+    while (head != nullptr) {
+        head = head->next;
+        ++listSize;
+    }
+
+    if (k > listSize - 1)
+        throw std::invalid_argument(std::format("The kth({}) is greater than the list", k));
+
+    size_t elIdx = listSize - k;
+    head = list.head;
+
+    for (size_t i = 0; i < elIdx - 1; ++i)
+        head = head->next;
+
+    return head->val;
 }
