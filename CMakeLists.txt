@@ -10,7 +10,7 @@ include("language_standard")
 file(GLOB_RECURSE CTCI_SOURCES CONFIGURE_DEPENDS "src/*.cpp")
 
 add_library(CTCI ${CTCI_SOURCES})
-target_include_directories(CTCI PRIVATE "include")
+target_include_directories(CTCI PUBLIC "include")
 
 # Linter and Formatter
 find_program(LINTER_TOOL NAMES run-clang-tidy)
