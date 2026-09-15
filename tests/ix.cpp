@@ -1,5 +1,4 @@
 #include "chapters.hpp"
-#include <chrono>
 #include <gtest/gtest.h>
 
 using IX = CTCI::IX;
