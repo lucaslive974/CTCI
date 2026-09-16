@@ -283,3 +283,33 @@ auto IX::partition(List<int> &list, int x) -> void {
     left.tail->next = right.head;
     list.head = left.head;
 };
+
+auto IX::sumLists(List<int> &a, List<int> &b) -> List<int> { // NOLINT
+    List<int> res;
+
+    auto headA = a.head;
+    auto headB = b.head;
+    int carry = 0;
+
+    while (headA != nullptr || headB != nullptr || carry != 0) {
+        int digit = 0;
+
+        if (headA != nullptr) {
+            digit += headA->val;
+            headA = headA->next;
+        }
+
+        if (headB != nullptr) {
+            digit += headB->val;
+            headB = headB->next;
+        }
+
+        digit += carry;
+        carry = digit / 10;
+        digit %= 10;
+
+        res.appendToTail(digit);
+    };
+
+    return res;
+}

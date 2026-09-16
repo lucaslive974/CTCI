@@ -79,5 +79,6 @@ class IX : public Chapter {
     static auto kthLast(const List<int> &list, size_t k) -> int;
     static auto deleteMiddleNode(std::shared_ptr<Node<int>> &node) -> void;
     static auto partition(List<int> &list, int x) -> void;
+    static auto sumLists(List<int> &a, List<int> &b) -> List<int>;
 };
 } // namespace CTCI

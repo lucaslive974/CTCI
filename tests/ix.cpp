@@ -431,3 +431,81 @@ TEST(IX, PARTITION_LIST_NO_GREATER_THAN_K) {
     EXPECT_NO_THROW(IX::partition(list, 4));
     internal::testListIsEqual(list, pList);
 }
+
+TEST(IX, SUM_LISTS_SAME_SIZE) {
+    CTCI::List<int> a{0, 0, 1};
+    CTCI::List<int> b{0, 5, 1};
+    CTCI::List<int> ans{0, 5, 2};
+
+    auto res = IX::sumLists(a, b);
+    internal::testListIsEqual(res, ans);
+}
+
+TEST(IX, SUM_LISTS_DIFFERENT_SIZES_B_LESS) {
+    CTCI::List<int> a{0, 0, 1};
+    CTCI::List<int> b{0, 5};
+    CTCI::List<int> ans{0, 5, 1};
+
+    auto res = IX::sumLists(a, b);
+    internal::testListIsEqual(res, ans);
+}
+
+TEST(IX, SUM_LISTS_DIFFERENT_SIZES_A_LESS) {
+    CTCI::List<int> a{0, 8};
+    CTCI::List<int> b{0, 0, 3};
+    CTCI::List<int> ans{0, 8, 3};
+
+    auto res = IX::sumLists(a, b);
+    internal::testListIsEqual(res, ans);
+}
+
+TEST(IX, SUM_LISTS_CARRY_ON_MIDDLE) {
+    CTCI::List<int> a{9, 1};
+    CTCI::List<int> b{9, 1};
+    CTCI::List<int> ans{8, 3};
+
+    auto res = IX::sumLists(a, b);
+    internal::testListIsEqual(res, ans);
+}
+
+TEST(IX, SUM_LISTS_CARRY_ON_END) {
+    CTCI::List<int> a{0, 9};
+    CTCI::List<int> b{0, 9};
+    CTCI::List<int> ans{0, 8, 1};
+
+    auto res = IX::sumLists(a, b);
+    internal::testListIsEqual(res, ans);
+}
+
+TEST(IX, SUM_LISTS_MULTIPLE_CARRY) {
+    CTCI::List<int> a{9, 9};
+    CTCI::List<int> b{9, 9};
+    CTCI::List<int> ans{8, 9, 1};
+
+    auto res = IX::sumLists(a, b);
+    internal::testListIsEqual(res, ans);
+}
+
+TEST(IX, SUM_LISTS_EMPTY_A) {
+    CTCI::List<int> a;
+    CTCI::List<int> b{0, 9};
+
+    auto res = IX::sumLists(a, b);
+    internal::testListIsEqual(res, b);
+}
+
+TEST(IX, SUM_LISTS_EMPTY_B) {
+    CTCI::List<int> a{9, 8};
+    CTCI::List<int> b;
+
+    auto res = IX::sumLists(a, b);
+    internal::testListIsEqual(res, a);
+}
+
+TEST(IX, SUM_LISTS_BOTH_EMPTY) {
+    CTCI::List<int> a;
+    CTCI::List<int> b;
+
+    auto res = IX::sumLists(a, b);
+    internal::testListIsEqual(res, {});
+}
