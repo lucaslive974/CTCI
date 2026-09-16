@@ -31,14 +31,7 @@ template <typename T> struct List {
 
     void appendToTail(T val) {
         auto node = std::make_shared<node_type>(val);
-        if (!head) {
-            head = node;
-            tail = node;
-            return;
-        }
-
-        tail->next = node;
-        tail = node;
+        appendToTail(node);
     }
 
     void appendToTail(std::initializer_list<T> list) {
@@ -51,6 +44,17 @@ template <typename T> struct List {
         for (T &item : list) {
             appendToTail(item);
         }
+    }
+
+    void appendToTail(std::shared_ptr<node_type> &node) {
+        if (!head) {
+            head = node;
+            tail = node;
+            return;
+        }
+
+        tail->next = node;
+        tail = node;
     }
 
     [[nodiscard]] bool empty() const { return !head; }
@@ -74,5 +78,6 @@ class IX : public Chapter {
     static auto removeDups(List<int> &list) -> void;
     static auto kthLast(const List<int> &list, size_t k) -> int;
     static auto deleteMiddleNode(std::shared_ptr<Node<int>> &node) -> void;
+    static auto partition(List<int> &list, int x) -> void;
 };
 } // namespace CTCI

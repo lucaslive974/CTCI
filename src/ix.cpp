@@ -258,3 +258,28 @@ auto IX::deleteMiddleNode(std::shared_ptr<Node<int>> &node) -> void {
         head = next;
     }
 }
+
+auto IX::partition(List<int> &list, int x) -> void {
+    if (list.empty())
+        return;
+
+    CTCI::List<int> left;
+    CTCI::List<int> right;
+
+    auto head = list.head;
+    while (head != nullptr) {
+        (head->val < x ? left : right).appendToTail(head);
+        head = head->next;
+    }
+
+    if (left.empty()) {
+        list.head = right.head;
+        return;
+    }
+
+    if (!right.empty())
+        right.tail->next = nullptr;
+
+    left.tail->next = right.head;
+    list.head = left.head;
+};

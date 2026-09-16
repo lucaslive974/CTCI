@@ -2,6 +2,7 @@
 #include <gtest/gtest.h>
 #include <memory>
 #include <stdexcept>
+#include <unordered_map>
 
 using IX = CTCI::IX;
 
@@ -371,4 +372,62 @@ TEST(IX, DELETE_MIDDLE_NODE_EMPTY_LIST) {
     CTCI::List<int> dlist;
 
     internal::testListIsEqual(list, dlist);
+}
+
+TEST(IX, PARTITION_LIST) {
+    int k = 5;
+    CTCI::List<int> list{3, 5, 8, 5, 10, 2, 1};
+    IX::partition(list, k);
+
+    std::unordered_map<int, int> leftNums;
+    std::unordered_map<int, int> rightNums;
+
+    bool isRightSide = false;
+
+    auto head = list.head;
+    while (head != nullptr) {
+        if (head->val >= k)
+            isRightSide = true;
+
+        if (!isRightSide)
+            leftNums[head->val]++;
+        else
+            rightNums[head->val]++;
+
+        head = head->next;
+    }
+
+    EXPECT_EQ(leftNums.size(), 3);
+    EXPECT_EQ(rightNums.size(), 3);
+
+    /* Left */
+    EXPECT_EQ(leftNums[3], 1);
+    EXPECT_EQ(leftNums[2], 1);
+    EXPECT_EQ(leftNums[1], 1);
+
+    /* Right */
+    EXPECT_EQ(rightNums[5], 2);
+    EXPECT_EQ(rightNums[10], 1);
+    EXPECT_EQ(rightNums[8], 1);
+}
+
+TEST(IX, PARTITION_LIST_EMPTY_LIST) {
+    CTCI::List<int> list;
+    EXPECT_NO_THROW(IX::partition(list, 1));
+}
+
+TEST(IX, PARTITION_LIST_NO_LESS_THAN_K) {
+    CTCI::List<int> list{2, 3, 4};
+    CTCI::List<int> pList{2, 3, 4};
+
+    EXPECT_NO_THROW(IX::partition(list, 2));
+    internal::testListIsEqual(list, pList);
+}
+
+TEST(IX, PARTITION_LIST_NO_GREATER_THAN_K) {
+    CTCI::List<int> list{1, 2, 3};
+    CTCI::List<int> pList{1, 2, 3};
+
+    EXPECT_NO_THROW(IX::partition(list, 4));
+    internal::testListIsEqual(list, pList);
 }
