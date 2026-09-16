@@ -28,10 +28,10 @@ template <typename T> void testListIsEqual(const CTCI::List<T> &a, const CTCI::L
     }
 
     if (headA == nullptr && headB != nullptr)
-        EXPECT_TRUE(false) << "List A ended while b yet have nodes";
+        FAIL() << "List A ended while b yet have nodes";
 
     if (headB == nullptr && headA != nullptr)
-        EXPECT_TRUE(false) << "List B ended while a yet have nodes";
+        FAIL() << "List B ended while a yet have nodes";
 }
 
 } // namespace internal
