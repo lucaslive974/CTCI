@@ -1,5 +1,6 @@
 #include "chapters.hpp"
 #include <gtest/gtest.h>
+#include <memory>
 #include <stdexcept>
 
 using IX = CTCI::IX;
@@ -344,4 +345,30 @@ TEST(IX, RETURN_KTH_TO_LAST_ELEMENT_K_GREATER_THAN_LIST_SHOULD_THROW) {
 TEST(IX, RETURN_KTH_TO_LAST_ELEMENT_EMPTY_LIST_THROWS) {
     CTCI::List<int> list;
     EXPECT_THROW(IX::kthLast(list, 2), std::invalid_argument);
+}
+
+TEST(IX, DELETE_MIDDLE_NODE) {
+    CTCI::List<int> list{1, 2, 3, 4, 5};
+
+    auto node = list.head->next->next;
+    IX::deleteMiddleNode(node);
+
+    CTCI::List<int> delList{1, 2, 4, 5};
+    internal::testListIsEqual(list, delList);
+}
+
+TEST(IX, DELETE_MIDDLE_NODE_NULL_NODE) {
+    CTCI::List<int> list{1, 2};
+
+    std::shared_ptr<CTCI::Node<int>> node = nullptr;
+    EXPECT_NO_THROW(IX::deleteMiddleNode(node));
+}
+
+TEST(IX, DELETE_MIDDLE_NODE_EMPTY_LIST) {
+    CTCI::List<int> list;
+
+    IX::deleteMiddleNode(list.head);
+    CTCI::List<int> dlist;
+
+    internal::testListIsEqual(list, dlist);
 }

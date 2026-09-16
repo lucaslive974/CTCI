@@ -73,5 +73,6 @@ class IX : public Chapter {
     /* Lists */
     static auto removeDups(List<int> &list) -> void;
     static auto kthLast(const List<int> &list, size_t k) -> int;
+    static auto deleteMiddleNode(std::shared_ptr<Node<int>> &node) -> void;
 };
 } // namespace CTCI
