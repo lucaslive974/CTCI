@@ -509,3 +509,28 @@ TEST(IX, SUM_LISTS_BOTH_EMPTY) {
     auto res = IX::sumLists(a, b);
     internal::testListIsEqual(res, {});
 }
+
+TEST(IX, PALINDROME_ODD_TRUE) {
+    CTCI::List<char> a{'a', 'b', 'c', 'b', 'a'};
+    EXPECT_TRUE(IX::palindrome(a));
+}
+
+TEST(IX, PALINDROME_EVEN_TRUE) {
+    CTCI::List<char> a{'a', 'b', 'b', 'a'};
+    EXPECT_TRUE(IX::palindrome(a));
+}
+
+TEST(IX, PALINDROME_ODD_FALSE) {
+    CTCI::List<char> a{'a', 'a', 'c', 'b', 'a'};
+    EXPECT_FALSE(IX::palindrome(a));
+}
+
+TEST(IX, PALINDROME_EVEN_FALSE) {
+    CTCI::List<char> a{'a', 'a', 'b', 'a'};
+    EXPECT_FALSE(IX::palindrome(a));
+}
+
+TEST(IX, PALINDROME_EMPTY) {
+    CTCI::List<char> a;
+    EXPECT_TRUE(IX::palindrome(a));
+}

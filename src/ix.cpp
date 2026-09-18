@@ -313,3 +313,26 @@ auto IX::sumLists(List<int> &a, List<int> &b) -> List<int> { // NOLINT
 
     return res;
 }
+
+auto IX::palindrome(const List<char> &list) -> bool {
+    if (list.empty())
+        return true;
+
+    auto head = list.head;
+    auto tail = list.tail;
+
+    while (head != tail) {
+        if (head->val != tail->val)
+            return false;
+
+        auto nTail = head;
+        while (nTail->next != tail)
+            nTail = nTail->next;
+
+        if (nTail != head)
+            tail = nTail;
+        head = head->next;
+    }
+
+    return true;
+}
