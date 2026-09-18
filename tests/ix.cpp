@@ -530,6 +530,21 @@ TEST(IX, PALINDROME_EVEN_FALSE) {
     EXPECT_FALSE(IX::palindrome(a));
 }
 
+TEST(IX, PALINDROME_ONE_ELEMENT) {
+    CTCI::List<char> a{'a'};
+    EXPECT_TRUE(IX::palindrome(a));
+}
+
+TEST(IX, PALINDROME_TWO_ELEMENTS) {
+    CTCI::List<char> a{'a', 'a'};
+    EXPECT_TRUE(IX::palindrome(a));
+}
+
+TEST(IX, PALINDROME_TWO_ELEMENTS_II) {
+    CTCI::List<char> a{'a', 'b'};
+    EXPECT_FALSE(IX::palindrome(a));
+}
+
 TEST(IX, PALINDROME_EMPTY) {
     CTCI::List<char> a;
     EXPECT_TRUE(IX::palindrome(a));
