@@ -2,6 +2,7 @@
 #include "chapter.hpp"
 #include <initializer_list>
 #include <memory>
+#include <unordered_set>
 #include <vector>
 
 namespace CTCI {
@@ -29,8 +30,13 @@ template <typename T> struct List {
     List(std::initializer_list<T> list) { appendToTail(list); }
     List(std::vector<T> &list) { appendToTail(list); }
     ~List() {
-        while (head)
+        std::unordered_set<node_type *> visited;
+        while (head != nullptr) {
+            if (visited.contains(head.get()))
+                break;
+            visited.insert(head.get());
             head = head->next;
+        }
     };
 
     List(List &list) {
@@ -128,5 +134,6 @@ class IX : public Chapter {
     static auto sumLists(List<int> &a, List<int> &b) -> List<int>;
     static auto palindrome(List<char> &list) -> bool;
     static auto intersection(List<int> &a, List<int> &b) -> std::shared_ptr<Node<int>>;
+    static auto loopDetection(List<int> &list) -> std::shared_ptr<Node<int>>;
 };
 } // namespace CTCI

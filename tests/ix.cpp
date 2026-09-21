@@ -545,3 +545,23 @@ TEST(IX, INTERSECTION_LIST_FALSE) {
 
     EXPECT_EQ(IX::intersection(a, b), nullptr);
 }
+
+TEST(IX, LOOP_DETECTION_LIST_CYCLIC) {
+    CTCI::List<int> a{1, 2};
+    auto circularNodeI = std::make_shared<CTCI::Node<int>>(3);
+    a.appendToTail(circularNodeI);
+    a.appendToTail({4, 5});
+
+    auto circularNodeII = std::make_shared<CTCI::Node<int>>(6);
+    circularNodeII->next = circularNodeI;
+
+    a.appendToTail(circularNodeII);
+
+    EXPECT_EQ(IX::loopDetection(a), circularNodeI);
+}
+
+TEST(IX, LOOP_DETECTION_LIST_ACYCLIC) {
+    CTCI::List<int> list{1, 2, 3, 4, 5};
+
+    EXPECT_EQ(IX::loopDetection(list), nullptr);
+}

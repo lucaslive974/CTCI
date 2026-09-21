@@ -368,3 +368,27 @@ auto IX::intersection(List<int> &a, List<int> &b) -> std::shared_ptr<Node<int>> 
 
     return nullptr;
 }
+
+auto IX::loopDetection(List<int> &list) -> std::shared_ptr<Node<int>> {
+    auto slow = list.head;
+    auto fast = list.head;
+
+    while (fast != nullptr && fast->next != nullptr) {
+        slow = slow->next;
+        fast = fast->next->next;
+
+        if (fast == slow)
+            break;
+    }
+
+    if (fast == nullptr || fast->next == nullptr)
+        return nullptr;
+
+    slow = list.head;
+    while (slow != fast) {
+        slow = slow->next;
+        fast = fast->next;
+    }
+
+    return slow;
+};
