@@ -25,9 +25,33 @@ template <typename T> struct List {
 
     std::shared_ptr<node_type> head = nullptr;
     std::shared_ptr<node_type> tail = nullptr;
-    List(std::shared_ptr<node_type> head = nullptr) : head(head) {};
+    List(std::shared_ptr<node_type> head = nullptr) : head(head) {}
     List(std::initializer_list<T> list) { appendToTail(list); }
     List(std::vector<T> &list) { appendToTail(list); }
+    ~List() {
+        while (head)
+            head = head->next;
+    };
+
+    List(List &list) {
+        auto el = list.head;
+        for (; el != nullptr; el = el->next)
+            appendToTail(el->val);
+    }
+
+    List(List &&list) noexcept {
+        head = list.head;
+        tail = list.tail;
+
+        list.head = nullptr;
+        list.tail = nullptr;
+    }
+
+    List &operator=(List other) noexcept {
+        swap(head, other.head);
+        swap(tail, other.tail);
+        return *this;
+    }
 
     void appendToTail(T val) {
         auto node = std::make_shared<node_type>(val);
@@ -60,6 +84,28 @@ template <typename T> struct List {
     [[nodiscard]] bool empty() const { return !head; }
 };
 
+template <typename T> auto revertLinkedList(std::shared_ptr<Node<T>> &node) -> void {
+    if (node == nullptr)
+        return;
+
+    auto p = node;
+    auto m = p->next;
+
+    p->next = nullptr;
+    while (m != nullptr) {
+        auto n = m->next;
+
+        m->next = p;
+        p = m;
+        m = n;
+    }
+}
+
+template <typename T> auto revertLinkedList(List<T> &list) -> void {
+    revertLinkedList(list.head);
+    std::swap(list.head, list.tail);
+}
+
 class IX : public Chapter {
   public:
     IX(std::string name = "CTCI::IX::Exercises");
@@ -80,6 +126,6 @@ class IX : public Chapter {
     static auto deleteMiddleNode(std::shared_ptr<Node<int>> &node) -> void;
     static auto partition(List<int> &list, int x) -> void;
     static auto sumLists(List<int> &a, List<int> &b) -> List<int>;
-    static auto palindrome(const List<char>& list) -> bool;
+    static auto palindrome(List<char> &list) -> bool;
 };
 } // namespace CTCI

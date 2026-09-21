@@ -6,6 +6,7 @@ include("gtest")
 file(GLOB_RECURSE CTCI_TEST_SOURCE CONFIGURE_DEPENDS "tests/*.cpp")
 
 add_executable(CTCI_TEST ${CTCI_TEST_SOURCE})
+target_include_directories(CTCI_TEST PRIVATE "tests/include")
 option(ENABLE_COVERAGE "Enable code coverage instrumentation" OFF)
 
 if(ENABLE_COVERAGE)

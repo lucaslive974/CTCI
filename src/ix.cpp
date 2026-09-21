@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <cstring>
 #include <format>
+#include <memory>
 #include <stdexcept>
 #include <unistd.h>
 #include <unordered_map>
@@ -314,25 +315,35 @@ auto IX::sumLists(List<int> &a, List<int> &b) -> List<int> { // NOLINT
     return res;
 }
 
-auto IX::palindrome(const List<char> &list) -> bool {
+auto IX::palindrome(List<char> &list) -> bool {
     if (list.empty())
         return true;
 
+    std::shared_ptr<Node<char>> middle;
+    {
+        auto fast = list.head;
+        auto slow = list.head;
+
+        while (fast != nullptr && fast->next != nullptr) {
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+
+        middle = slow;
+    }
+
+    CTCI::revertLinkedList(middle);
     auto head = list.head;
     auto tail = list.tail;
 
-    while (head != tail) {
+    while (head != middle) {
         if (head->val != tail->val)
             return false;
 
-        auto nTail = head;
-        while (nTail->next != tail)
-            nTail = nTail->next;
-
-        if (nTail != head)
-            tail = nTail;
         head = head->next;
+        tail = tail->next;
     }
 
+    CTCI::revertLinkedList(list.tail);
     return true;
 }

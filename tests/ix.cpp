@@ -1,41 +1,10 @@
 #include "chapters.hpp"
+#include "testing_utils.hpp"
 #include <gtest/gtest.h>
 #include <memory>
 #include <stdexcept>
-#include <unordered_map>
 
 using IX = CTCI::IX;
-
-namespace {
-namespace internal {
-template <typename T> void testMatrixIsEqual(std::vector<std::vector<T>> &a, std::vector<std::vector<T>> &b) { // NOLINT
-    size_t m = a.size();
-    size_t n = a.front().size();
-    for (size_t i = 0; i < m; ++i) {
-        for (size_t j = 0; j < n; ++j) {
-            EXPECT_EQ(a[i][j], b[i][j]);
-        }
-    }
-}
-
-template <typename T> void testListIsEqual(const CTCI::List<T> &a, const CTCI::List<T> &b) { // NOLINT
-    auto headA = a.head;
-    auto headB = b.head;
-    while (headA != nullptr && headB != nullptr) {
-        EXPECT_EQ(headA->val, headB->val);
-        headA = headA->next;
-        headB = headB->next;
-    }
-
-    if (headA == nullptr && headB != nullptr)
-        FAIL() << "List A ended while b yet have nodes";
-
-    if (headB == nullptr && headA != nullptr)
-        FAIL() << "List B ended while a yet have nodes";
-}
-
-} // namespace internal
-} // namespace
 
 TEST(IX, IS_UNIQUE_TESTS) {
     std::string unique{"abcdefg"};
@@ -548,4 +517,12 @@ TEST(IX, PALINDROME_TWO_ELEMENTS_II) {
 TEST(IX, PALINDROME_EMPTY) {
     CTCI::List<char> a;
     EXPECT_TRUE(IX::palindrome(a));
+}
+
+TEST(IX, PALINDROME_LIST_RECONSTRUCTION) {
+    CTCI::List<char> a{'a', 'b', 'c', 'b', 'a'};
+    CTCI::List<char> aCopy{a};
+
+    IX::palindrome(a);
+    internal::testListIsEqual(a, aCopy);
 }

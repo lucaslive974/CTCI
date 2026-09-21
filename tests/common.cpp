@@ -1,5 +1,6 @@
 #include "chapter.hpp"
 #include "chapters.hpp"
+#include "testing_utils.hpp"
 #include "utils.hpp"
 #include "gtest/gtest.h"
 
@@ -55,6 +56,38 @@ TEST(COMMON, LIST_APPEND_ITENS) {
 
     list.appendToTail(4);
     EXPECT_EQ(list.head->next->val, 4);
+}
+
+TEST(COMMON, LIST_COPY_INITIALIZER) {
+    CTCI::List<int> a{1, 2, 3};
+    CTCI::List<int> b = a;
+
+    internal::testListIsEqual(a, b);
+}
+
+TEST(COMMON, LIST_MOVE_INITIALIZER) {
+    CTCI::List<int> a{1, 2, 3, 4, 5};
+    CTCI::List<int> b = std::move(a);
+
+    EXPECT_EQ(a.head, nullptr);
+    EXPECT_EQ(a.tail, nullptr);
+
+    EXPECT_EQ(b.head->val, 1);
+    EXPECT_EQ(b.tail->val, 5);
+}
+
+TEST(COMMON, LIST_REVERT) {
+    CTCI::List<int> a{1, 2, 3, 4, 5};
+    CTCI::List<int> b{5, 4, 3, 2, 1};
+
+    CTCI::revertLinkedList(a);
+
+    internal::testListIsEqual(a, b);
+}
+
+TEST(COMMON, LIST_REVERT_EMPTY) {
+    CTCI::List<int> a;
+    EXPECT_NO_THROW(CTCI::revertLinkedList(a));
 }
 
 TEST(UTILS, PrintTitleOutputsFormattedMessage) {
