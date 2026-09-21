@@ -316,6 +316,7 @@ auto IX::sumLists(List<int> &a, List<int> &b) -> List<int> { // NOLINT
 }
 
 auto IX::palindrome(List<char> &list) -> bool {
+    auto a = list;
     if (list.empty())
         return true;
 

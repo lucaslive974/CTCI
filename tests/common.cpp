@@ -60,8 +60,12 @@ TEST(COMMON, LIST_APPEND_ITENS) {
 
 TEST(COMMON, LIST_COPY_INITIALIZER) {
     CTCI::List<int> a{1, 2, 3};
-    CTCI::List<int> b = a;
+    CTCI::List<int> b;
 
+    // Assignment operator
+    b = a;
+
+    EXPECT_NE(&b.head, &a.head);
     internal::testListIsEqual(a, b);
 }
 
