@@ -526,3 +526,22 @@ TEST(IX, PALINDROME_LIST_RECONSTRUCTION) {
     IX::palindrome(a);
     internal::testListIsEqual(a, aCopy);
 }
+
+TEST(IX, INTERSECTION_LIST_TRUE) {
+    CTCI::List<int> a{1, 2};
+    CTCI::List<int> b{3, 4};
+
+    auto nodeIntersecting = std::make_shared<CTCI::Node<int>>(5);
+
+    a.appendToTail(nodeIntersecting);
+    b.appendToTail(nodeIntersecting);
+
+    EXPECT_EQ(IX::intersection(a, b), nodeIntersecting);
+}
+
+TEST(IX, INTERSECTION_LIST_FALSE) {
+    CTCI::List<int> a{1, 2};
+    CTCI::List<int> b{3, 4};
+
+    EXPECT_EQ(IX::intersection(a, b), nullptr);
+}

@@ -127,5 +127,6 @@ class IX : public Chapter {
     static auto partition(List<int> &list, int x) -> void;
     static auto sumLists(List<int> &a, List<int> &b) -> List<int>;
     static auto palindrome(List<char> &list) -> bool;
+    static auto intersection(List<int> &a, List<int> &b) -> std::shared_ptr<Node<int>>;
 };
 } // namespace CTCI

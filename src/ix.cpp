@@ -348,3 +348,23 @@ auto IX::palindrome(List<char> &list) -> bool {
     CTCI::revertLinkedList(list.tail);
     return true;
 }
+
+auto IX::intersection(List<int> &a, List<int> &b) -> std::shared_ptr<Node<int>> { // NOLINT
+    std::unordered_set<void *> existents;
+
+    auto head = a.head;
+    while (head != nullptr) {
+        existents.insert(reinterpret_cast<void *>(head.get()));
+        head = head->next;
+    }
+
+    head = b.head;
+    while (head != nullptr) {
+        if (existents.contains(reinterpret_cast<void *>(head.get())))
+            return head;
+
+        head = head->next;
+    }
+
+    return nullptr;
+}
