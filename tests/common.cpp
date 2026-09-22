@@ -94,6 +94,132 @@ TEST(COMMON, LIST_REVERT_EMPTY) {
     EXPECT_NO_THROW(CTCI::revertLinkedList(a));
 }
 
+using StackInt = CTCI::Stack<int>;
+
+TEST(COMMON, STACK_POP) {
+    StackInt stack{1, 2, 3};
+
+    auto get = [&stack]() -> int {
+        int val = stack.peek();
+        stack.pop();
+        return val;
+    };
+
+    EXPECT_EQ(get(), 3);
+    EXPECT_EQ(get(), 2);
+    EXPECT_EQ(get(), 1);
+}
+
+TEST(COMMON, STACK_PUSH) {
+    StackInt stack;
+
+    stack.push(0);
+    EXPECT_EQ(stack.peek(), 0);
+    stack.push(1);
+    EXPECT_EQ(stack.peek(), 1);
+}
+
+TEST(COMMON, STACK_EMPTY) {
+    StackInt stack;
+
+    EXPECT_TRUE(stack.isEmpty());
+
+    stack.push(0);
+    EXPECT_FALSE(stack.isEmpty());
+
+    stack.pop();
+    EXPECT_TRUE(stack.isEmpty());
+}
+
+TEST(COMMON, STACK_SIZE) {
+    StackInt stack{0, 2, 3};
+
+    EXPECT_EQ(stack.size(), 3);
+}
+
+using StacksInt = CTCI::SetOfStacks<int>;
+
+TEST(COMMON, SET_OF_STACKS_PUSH) {
+    StacksInt stacks(/*threshold=*/3);
+
+    stacks.push({1, 2, 3});
+    EXPECT_EQ(stacks.numberOfStacks(), 1);
+
+    stacks.push(4);
+    EXPECT_EQ(stacks.numberOfStacks(), 2);
+}
+
+TEST(COMMON, SET_OF_STACKS_POP) {
+    StacksInt stacks(/*list=*/{1, 2, 3, 4, 5}, /*threshold=*/3);
+    EXPECT_EQ(stacks.numberOfStacks(), 2);
+
+    stacks.pop();
+    EXPECT_EQ(stacks.numberOfStacks(), 2);
+
+    stacks.pop();
+    EXPECT_EQ(stacks.numberOfStacks(), 1);
+}
+
+TEST(COMMON, SET_OF_STACKS_SIZE) {
+    StacksInt stacks({1, 2, 3, 4, 5, 6});
+    EXPECT_EQ(stacks.size(), 6);
+}
+
+TEST(COMMON, SET_OF_STACKS_SIZE_AT) {
+    StacksInt stacks({1, 2, 3, 4}, 2);
+    stacks.popAt(0);
+
+    EXPECT_EQ(stacks.sizeAt(0), 1);
+}
+
+TEST(COMMON, SET_OF_STACKS_PEEK) {
+    StacksInt stacks{1, 2, 3, 4};
+    EXPECT_EQ(stacks.peek(), 4);
+
+    stacks.push({5, 6});
+    EXPECT_EQ(stacks.peek(), 6);
+}
+
+TEST(COMMON, SET_OF_STACKS_PEEK_AT) {
+    StacksInt stacks{{1, 2, 3, 4, 5, 6}, 3};
+    stacks.popAt(0);
+
+    EXPECT_EQ(stacks.peekAt(0), 2);
+    EXPECT_EQ(stacks.size(), 5);
+}
+
+TEST(COMMON, SET_OF_STACKS_POP_AT) {
+    StacksInt stacks{{1, 2, 3, 4, 5, 6}, 3};
+    stacks.popAt(0);
+
+    EXPECT_EQ(stacks.peek(), 6);
+    EXPECT_EQ(stacks.size(), 5);
+}
+
+TEST(COMMON, SET_OF_STACKS_EMPTY_STACKS_ON_MIDDLE_AMORTIZED) {
+    StacksInt stacks{{1, 2, 3}, 1};
+
+    stacks.popAt(1);
+    stacks.pop();
+
+    EXPECT_EQ(stacks.peek(), 1);
+    EXPECT_EQ(stacks.numberOfStacks(), 1);
+}
+
+TEST(COMMON, SET_OF_STACKS_EMPTY_STACK_ON_MIDDLE) {
+    StacksInt stacks{{1, 2, 3}, 1};
+
+    stacks.popAt(1);
+    EXPECT_EQ(stacks.numberOfStacks(), 2);
+}
+
+TEST(COMMON, SET_OF_STACKS_EMPTY_STACK_ON_END) {
+    StacksInt stacks{{1, 2, 3}, 1};
+
+    stacks.pop();
+    EXPECT_EQ(stacks.numberOfStacks(), 2);
+}
+
 TEST(UTILS, PrintTitleOutputsFormattedMessage) {
     testing::internal::CaptureStdout();
 

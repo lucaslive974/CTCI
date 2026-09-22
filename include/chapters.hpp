@@ -2,6 +2,7 @@
 #include "chapter.hpp"
 #include <initializer_list>
 #include <memory>
+#include <unordered_map>
 #include <unordered_set>
 #include <vector>
 
@@ -111,6 +112,78 @@ template <typename T> auto revertLinkedList(List<T> &list) -> void {
     revertLinkedList(list.head);
     std::swap(list.head, list.tail);
 }
+
+template <typename T> class Stack {
+    std::vector<T> _data;
+
+  public:
+    Stack() = default;
+    Stack(size_t capacity) : _data(capacity) {}
+    Stack(std::initializer_list<T> list) : _data(list) {};
+    Stack(std::vector<T> vec) : _data(vec) {};
+
+    void push(T val) { _data.push_back(val); }
+    T peek() { return _data.back(); }
+    void pop() { _data.pop_back(); }
+    bool isEmpty() { return _data.empty(); }
+    size_t size() { return _data.size(); }
+};
+
+template <typename T> class SetOfStacks {
+    std::unordered_map<size_t, CTCI::Stack<T>> stacks;
+    size_t threshold = 10;
+    size_t lastStackIdx = 0;
+
+  public:
+    SetOfStacks() = default;
+    SetOfStacks(size_t threshold) : threshold(threshold) {}
+    SetOfStacks(std::initializer_list<T> list, size_t threshold = 10) : threshold(threshold) { push(list); }
+
+    void push(T val) {
+        auto *stack = &stacks[lastStackIdx];
+        if (stack->size() >= threshold)
+            stack = &stacks[++lastStackIdx];
+
+        stack->push(val);
+    }
+
+    void push(std::initializer_list<T> list) {
+        for (const T &el : list)
+            push(el);
+    }
+
+    T peek() { return stacks[lastStackIdx].peek(); }
+
+    T peekAt(size_t index) { return stacks[index].peek(); }
+
+    void pop() {
+        auto *stack = &stacks[lastStackIdx];
+        stack->pop();
+
+        while (stack->isEmpty()) {
+            stacks.erase(lastStackIdx);
+            stack = &stacks[--lastStackIdx];
+        }
+    }
+
+    void popAt(size_t index) {
+        stacks[index].pop();
+        if (stacks[index].isEmpty())
+            stacks.erase(index);
+    }
+
+    size_t size() {
+        size_t size = 0;
+        for (auto &[key, stack] : stacks) {
+            size += stack.size();
+        }
+        return size;
+    }
+
+    size_t sizeAt(size_t index) { return stacks[index].size(); }
+
+    [[nodiscard]] size_t numberOfStacks() const { return stacks.size(); };
+};
 
 class IX : public Chapter {
   public:
