@@ -565,3 +565,9 @@ TEST(IX, LOOP_DETECTION_LIST_ACYCLIC) {
 
     EXPECT_EQ(IX::loopDetection(list), nullptr);
 }
+
+TEST(IX, LOOP_DETECTION_LIST_ACYCLIC_II) {
+    CTCI::List<int> list{1, 2, 3, 4, 5, 6};
+
+    EXPECT_EQ(IX::loopDetection(list), nullptr);
+}
