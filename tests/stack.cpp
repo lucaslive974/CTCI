@@ -105,6 +105,7 @@ TEST(SET_OF_STACKS, POP_AT) {
 
 TEST(SET_OF_STACKS, EMPTY_STACKS_ON_MIDDLE_AMORTIZED) {
     StacksInt stacks{{1, 2, 3}, 1};
+    EXPECT_EQ(stacks.numberOfStacks(), 3);
 
     stacks.popAt(1);
     EXPECT_EQ(stacks.numberOfStacks(), 2);
@@ -126,4 +127,24 @@ TEST(SET_OF_STACKS, EMPTY_STACK_ON_END) {
 
     stacks.pop();
     EXPECT_EQ(stacks.numberOfStacks(), 2);
+}
+
+TEST(SET_OF_STACKS, IS_EMPTY_TRUE) {
+    StacksInt stacks;
+    EXPECT_TRUE(stacks.isEmpty());
+}
+
+TEST(SET_OF_STACKS, IS_EMPTY_FALSE) {
+    StacksInt stacks{1, 2};
+    EXPECT_FALSE(stacks.isEmpty());
+}
+
+TEST(SET_OF_STACKS, IS_EMPTY_TWO_STACKS) {
+    StacksInt stacks{{1, 2}, 1};
+
+    stacks.popAt(0);
+    EXPECT_FALSE(stacks.isEmpty());
+
+    stacks.pop();
+    EXPECT_TRUE(stacks.isEmpty());
 }

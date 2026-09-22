@@ -1,5 +1,6 @@
 #pragma once
 #include "chapter.hpp"
+#include <algorithm>
 #include <initializer_list>
 #include <memory>
 #include <unordered_map>
@@ -133,6 +134,7 @@ template <typename T> class SetOfStacks {
     std::unordered_map<size_t, CTCI::Stack<T>> stacks;
     size_t threshold = 10;
     size_t lastStackIdx = 0;
+    size_t clearedStacks = 0;
 
   public:
     SetOfStacks() = default;
@@ -160,16 +162,19 @@ template <typename T> class SetOfStacks {
         auto *stack = &stacks[lastStackIdx];
         stack->pop();
 
-        while (stack->isEmpty()) {
+        if (stack->isEmpty()) {
             stacks.erase(lastStackIdx);
-            stack = &stacks[--lastStackIdx];
+            lastStackIdx -= 1 + clearedStacks;
+            clearedStacks = 0;
         }
     }
 
     void popAt(size_t index) {
         stacks[index].pop();
-        if (stacks[index].isEmpty())
+        if (stacks[index].isEmpty()) {
             stacks.erase(index);
+            ++clearedStacks;
+        }
     }
 
     size_t size() {
@@ -181,6 +186,10 @@ template <typename T> class SetOfStacks {
     }
 
     size_t sizeAt(size_t index) { return stacks[index].size(); }
+
+    bool isEmpty() {
+        return std::ranges::all_of(stacks, [](auto kvp) -> bool { return kvp.second.isEmpty(); });
+    }
 
     [[nodiscard]] size_t numberOfStacks() const { return stacks.size(); };
 };
