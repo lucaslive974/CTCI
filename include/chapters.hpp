@@ -4,7 +4,6 @@
 #include <initializer_list>
 #include <memory>
 #include <unordered_map>
-#include <unordered_set>
 #include <vector>
 
 namespace CTCI {
@@ -28,31 +27,30 @@ template <typename T> struct List {
 
     std::shared_ptr<node_type> head = nullptr;
     std::shared_ptr<node_type> tail = nullptr;
-    List(std::shared_ptr<node_type> head = nullptr) : head(head) {}
+    List(std::shared_ptr<node_type> node = nullptr) : head(node), tail(node) {}
     List(std::initializer_list<T> list) { appendToTail(list); }
     List(std::vector<T> &list) { appendToTail(list); }
     ~List() {
-        std::unordered_set<node_type *> visited;
-        while (head != nullptr) {
-            if (visited.contains(head.get()))
-                break;
-            visited.insert(head.get());
+        if (empty())
+            return;
+
+        tail->next = nullptr;
+        while (head != nullptr)
             head = head->next;
-        }
     };
 
-    List(List &list) {
-        auto el = list.head;
+    List(List &other) {
+        auto el = other.head;
         for (; el != nullptr; el = el->next)
             appendToTail(el->val);
     }
 
-    List(List &&list) noexcept {
-        head = list.head;
-        tail = list.tail;
+    List(List &&other) noexcept {
+        head = other.head;
+        tail = other.tail;
 
-        list.head = nullptr;
-        list.tail = nullptr;
+        other.head = nullptr;
+        other.tail = nullptr;
     }
 
     List &operator=(List other) noexcept {
@@ -87,6 +85,17 @@ template <typename T> struct List {
 
         tail->next = node;
         tail = node;
+    }
+
+    void appendToTail(List &&other) {
+        if (other.empty())
+            return;
+
+        tail->next = other.head;
+        tail = other.tail;
+
+        other.head = nullptr;
+        other.tail = nullptr;
     }
 
     [[nodiscard]] bool empty() const { return !head; }

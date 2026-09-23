@@ -378,6 +378,9 @@ TEST(IX, PARTITION_LIST) {
     EXPECT_EQ(rightNums[5], 2);
     EXPECT_EQ(rightNums[10], 1);
     EXPECT_EQ(rightNums[8], 1);
+
+    EXPECT_EQ(list.head->val, 3);
+    EXPECT_EQ(list.tail->val, 10);
 }
 
 TEST(IX, PARTITION_LIST_EMPTY_LIST) {

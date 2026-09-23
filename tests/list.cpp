@@ -79,3 +79,15 @@ TEST(COMMON, LIST_REVERT_EMPTY) {
     CTCI::List<int> a;
     EXPECT_NO_THROW(CTCI::revertLinkedList(a));
 }
+
+TEST(COMMON, LIST_APPEND_EXPIRING_LIST) {
+    CTCI::List<int> a{1, 2, 3};
+    CTCI::List<int> b{4, 5, 6};
+    CTCI::List<int> ans{1, 2, 3, 4, 5, 6};
+
+    a.appendToTail(std::move(b));
+    internal::testListIsEqual(a, ans);
+
+    EXPECT_EQ(b.head, nullptr);
+    EXPECT_EQ(b.tail, nullptr);
+}
