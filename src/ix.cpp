@@ -137,8 +137,8 @@ auto IX::stringCompression(const std::string &s1) -> std::string {
 };
 
 namespace internal {
-auto rotateMatrixNonSquare(std::vector<std::vector<int>> &matrix, size_t n, size_t m) -> void {
-    std::vector<std::vector<int>> newMatrix(m, std::vector(n, 0));
+auto rotateMatrixNonSquare(Matrix<int> &matrix, size_t n, size_t m) -> void {
+    Matrix<int> newMatrix(m, Row<int>(n, 0));
     for (size_t i = 0; i < n; ++i) {
         for (size_t j = 0; j < m; ++j) {
             newMatrix[j][n - 1 - i] = matrix[i][j];
@@ -148,7 +148,7 @@ auto rotateMatrixNonSquare(std::vector<std::vector<int>> &matrix, size_t n, size
     matrix = std::move(newMatrix);
 }
 
-auto rotateMatrixSquare(std::vector<std::vector<int>> &matrix, size_t size) -> void {
+auto rotateMatrixSquare(Matrix<int> &matrix, size_t size) -> void {
     for (size_t i = 0; i < size; ++i)
         for (size_t j = i + 1; j < size; ++j)
             std::swap(matrix[i][j], matrix[j][i]);
@@ -158,7 +158,7 @@ auto rotateMatrixSquare(std::vector<std::vector<int>> &matrix, size_t size) -> v
 }
 } // namespace internal
 
-auto IX::rotateMatrix(std::vector<std::vector<int>> &matrix) -> void {
+auto IX::rotateMatrix(Matrix<int> &matrix) -> void {
     if (matrix.empty() || matrix.front().empty())
         return;
 
@@ -171,7 +171,7 @@ auto IX::rotateMatrix(std::vector<std::vector<int>> &matrix) -> void {
         internal::rotateMatrixNonSquare(matrix, n, m);
 }
 
-auto IX::zeroMatrix(std::vector<std::vector<int>> &matrix) -> void {
+auto IX::zeroMatrix(Matrix<int> &matrix) -> void {
     if (matrix.empty() || matrix.front().empty())
         return;
 
