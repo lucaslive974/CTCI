@@ -86,3 +86,13 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
         )
     endif()
 endif()
+
+find_program(MC_TOOL valgrind)
+
+if(MC_TOOL)
+    add_custom_target(memory-leak-analyze-report
+        COMMAND ${MC_TOOL} -s $<TARGET_FILE:CTCI_TEST>
+        WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/build"
+        DEPENDS CTCI_TEST
+        COMMENT "Memory leak report...")
+endif()
