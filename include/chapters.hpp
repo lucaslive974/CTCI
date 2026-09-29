@@ -133,17 +133,16 @@ template <typename T> class Stack {
     Stack(std::vector<T> vec) : _data(vec) {};
 
     void push(T val) { _data.push_back(val); }
-    T peek() { return _data.back(); }
+    T peek() const { return _data.back(); }
     void pop() { _data.pop_back(); }
-    bool isEmpty() { return _data.empty(); }
-    size_t size() { return _data.size(); }
+    [[nodiscard]] bool isEmpty() const { return _data.empty(); }
+    [[nodiscard]] size_t size() const { return _data.size(); }
 };
 
 template <typename T> class SetOfStacks {
-    std::unordered_map<size_t, CTCI::Stack<T>> stacks;
+    std::vector<CTCI::Stack<T>> stacks;
     size_t threshold = 10;
-    size_t lastStackIdx = 0;
-    size_t clearedStacks = 0;
+    size_t totalSize = 0;
 
   public:
     SetOfStacks() = default;
@@ -151,11 +150,12 @@ template <typename T> class SetOfStacks {
     SetOfStacks(std::initializer_list<T> list, size_t threshold = 10) : threshold(threshold) { push(list); }
 
     void push(T val) {
-        auto *stack = &stacks[lastStackIdx];
+        CTCI::Stack<T> *stack = numberOfStacks() == 0 ? &stacks.emplace_back() : &stacks.back();
         if (stack->size() >= threshold)
-            stack = &stacks[++lastStackIdx];
+            stack = &stacks.emplace_back();
 
         stack->push(val);
+        ++totalSize;
     }
 
     void push(std::initializer_list<T> list) {
@@ -163,42 +163,37 @@ template <typename T> class SetOfStacks {
             push(el);
     }
 
-    T peek() { return stacks[lastStackIdx].peek(); }
+    T peek() const { return stacks.back().peek(); }
 
-    T peekAt(size_t index) { return stacks[index].peek(); }
+    T peekAt(size_t index) const { return stacks[index].peek(); }
 
     void pop() {
-        auto *stack = &stacks[lastStackIdx];
+        auto *stack = &stacks.back();
         stack->pop();
+        --totalSize;
 
-        if (stack->isEmpty()) {
-            stacks.erase(lastStackIdx);
-            lastStackIdx -= 1 + clearedStacks;
-            clearedStacks = 0;
+        while (stack->isEmpty()) {
+            stacks.pop_back();
+
+            if (numberOfStacks() <= 0)
+                break;
+            stack = &stacks.back();
         }
     }
 
     void popAt(size_t index) {
         stacks[index].pop();
-        if (stacks[index].isEmpty()) {
-            stacks.erase(index);
-            ++clearedStacks;
-        }
+        --totalSize;
+
+        if (stacks[index].isEmpty())
+            stacks.erase(stacks.begin() + index);
     }
 
-    size_t size() {
-        size_t size = 0;
-        for (auto &[key, stack] : stacks) {
-            size += stack.size();
-        }
-        return size;
-    }
+    [[nodiscard]] size_t size() const { return totalSize; }
 
-    size_t sizeAt(size_t index) { return stacks[index].size(); }
+    [[nodiscard]] size_t sizeAt(size_t index) const { return stacks[index].size(); }
 
-    bool isEmpty() {
-        return std::ranges::all_of(stacks, [](auto kvp) -> bool { return kvp.second.isEmpty(); });
-    }
+    [[nodiscard]] bool isEmpty() const { return size() == 0; }
 
     [[nodiscard]] size_t numberOfStacks() const { return stacks.size(); };
 };
