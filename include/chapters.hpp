@@ -114,7 +114,7 @@ template <typename T> struct DNode {
     T val = T{};
 
     DNode() = default;
-    DNode(T val) : val(val) {};
+    DNode(T &&val) : val(std::forward<T &&>(val)) {};
     DNode(T val, std::shared_ptr<DNode> next, std::shared_ptr<DNode> prev) : Node<T>(val, next), prev(prev) {}; // NOLINT
 };
 
@@ -135,8 +135,8 @@ template <typename T> struct Deque {
     }
     [[nodiscard]] bool empty() const { return head == nullptr; }
 
-    void append(T val) {
-        auto ptr = std::make_shared<nodeType>(val);
+    void append(T &&val) {
+        auto ptr = std::make_shared<nodeType>(std::forward<T &&>(val));
         append(ptr);
     }
 
@@ -154,7 +154,7 @@ template <typename T> struct Deque {
 
     void append(std::initializer_list<T> list) {
         for (auto el : list)
-            append(el);
+            append(std::move(el));
     }
 
     void append(std::vector<T> vec) {
@@ -352,5 +352,48 @@ class IX : public Chapter {
 
     /* Stack */
     static auto sortStack(Stack<int> &stack) -> void;
+
+    class AnimalShelter {
+      public:
+        class Animal {
+          public:
+            virtual ~Animal() = default;
+        };
+
+        class Dog : public Animal {
+          public:
+            Dog() = default;
+        };
+        class Cat : public Animal {
+          public:
+            Cat() = default;
+        };
+
+        void enqueue(std::unique_ptr<Animal> &&ptr);
+        auto dequeueAny() -> std::unique_ptr<Animal>;
+        auto dequeueDog() -> std::unique_ptr<Animal>;
+        auto dequeueCat() -> std::unique_ptr<Animal>;
+
+        bool empty();
+
+      private:
+        CTCI::Deque<std::unique_ptr<Animal>> animals;
+        template <typename T> auto dequeueAnimalOfType() -> std::unique_ptr<AnimalShelter::Animal> {
+            if (empty())
+                return nullptr;
+
+            auto head = animals.head;
+            while (head != nullptr) {
+                if (dynamic_cast<T *>(head->val.get())) {
+                    animals.pop(head);
+                    auto ptr = std::unique_ptr<T>(static_cast<T *>(head->val.release()));
+                    return ptr;
+                }
+                head = head->next;
+            }
+
+            return nullptr;
+        };
+    };
 };
 } // namespace CTCI

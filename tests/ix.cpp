@@ -595,3 +595,74 @@ TEST(IX, SORT_STACK_EVEN) {
     IX::sortStack(a);
     internal::testStacksIsEqual(a, b);
 }
+
+namespace {
+using AnimalShelter = IX::AnimalShelter;
+using Dog = AnimalShelter::Dog;
+using Cat = AnimalShelter::Cat;
+
+auto createDog() -> std::unique_ptr<Dog> { return std::make_unique<Dog>(); }
+auto createCat() -> std::unique_ptr<Cat> { return std::make_unique<Cat>(); }
+} // namespace
+
+TEST(IX_ANIMAL_SHELTER, ENQUEUE_ANIMALS) {
+    AnimalShelter shelter;
+
+    auto dog1 = createDog();
+    auto cat1 = createCat();
+
+    shelter.enqueue(createDog());
+    shelter.enqueue(createCat());
+
+    internal::testUniquePtrIs<Dog>(shelter.dequeueAny().get());
+    internal::testUniquePtrIs<Cat>(shelter.dequeueAny().get());
+}
+
+TEST(IX_ANIMAL_SHELTER, DEQUEUE_DOGS_I) {
+    AnimalShelter shelter;
+
+    shelter.enqueue(createCat());
+    shelter.enqueue(createDog());
+
+    internal::testUniquePtrIs<Dog>(shelter.dequeueDog().get());
+    EXPECT_FALSE(shelter.empty());
+}
+
+TEST(IX_ANIMAL_SHELTER, DEQUEUE_DOGS_II) {
+    AnimalShelter shelter;
+
+    shelter.enqueue(createCat());
+    shelter.enqueue(createCat());
+
+    for (size_t i = 0; i < 2; ++i)
+        internal::testUniquePtrIsnt<Dog>(shelter.dequeueDog().get());
+    EXPECT_FALSE(shelter.empty());
+
+    for (size_t i = 0; i < 2; ++i)
+        shelter.dequeueAny();
+
+    EXPECT_TRUE(shelter.empty());
+}
+
+TEST(IX_ANIMAL_SHELTER, DEQUEUE_CATS) {
+    AnimalShelter shelter;
+
+    shelter.enqueue(createCat());
+    shelter.enqueue(createDog());
+
+    internal::testUniquePtrIs<Cat>(shelter.dequeueCat().get());
+    EXPECT_FALSE(shelter.empty());
+}
+
+TEST(IX_ANIMAL_SHELTER, DEQUEUE_EMPTY) {
+    AnimalShelter shelter;
+
+    EXPECT_EQ(shelter.dequeueAny(), nullptr);
+    EXPECT_TRUE(shelter.empty());
+}
+
+TEST(IX_ANIMAL_SHELTER, DEQUEUE_TYPE_EMPTY) {
+    AnimalShelter shelter;
+    EXPECT_EQ(shelter.dequeueCat(), nullptr);
+    EXPECT_EQ(shelter.dequeueDog(), nullptr);
+}

@@ -1,6 +1,8 @@
 #include "chapters.hpp"
 #include <gtest/gtest.h>
 
+namespace {} // namespace
+
 namespace internal {
 template <typename T> void testMatrixIsEqual(std::vector<std::vector<T>> &a, std::vector<std::vector<T>> &b) { // NOLINT
     size_t m = a.size();
@@ -39,4 +41,21 @@ template <typename T> void testStacksIsEqual(CTCI::Stack<T> a, CTCI::Stack<T> b)
     }
 }
 
+namespace {
+template <bool Is = true, typename Expected, typename Actual> void testUniquePtrCast(Actual *ptr) {
+    if constexpr (Is) {
+        EXPECT_NE(dynamic_cast<Expected *>(ptr), nullptr);
+    } else {
+        EXPECT_EQ(dynamic_cast<Expected *>(ptr), nullptr);
+    }
+}
+} // namespace
+
+template <typename Expected, typename Actual> void testUniquePtrIs(Actual *ptr) {
+    testUniquePtrCast</**Is=*/true, Expected, Actual>(ptr);
+}
+
+template <typename Expected, typename Actual> void testUniquePtrIsnt(Actual *ptr) {
+    testUniquePtrCast</**Is=*/false, Expected, Actual>(ptr);
+}
 } // namespace internal

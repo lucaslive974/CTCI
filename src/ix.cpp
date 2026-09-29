@@ -413,3 +413,26 @@ auto IX::sortStack(Stack<int> &stack) -> void {
         tmp.pop();
     }
 };
+
+using AnimalShelter = IX::AnimalShelter;
+
+void AnimalShelter::enqueue(std::unique_ptr<Animal> &&ptr) { animals.append(std::move(ptr)); }
+
+auto AnimalShelter::dequeueAny() -> std::unique_ptr<AnimalShelter::Animal> {
+    if (empty())
+        return nullptr;
+
+    auto tmp = animals.head;
+    animals.popFront();
+
+    return std::move(tmp->val);
+};
+
+auto AnimalShelter::dequeueDog() -> std::unique_ptr<AnimalShelter::Animal> {
+    return dequeueAnimalOfType<AnimalShelter::Dog>();
+}
+auto AnimalShelter::dequeueCat() -> std::unique_ptr<AnimalShelter::Animal> {
+    return dequeueAnimalOfType<AnimalShelter::Cat>();
+}
+
+bool AnimalShelter::empty() { return animals.empty(); }
