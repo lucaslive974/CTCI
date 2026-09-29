@@ -97,7 +97,107 @@ template <typename T> struct List {
         other.tail = nullptr;
     }
 
+    void pop() {
+        head = head->next;
+        if (empty())
+            tail = nullptr;
+    }
+
+    auto front() -> std::shared_ptr<node_type> { return head; }
+
     [[nodiscard]] bool empty() const { return !head; }
+};
+
+template <typename T> struct DNode {
+    std::shared_ptr<DNode> prev = nullptr;
+    std::shared_ptr<DNode> next = nullptr;
+    T val = T{};
+
+    DNode() = default;
+    DNode(T val) : val(val) {};
+    DNode(T val, std::shared_ptr<DNode> next, std::shared_ptr<DNode> prev) : Node<T>(val, next), prev(prev) {}; // NOLINT
+};
+
+template <typename T> struct Deque {
+    using nodeType = DNode<T>;
+    using nodePtr = std::shared_ptr<nodeType>;
+    nodePtr head = nullptr;
+    nodePtr tail = nullptr;
+
+    Deque() = default;
+    Deque(std::initializer_list<T> list) { append(list); }
+    Deque(std::vector<T> vec) { append(vec); }
+    ~Deque() {
+        while (head) {
+            head->prev = nullptr;
+            head = head->next;
+        }
+    }
+    [[nodiscard]] bool empty() const { return head == nullptr; }
+
+    void append(T val) {
+        auto ptr = std::make_shared<nodeType>(val);
+        append(ptr);
+    }
+
+    void append(nodePtr ptr) {
+        if (empty()) {
+            head = ptr;
+            tail = ptr;
+            return;
+        }
+
+        tail->next = ptr;
+        ptr->prev = tail;
+        tail = ptr;
+    }
+
+    void append(std::initializer_list<T> list) {
+        for (auto el : list)
+            append(el);
+    }
+
+    void append(std::vector<T> vec) {
+        for (auto el : vec)
+            append(el);
+    }
+
+    void popFront() {
+        head = head->next;
+
+        if (head) {
+            head->prev = nullptr;
+        } else {
+            tail = nullptr;
+        }
+    }
+
+    void popBack() {
+        tail = tail->prev;
+        if (tail) {
+            tail->next = nullptr;
+        } else {
+            head = nullptr;
+        }
+    }
+
+    void popMiddle(nodePtr &ptr) {
+        auto &prev = ptr->prev;
+        auto &next = ptr->next;
+
+        prev->next = next;
+        next->prev = prev;
+    }
+
+    void pop(nodePtr &ptr) {
+        if (ptr == head)
+            return popFront();
+
+        if (ptr == tail)
+            return popBack();
+
+        return popMiddle(ptr);
+    }
 };
 
 template <typename T> auto revertLinkedList(std::shared_ptr<Node<T>> &node) -> void {
