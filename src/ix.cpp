@@ -250,14 +250,9 @@ auto IX::deleteMiddleNode(std::shared_ptr<Node<int>> &node) -> void {
     if (node == nullptr)
         return;
 
-    auto head = node;
-    while (head->next != nullptr) {
-        auto next = head->next;
-        head->val = head->next->val;
-        head->next = head->next->next;
-
-        head = next;
-    }
+    const auto &head = node;
+    head->val = head->next->val;
+    head->next = head->next->next;
 }
 
 auto IX::partition(List<int> &list, int x) -> void {
