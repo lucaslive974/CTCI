@@ -198,6 +198,35 @@ template <typename T> class SetOfStacks {
     [[nodiscard]] size_t numberOfStacks() const { return stacks.size(); };
 };
 
+template <typename T> class Queue {
+    CTCI::Stack<T> frontStack;
+    CTCI::Stack<T> rearStack;
+
+  public:
+    Queue() = default;
+    Queue(std::initializer_list<T> list) {
+        for (auto e : list)
+            push(e);
+    }
+    T front() const { return frontStack.peek(); }
+    bool isEmpty() { return frontStack.isEmpty(); }
+    void push(T val) {
+        if (isEmpty())
+            frontStack.push(val);
+        else
+            rearStack.push(std::move(val));
+    }
+    void pop() {
+        frontStack.pop();
+
+        if (frontStack.isEmpty())
+            while (!rearStack.isEmpty()) {
+                frontStack.push(rearStack.peek());
+                rearStack.pop();
+            }
+    }
+};
+
 class IX : public Chapter {
   public:
     IX(std::string name = "CTCI::IX::Exercises");
