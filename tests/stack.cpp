@@ -29,13 +29,13 @@ TEST(STACK, PUSH) {
 TEST(STACK, EMPTY) {
     StackInt stack;
 
-    EXPECT_TRUE(stack.isEmpty());
+    EXPECT_TRUE(stack.empty());
 
     stack.push(0);
-    EXPECT_FALSE(stack.isEmpty());
+    EXPECT_FALSE(stack.empty());
 
     stack.pop();
-    EXPECT_TRUE(stack.isEmpty());
+    EXPECT_TRUE(stack.empty());
 }
 
 TEST(STACK, SIZE) {
@@ -131,20 +131,20 @@ TEST(SET_OF_STACKS, EMPTY_STACK_ON_END) {
 
 TEST(SET_OF_STACKS, IS_EMPTY_TRUE) {
     StacksInt stacks;
-    EXPECT_TRUE(stacks.isEmpty());
+    EXPECT_TRUE(stacks.empty());
 }
 
 TEST(SET_OF_STACKS, IS_EMPTY_FALSE) {
     StacksInt stacks{1, 2};
-    EXPECT_FALSE(stacks.isEmpty());
+    EXPECT_FALSE(stacks.empty());
 }
 
 TEST(SET_OF_STACKS, IS_EMPTY_TWO_STACKS) {
     StacksInt stacks{{1, 2}, 1};
 
     stacks.popAt(0);
-    EXPECT_FALSE(stacks.isEmpty());
+    EXPECT_FALSE(stacks.empty());
 
     stacks.pop();
-    EXPECT_TRUE(stacks.isEmpty());
+    EXPECT_TRUE(stacks.empty());
 }

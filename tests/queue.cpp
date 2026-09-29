@@ -29,10 +29,10 @@ TEST(QUEUE, POP) {
 TEST(QUEUE, EMPTY) {
     QueueInt queue{5, 2};
 
-    EXPECT_FALSE(queue.isEmpty());
+    EXPECT_FALSE(queue.empty());
 
     for (size_t i = 0; i < 2; ++i)
         queue.pop();
 
-    EXPECT_TRUE(queue.isEmpty());
+    EXPECT_TRUE(queue.empty());
 }

@@ -135,7 +135,7 @@ template <typename T> class Stack {
     void push(T val) { _data.push_back(val); }
     T peek() const { return _data.back(); }
     void pop() { _data.pop_back(); }
-    [[nodiscard]] bool isEmpty() const { return _data.empty(); }
+    [[nodiscard]] bool empty() const { return _data.empty(); }
     [[nodiscard]] size_t size() const { return _data.size(); }
 };
 
@@ -172,7 +172,7 @@ template <typename T> class SetOfStacks {
         stack->pop();
         --totalSize;
 
-        while (stack->isEmpty()) {
+        while (stack->empty()) {
             stacks.pop_back();
 
             if (numberOfStacks() <= 0)
@@ -185,7 +185,7 @@ template <typename T> class SetOfStacks {
         stacks[index].pop();
         --totalSize;
 
-        if (stacks[index].isEmpty())
+        if (stacks[index].empty())
             stacks.erase(stacks.begin() + index);
     }
 
@@ -193,7 +193,7 @@ template <typename T> class SetOfStacks {
 
     [[nodiscard]] size_t sizeAt(size_t index) const { return stacks[index].size(); }
 
-    [[nodiscard]] bool isEmpty() const { return size() == 0; }
+    [[nodiscard]] bool empty() const { return size() == 0; }
 
     [[nodiscard]] size_t numberOfStacks() const { return stacks.size(); };
 };
@@ -209,9 +209,9 @@ template <typename T> class Queue {
             push(e);
     }
     T front() const { return frontStack.peek(); }
-    bool isEmpty() { return frontStack.isEmpty(); }
+    bool empty() { return frontStack.empty(); }
     void push(T val) {
-        if (isEmpty())
+        if (empty())
             frontStack.push(val);
         else
             rearStack.push(std::move(val));
@@ -219,8 +219,8 @@ template <typename T> class Queue {
     void pop() {
         frontStack.pop();
 
-        if (frontStack.isEmpty())
-            while (!rearStack.isEmpty()) {
+        if (frontStack.empty())
+            while (!rearStack.empty()) {
                 frontStack.push(rearStack.peek());
                 rearStack.pop();
             }
