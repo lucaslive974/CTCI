@@ -265,9 +265,9 @@ auto IX::partition(List<int> &list, int x) -> void {
     auto head = list.head;
     while (head != nullptr) {
         if (head->val < x) {
-            left.appendToTail(head->val);
+            left.append(head->val);
         } else {
-            right.appendToTail(head->val);
+            right.append(head->val);
         }
         head = head->next;
     }
@@ -277,7 +277,7 @@ auto IX::partition(List<int> &list, int x) -> void {
         return;
     }
 
-    left.appendToTail(std::move(right));
+    left.append(std::move(right));
     list = std::move(left);
 };
 
@@ -305,7 +305,7 @@ auto IX::sumLists(List<int> &a, List<int> &b) -> List<int> { // NOLINT
         carry = digit / 10;
         digit %= 10;
 
-        res.appendToTail(digit);
+        res.append(digit);
     };
 
     return res;

@@ -27,8 +27,8 @@ template <typename T> struct List {
     std::shared_ptr<node_type> head = nullptr;
     std::shared_ptr<node_type> tail = nullptr;
     List(std::shared_ptr<node_type> node = nullptr) : head(node), tail(node) {}
-    List(std::initializer_list<T> list) { appendToTail(list); }
-    List(std::vector<T> &list) { appendToTail(list); }
+    List(std::initializer_list<T> list) { append(list); }
+    List(std::vector<T> &list) { append(list); }
     ~List() {
         if (empty())
             return;
@@ -41,7 +41,7 @@ template <typename T> struct List {
     List(List &other) {
         auto el = other.head;
         for (; el != nullptr; el = el->next)
-            appendToTail(el->val);
+            append(el->val);
     }
 
     List(List &&other) noexcept {
@@ -58,24 +58,24 @@ template <typename T> struct List {
         return *this;
     }
 
-    void appendToTail(T val) {
+    void append(T val) {
         auto node = std::make_shared<node_type>(val);
-        appendToTail(node);
+        append(node);
     }
 
-    void appendToTail(std::initializer_list<T> list) {
+    void append(std::initializer_list<T> list) {
         for (T item : list) {
-            appendToTail(item);
+            append(item);
         }
     }
 
-    void appendToTail(std::vector<T> &list) {
+    void append(std::vector<T> &list) {
         for (T &item : list) {
-            appendToTail(item);
+            append(item);
         }
     }
 
-    void appendToTail(std::shared_ptr<node_type> &node) {
+    void append(std::shared_ptr<node_type> &node) {
         if (!head) {
             head = node;
             tail = node;
@@ -86,7 +86,7 @@ template <typename T> struct List {
         tail = node;
     }
 
-    void appendToTail(List &&other) {
+    void append(List &&other) {
         if (other.empty())
             return;
 

@@ -30,17 +30,17 @@ TEST(COMMON, LIST_EMPTY) {
 
     EXPECT_TRUE(list.empty());
 
-    list.appendToTail(5);
+    list.append(5);
     EXPECT_FALSE(list.empty());
 }
 
 TEST(COMMON, LIST_APPEND_ITENS) {
     CTCI::List<int> list;
 
-    list.appendToTail(5);
+    list.append(5);
     EXPECT_EQ(list.head->val, 5);
 
-    list.appendToTail(4);
+    list.append(4);
     EXPECT_EQ(list.head->next->val, 4);
 }
 
@@ -85,7 +85,7 @@ TEST(COMMON, LIST_APPEND_EXPIRING_LIST) {
     CTCI::List<int> b{4, 5, 6};
     CTCI::List<int> ans{1, 2, 3, 4, 5, 6};
 
-    a.appendToTail(std::move(b));
+    a.append(std::move(b));
     internal::testListIsEqual(a, ans);
 
     EXPECT_EQ(b.head, nullptr);

@@ -536,8 +536,8 @@ TEST(IX, INTERSECTION_LIST_TRUE) {
 
     auto nodeIntersecting = std::make_shared<CTCI::Node<int>>(5);
 
-    a.appendToTail(nodeIntersecting);
-    b.appendToTail(nodeIntersecting);
+    a.append(nodeIntersecting);
+    b.append(nodeIntersecting);
 
     EXPECT_EQ(IX::intersection(a, b), nodeIntersecting);
 }
@@ -552,13 +552,13 @@ TEST(IX, INTERSECTION_LIST_FALSE) {
 TEST(IX, LOOP_DETECTION_LIST_CYCLIC) {
     CTCI::List<int> a{1, 2};
     auto circularNodeI = std::make_shared<CTCI::Node<int>>(3);
-    a.appendToTail(circularNodeI);
-    a.appendToTail({4, 5});
+    a.append(circularNodeI);
+    a.append({4, 5});
 
     auto circularNodeII = std::make_shared<CTCI::Node<int>>(6);
     circularNodeII->next = circularNodeI;
 
-    a.appendToTail(circularNodeII);
+    a.append(circularNodeII);
 
     EXPECT_EQ(IX::loopDetection(a), circularNodeI);
 }
