@@ -393,3 +393,28 @@ auto IX::loopDetection(List<int> &list) -> std::shared_ptr<Node<int>> {
 
     return slow;
 };
+
+auto IX::sortStack(Stack<int> &stack) -> void {
+    if (stack.empty())
+        return;
+
+    Stack<int> tmp;
+    while (!stack.empty()) {
+        int val = stack.peek();
+        stack.pop();
+
+        while (!tmp.empty() && val < tmp.peek()) {
+            int tmpVal = tmp.peek();
+            tmp.pop();
+
+            stack.push(tmpVal);
+        }
+
+        tmp.push(val);
+    }
+
+    while (!tmp.empty()) {
+        stack.push(tmp.peek());
+        tmp.pop();
+    }
+};

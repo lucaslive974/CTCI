@@ -574,3 +574,24 @@ TEST(IX, LOOP_DETECTION_LIST_ACYCLIC_II) {
 
     EXPECT_EQ(IX::loopDetection(list), nullptr);
 }
+
+TEST(IX, SORT_STACK) {
+    CTCI::Stack<int> a{3, 4, 1, 5, 2};
+    CTCI::Stack<int> b{5, 4, 3, 2, 1};
+
+    IX::sortStack(a);
+    internal::testStacksIsEqual(a, b);
+}
+
+TEST(IX, SORT_STACK_EMPTY) {
+    CTCI::Stack<int> a;
+    EXPECT_NO_THROW(IX::sortStack(a));
+}
+
+TEST(IX, SORT_STACK_EVEN) {
+    CTCI::Stack<int> a{1, 2};
+    CTCI::Stack<int> b{2, 1};
+
+    IX::sortStack(a);
+    internal::testStacksIsEqual(a, b);
+}

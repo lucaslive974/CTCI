@@ -28,4 +28,15 @@ template <typename T> void testListIsEqual(const CTCI::List<T> &a, const CTCI::L
         FAIL() << "List B ended while A yet have nodes";
 }
 
+template <typename T> void testStacksIsEqual(CTCI::Stack<T> a, CTCI::Stack<T> b) { // NOLINT
+    if (a.size() != b.size())
+        FAIL() << "Stacks have different sizes";
+
+    for (size_t i = 0; i < a.size(); ++i) {
+        EXPECT_EQ(a.peek(), b.peek());
+        a.pop();
+        b.pop();
+    }
+}
+
 } // namespace internal

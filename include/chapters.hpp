@@ -250,5 +250,8 @@ class IX : public Chapter {
     static auto palindrome(List<char> &list) -> bool;
     static auto intersection(List<int> &a, List<int> &b) -> std::shared_ptr<Node<int>>;
     static auto loopDetection(List<int> &list) -> std::shared_ptr<Node<int>>;
+
+    /* Stack */
+    static auto sortStack(Stack<int> &stack) -> void;
 };
 } // namespace CTCI
