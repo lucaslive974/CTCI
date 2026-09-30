@@ -1,7 +1,7 @@
 #include "chapters.hpp"
 #include <gtest/gtest.h>
 
-using QueueInt = CTCI::Queue<int>;
+using QueueInt = CTCI::III::Queue<int>;
 
 TEST(QUEUE, INITIALIZATION) {
     QueueInt queue{5, 4, 3, 2, 1};

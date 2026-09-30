@@ -10,9 +10,9 @@ TEST(COMMON, CHAPTER_NAME_ATTR) {
 }
 
 TEST(COMMON, CHAPTER_IX_NAME) {
-    CTCI::IX chapter;
+    CTCI::I chapter;
 
-    EXPECT_EQ(chapter.name(), "CTCI::IX::Exercises");
+    EXPECT_EQ(chapter.name(), "CTCI::I::Arrays and Strings");
 }
 
 TEST(UTILS, PrintTitleOutputsFormattedMessage) {
