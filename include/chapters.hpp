@@ -17,8 +17,8 @@ template <typename T> struct Node {
     T val = T{};
 
     Node() = default;
-    Node(T val) : val(val) {};
-    Node(T val, std::shared_ptr<Node> next) : val(val), next(next) {};
+    Node(T val) : val(std::move(val)) {};
+    Node(T val, std::shared_ptr<Node> next) : Node(std::move(val)), next(std::move(next)) {};
 };
 
 template <typename T> struct List {
@@ -153,8 +153,9 @@ template <typename T> struct DNode {
     T val = T{};
 
     DNode() = default;
-    DNode(T &&val) : val(std::forward<T &&>(val)) {};
-    DNode(T val, std::shared_ptr<DNode> next, std::shared_ptr<DNode> prev) : Node<T>(val, next), prev(prev) {}; // NOLINT
+    DNode(T val) : val(std::move(val)) {};
+    DNode(T val, std::shared_ptr<DNode> next, std::shared_ptr<DNode> prev) // NOLINT
+        : Node<T>(std::move(val), std::move(next)), prev(std::move(prev)) {};
 };
 
 template <typename T> struct Deque {
