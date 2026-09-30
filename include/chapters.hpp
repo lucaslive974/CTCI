@@ -1,8 +1,10 @@
 #pragma once
 #include "chapter.hpp"
 #include <algorithm>
+#include <concepts>
 #include <initializer_list>
 #include <memory>
+#include <unordered_map>
 #include <vector>
 
 namespace CTCI {
@@ -399,5 +401,78 @@ class III : public Chapter {
             return nullptr;
         };
     };
+};
+
+template <typename T> struct GNode {
+    std::vector<std::shared_ptr<GNode>> neighbors;
+    T val = T{};
+
+    GNode(T &&val) : val(std::forward<T &&>(val)) {};
+    void addNeighbor(std::shared_ptr<GNode> neighbor) { neighbors.push_back(std::move(neighbor)); }
+};
+
+template <typename T>
+concept Hashable = requires(T a) {
+    { std::hash<T>{}(a) } -> std::same_as<std::size_t>;
+} && std::equality_comparable<T>;
+
+template <Hashable T, bool Directed = true> class Graph {
+    using ValueType = T;
+    using NodeType = GNode<T>;
+    std::unordered_map<ValueType, std::shared_ptr<NodeType>> nodes;
+
+  public:
+    Graph() = default;
+    Graph(std::initializer_list<std::pair<T, T>> init) : Graph(std::vector<std::pair<T, T>>(init.begin(), init.end())) {};
+    Graph(const std::vector<std::pair<T, T>> vec) {
+        for (auto &pair : vec)
+            append(pair);
+    }
+    ~Graph() {
+        for (auto &node : nodes) {
+            auto entry = node.second;
+            entry->neighbors.clear();
+        }
+        nodes.clear();
+    };
+
+    void append(std::pair<T, T> pair) {
+        auto &[a, b] = pair;
+        std::shared_ptr<NodeType> nodeA = nullptr;
+        std::shared_ptr<NodeType> nodeB = nullptr;
+
+        auto aFound = nodes.find(a);
+        auto bFound = nodes.find(b);
+        if (aFound != nodes.end()) {
+            nodeA = aFound->second;
+        } else {
+            nodeA = std::make_shared<NodeType>(std::move(a));
+            nodes.insert({a, nodeA});
+        }
+
+        if (bFound != nodes.end()) {
+            nodeB = bFound->second;
+        } else {
+            nodeB = std::make_shared<NodeType>(std::move(b));
+            nodes.insert({b, nodeB});
+        }
+
+        nodeA->neighbors.push_back(nodeB);
+        if constexpr (!Directed)
+            nodeB->neighbors.push_back(nodeA);
+    }
+
+    std::shared_ptr<NodeType> getNode(T &&val) {
+        auto ptr = nodes.find(val);
+        if (ptr == nodes.end())
+            return nullptr;
+
+        return ptr->second;
+    }
+};
+
+class IV : public Chapter {
+  public:
+    static bool routeBetweenNodes();
 };
 } // namespace CTCI
