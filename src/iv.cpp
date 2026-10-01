@@ -16,8 +16,7 @@ auto IV::routeBetweenNodes(const Node<int> &orig, const Node<int> &dest) -> bool
     std::unordered_set<Node<int>> visited{orig};
 
     while (!queue.empty()) {
-        auto qnode = queue.front();
-        auto &node = qnode->val;
+        auto node = queue.front();
         queue.pop();
 
         for (auto &neighbor : node->neighbors) {

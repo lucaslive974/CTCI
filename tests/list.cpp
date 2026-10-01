@@ -95,16 +95,19 @@ TEST(COMMON, LIST_APPEND_EXPIRING_LIST) {
 TEST(COMMON, LIST_FRONT) {
     CTCI::List<int> a{3, 2, 1};
     a.pop();
-    EXPECT_EQ(a.front()->val, 2);
+    EXPECT_EQ(a.front(), 2);
 }
 
 TEST(COMMON, LIST_POP) {
     CTCI::List<int> a{3, 2, 1};
 
-    for (size_t i = 0; i < 3; ++i)
+    for (size_t i = 0; i < 2; ++i)
         a.pop();
 
-    EXPECT_EQ(a.front(), nullptr);
+    EXPECT_EQ(a.front(), 1);
+
+    a.pop();
+    EXPECT_TRUE(a.empty());
 }
 
 /* Deque Tests */

@@ -105,7 +105,7 @@ template <typename T> struct List {
             tail = nullptr;
     }
 
-    auto front() -> std::shared_ptr<node_type> { return head; }
+    auto front() -> T { return head->val; }
 
     [[nodiscard]] bool empty() const { return !head; }
 };
