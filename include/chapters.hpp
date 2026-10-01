@@ -110,6 +110,8 @@ template <typename T> struct List {
     [[nodiscard]] bool empty() const { return !head; }
 };
 
+template <typename T> using Queue = List<T>;
+
 template <typename T> auto revertLinkedList(std::shared_ptr<Node<T>> &node) -> void {
     if (node == nullptr)
         return;
@@ -469,7 +471,7 @@ template <Hashable T, bool Directed = true> class Graph {
             nodeB->neighbors.push_back(nodeA);
     }
 
-    std::shared_ptr<NodeType> getNode(T val) {
+    std::shared_ptr<NodeType> getNode(T val) const {
         auto ptr = nodes.find(val);
         if (ptr == nodes.end())
             return nullptr;
@@ -479,7 +481,9 @@ template <Hashable T, bool Directed = true> class Graph {
 };
 
 class IV : public Chapter {
+    template <typename T> using Node = std::shared_ptr<GNode<T>>;
+
   public:
-    static bool routeBetweenNodes();
+    static bool routeBetweenNodes(const Node<int> &orig, const Node<int> &dest);
 };
 } // namespace CTCI
