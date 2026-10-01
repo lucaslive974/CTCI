@@ -4,6 +4,7 @@
 #include <concepts>
 #include <initializer_list>
 #include <memory>
+#include <ranges>
 #include <unordered_map>
 #include <vector>
 
@@ -424,11 +425,6 @@ template <Hashable T, bool Directed = true> class Graph {
 
   public:
     Graph() = default;
-    Graph(std::initializer_list<std::pair<T, T>> init) : Graph(std::vector<std::pair<T, T>>(init.begin(), init.end())) {};
-    Graph(const std::vector<std::pair<T, T>> vec) {
-        for (const auto &pair : vec)
-            append(pair);
-    }
     ~Graph() {
         for (auto &node : nodes) {
             auto entry = node.second;
@@ -437,25 +433,40 @@ template <Hashable T, bool Directed = true> class Graph {
         nodes.clear();
     };
 
+    Graph(std::initializer_list<T> init) : Graph(std::vector<T>(init.begin(), init.end())) {}
+    Graph(std::initializer_list<std::pair<T, T>> init) : Graph(std::vector<std::pair<T, T>>(init.begin(), init.end())) {};
+
+    template <std::ranges::range R> Graph(const R &&rng) {
+        for (const auto &el : rng)
+            append(el);
+    }
+
+    void append(const T &val) { appendNode(val); }
+
     void append(const std::pair<T, T> &pair) {
         auto &[a, b] = pair;
 
-        std::shared_ptr<NodeType> nodeA = createNode(std::move(a));
-        std::shared_ptr<NodeType> nodeB = createNode(std::move(b));
+        appendNode(a);
+        std::shared_ptr<NodeType> nodeA = getNode(std::move(a));
 
+        appendNode(b);
+        std::shared_ptr<NodeType> nodeB = getNode(std::move(b));
+
+        appendEdge({nodeA, nodeB});
+    }
+
+    void appendNode(T val) {
+        if (!nodes.contains(val)) {
+            auto node = std::make_shared<NodeType>(val);
+            nodes.insert({val, node});
+        }
+    }
+
+    void appendEdge(const std::pair<std::shared_ptr<NodeType>, std::shared_ptr<NodeType>> &pair) {
+        auto &[nodeA, nodeB] = pair;
         nodeA->neighbors.push_back(nodeB);
         if constexpr (!Directed)
             nodeB->neighbors.push_back(nodeA);
-    }
-
-    std::shared_ptr<NodeType> createNode(T val) {
-        auto node = getNode(val);
-        if (!node) {
-            node = std::make_shared<NodeType>(val);
-            nodes.insert({val, node});
-        }
-
-        return node;
     }
 
     std::shared_ptr<NodeType> getNode(T val) {
