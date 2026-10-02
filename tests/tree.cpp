@@ -32,7 +32,7 @@ TEST(TREE, TREE_APPEND_SUBTREE) {
 TEST(TREE, EMPTY_TREE_DESTRUCTOR) {
     Tree<int> tree;
 
-    EXPECT_NO_THROW(tree.~Tree());
+    EXPECT_NO_THROW({ tree.~Tree(); });
 }
 
 TEST(TREE, RANKS_INIT) {

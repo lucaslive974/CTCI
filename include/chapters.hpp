@@ -40,7 +40,7 @@ template <typename T> struct List {
             head = head->next;
     };
 
-    List(List &other) {
+    List(const List &other) {
         auto el = other.head;
         for (; el != nullptr; el = el->next)
             append(el->val);
