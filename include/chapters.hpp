@@ -496,7 +496,8 @@ template <typename T> struct Tree {
     using NodeType = TNode<T>;
 
     std::shared_ptr<NodeType> root = nullptr;
-    auto empty() -> bool { return root == nullptr; }
+    size_t rank = 0;
+
     Tree() = default;
     Tree(std::initializer_list<T> list) : Tree(std::vector<T>{list.begin(), list.end()}) {};
     template <std::ranges::range R> Tree(R &&rng) {
@@ -523,26 +524,22 @@ template <typename T> struct Tree {
         }
     }
 
-    void append(T value) {
-        if (empty()) {
-            root = std::make_shared<NodeType>(std::move(value));
-            return;
-        }
+    auto empty() -> bool { return root == nullptr; }
 
-        append(root, std::move(value));
-    }
+    void append(T value) { append(root, std::move(value)); }
 
   private:
-    void append(std::shared_ptr<NodeType> &node, T value) {
+    void append(std::shared_ptr<NodeType> &node, T value, size_t nrank = 1) {
         if (node == nullptr) {
             node = std::make_shared<NodeType>(value);
+            rank = std::max(rank, nrank);
             return;
         }
 
         if (value < node->val)
-            append(node->left, std::move(value));
+            append(node->left, std::move(value), nrank + 1);
         else
-            append(node->right, std::move(value));
+            append(node->right, std::move(value), nrank + 1);
     }
 };
 
@@ -551,5 +548,6 @@ class IV : public Chapter {
 
   public:
     static bool routeBetweenNodes(const Node<int> &orig, const Node<int> &dest);
+    static auto minimalTree(const std::vector<int> &nodes) -> Tree<int>;
 };
 } // namespace CTCI

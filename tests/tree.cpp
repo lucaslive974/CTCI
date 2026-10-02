@@ -34,3 +34,25 @@ TEST(TREE, EMPTY_TREE_DESTRUCTOR) {
 
     EXPECT_NO_THROW(tree.~Tree());
 }
+
+TEST(TREE, RANKS_INIT) {
+    Tree<int> tree{3, 2, 1, 5, 4};
+
+    EXPECT_EQ(tree.rank, 3);
+}
+
+TEST(TREE, RANK_INCREASE) {
+    Tree<int> tree;
+
+    EXPECT_EQ(tree.rank, 0);
+
+    tree.append(3);
+    EXPECT_EQ(tree.rank, 1);
+
+    tree.append(2);
+    tree.append(5);
+    EXPECT_EQ(tree.rank, 2);
+
+    tree.append(4);
+    EXPECT_EQ(tree.rank, 3);
+}

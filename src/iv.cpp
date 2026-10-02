@@ -33,3 +33,20 @@ auto IV::routeBetweenNodes(const Node<int> &orig, const Node<int> &dest) -> bool
 
     return false;
 };
+
+auto IV::minimalTree(const std::vector<int> &nodes) -> Tree<int> {
+    Tree<int> tree;
+    auto minTree = [&tree, &nodes](this auto const &self, size_t start, size_t end) {
+        if (start >= end)
+            return;
+        size_t middle = ((end - start) / 2) + start;
+
+        tree.append(nodes[middle]);
+
+        self(start, middle);
+        self(middle + 1, end);
+    };
+
+    minTree(0, nodes.size());
+    return tree;
+};

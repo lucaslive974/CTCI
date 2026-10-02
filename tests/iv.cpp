@@ -45,3 +45,67 @@ TEST_F(IV_ROUTE_BETWEEN_NODES_TEST, ROUTE_BETWEEN_NODES_NULL_PARAMETERS) {
     EXPECT_FALSE(IV::routeBetweenNodes(node0, nullptr));
     EXPECT_FALSE(IV::routeBetweenNodes(nullptr, node4));
 };
+
+TEST(IV_MINIMAL_TREE, ODD_VECTOR) {
+    std::vector vec{1, 2, 3, 4, 5};
+    auto tree = IV::minimalTree(vec);
+
+    auto root = tree.root;
+
+    EXPECT_EQ(root->val, 3);
+    EXPECT_EQ(root->left->val, 2);
+    EXPECT_EQ(root->left->left->val, 1);
+
+    EXPECT_EQ(root->val, 3);
+    EXPECT_EQ(root->right->val, 5);
+    EXPECT_EQ(root->right->left->val, 4);
+
+    EXPECT_EQ(tree.rank, 3);
+}
+
+TEST(IV_MINIMAL_TREE, EVEN_VECTOR) {
+    std::vector vec{1, 2, 4, 8};
+    auto tree = IV::minimalTree(vec);
+
+    EXPECT_EQ(tree.rank, 3);
+
+    auto root = tree.root;
+    EXPECT_EQ(root->val, 4);
+
+    EXPECT_EQ(root->right->val, 8);
+    EXPECT_EQ(root->left->val, 2);
+    EXPECT_EQ(root->left->left->val, 1);
+}
+
+TEST(IV_MINIMAL_TREE, SMALL_VECTOR_THREE_ELEMENTS) {
+    std::vector vec{1, 2, 3};
+    auto tree = IV::minimalTree(vec);
+
+    EXPECT_EQ(tree.rank, 2);
+
+    auto root = tree.root;
+    EXPECT_EQ(root->val, 2);
+    EXPECT_EQ(root->left->val, 1);
+    EXPECT_EQ(root->right->val, 3);
+}
+
+TEST(IV_MINIMAL_TREE, SMALL_VECTOR_TWO_ELEMENTS) {
+    std::vector vec{1, 2};
+    auto tree = IV::minimalTree(vec);
+
+    EXPECT_EQ(tree.rank, 2);
+
+    auto root = tree.root;
+    EXPECT_EQ(root->val, 2);
+    EXPECT_EQ(root->left->val, 1);
+}
+
+TEST(IV_MINIMAL_TREE, SMALL_VECTOR_ONE_ELEMENT) {
+    std::vector vec{2};
+    auto tree = IV::minimalTree(vec);
+
+    EXPECT_EQ(tree.rank, 1);
+
+    auto root = tree.root;
+    EXPECT_EQ(root->val, 2);
+}
