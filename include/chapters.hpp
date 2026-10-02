@@ -480,6 +480,72 @@ template <Hashable T, bool Directed = true> class Graph {
     }
 };
 
+template <typename T> struct TNode {
+    using NodeType = TNode<T>;
+
+  public:
+    std::shared_ptr<NodeType> left = nullptr;
+    std::shared_ptr<NodeType> right = nullptr;
+    T val = T{};
+
+    TNode() = default;
+    TNode(T val) : val(std::move(val)) {};
+};
+
+template <typename T> struct Tree {
+    using NodeType = TNode<T>;
+
+    std::shared_ptr<NodeType> root = nullptr;
+    auto empty() -> bool { return root == nullptr; }
+    Tree() = default;
+    Tree(std::initializer_list<T> list) : Tree(std::vector<T>{list.begin(), list.end()}) {};
+    template <std::ranges::range R> Tree(R &&rng) {
+        for (auto &ent : rng)
+            append(ent);
+    };
+    ~Tree() noexcept {
+        if (empty())
+            return;
+
+        Queue<std::shared_ptr<NodeType>> queue;
+
+        queue.append(root);
+        while (!queue.empty()) {
+            auto node = queue.front();
+            queue.pop();
+
+            if (node == nullptr)
+                continue;
+
+            queue.append({node->left, node->right});
+            node->left = nullptr;
+            node->right = nullptr;
+        }
+    }
+
+    void append(T value) {
+        if (empty()) {
+            root = std::make_shared<NodeType>(std::move(value));
+            return;
+        }
+
+        append(root, std::move(value));
+    }
+
+  private:
+    void append(std::shared_ptr<NodeType> &node, T value) {
+        if (node == nullptr) {
+            node = std::make_shared<NodeType>(value);
+            return;
+        }
+
+        if (value < node->val)
+            append(node->left, std::move(value));
+        else
+            append(node->right, std::move(value));
+    }
+};
+
 class IV : public Chapter {
     template <typename T> using Node = std::shared_ptr<GNode<T>>;
 
