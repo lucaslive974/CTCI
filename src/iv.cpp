@@ -50,3 +50,29 @@ auto IV::minimalTree(const std::vector<int> &nodes) -> Tree<int> {
     minTree(0, nodes.size());
     return tree;
 };
+
+auto IV::listOfDepths(const Tree<int> &tree) -> std::vector<ListNode<int>> {
+    if (tree.empty())
+        return {};
+
+    std::vector<ListNode<int>> res{ListNode<int>{tree.root}};
+    auto makeListOfDepths = [&tree, &res](this auto &self, const ListNode<int> &parents) -> void {
+        ListNode<int> children;
+        for (const auto &parent : parents) {
+            if (parent->left != nullptr)
+                children.append(parent->left);
+
+            if (parent->right != nullptr)
+                children.append(parent->right);
+        }
+
+        if (children.empty())
+            return;
+
+        res.push_back(children);
+        self(children);
+    };
+
+    makeListOfDepths(res.front());
+    return res;
+};

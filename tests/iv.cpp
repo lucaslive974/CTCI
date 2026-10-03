@@ -1,5 +1,6 @@
 #include <chapters.hpp>
 #include <gtest/gtest.h>
+#include <ranges>
 
 using namespace CTCI;
 
@@ -115,4 +116,80 @@ TEST(IV_MINIMAL_TREE, BIG_VECTOR) {
 
     auto tree = IV::minimalTree(vec);
     EXPECT_EQ(tree.rank, 4);
+}
+
+TEST(IV_LIST_OF_DEPTHS, TREE_EMPTY) {
+    Tree<int> tree;
+    auto listOfDepths = IV::listOfDepths(tree);
+    EXPECT_EQ(listOfDepths.size(), 0);
+}
+
+TEST(IV_LIST_OF_DEPTHS, TREE_RANK_1) {
+    Tree<int> tree{2};
+
+    auto listOfDepths = IV::listOfDepths(tree);
+    EXPECT_EQ(listOfDepths.size(), 1);
+
+    auto &listRank1 = listOfDepths[0];
+    EXPECT_EQ(listRank1.front()->val, 2);
+
+    listRank1.pop();
+    EXPECT_TRUE(listRank1.empty());
+}
+
+TEST(IV_LIST_OF_DEPTHS, TREE_RANK_2_PERFECT) {
+    Tree<int> tree{2, 1, 4};
+
+    auto listOfDepths = IV::listOfDepths(tree);
+    EXPECT_EQ(listOfDepths.size(), 2);
+
+    auto &listRank1 = listOfDepths[0];
+    EXPECT_EQ(listRank1.front()->val, 2);
+
+    auto &listRank2 = listOfDepths[1];
+    std::vector<int> listRank2Ans{1, 4};
+    for (auto [treeNode, ans] : std::ranges::zip_view(listRank2, listRank2Ans)) {
+        EXPECT_EQ(treeNode->val, ans);
+    }
+}
+
+TEST(IV_LIST_OF_DEPTHS, TREE_RANK_2_FULL) {
+    Tree<int> tree{2, 1};
+
+    auto listOfDepths = IV::listOfDepths(tree);
+    EXPECT_EQ(listOfDepths.size(), 2);
+
+    auto &listRank1 = listOfDepths[0];
+    EXPECT_EQ(listRank1.front()->val, 2);
+
+    auto &listRank2 = listOfDepths[1];
+    std::vector<int> listRank2Ans{1};
+    for (auto [treeNode, ans] : std::ranges::zip_view(listRank2, listRank2Ans)) {
+        EXPECT_EQ(treeNode->val, ans);
+    }
+
+    listRank2.pop();
+    EXPECT_TRUE(listRank2.empty());
+}
+
+TEST(IV_LIST_OF_DEPTHS, TREE_RANK_3_PERFECT) {
+    Tree<int> tree{8, 2, 1, 4, 32, 16, 64};
+
+    auto listOfDepths = IV::listOfDepths(tree);
+    EXPECT_EQ(listOfDepths.size(), 3);
+
+    auto &listRank1 = listOfDepths[0];
+    EXPECT_EQ(listRank1.front()->val, 8);
+
+    auto &listRank2 = listOfDepths[1];
+    std::vector<int> listRank2Ans{2, 32};
+    for (auto [treeNode, ans] : std::ranges::zip_view(listRank2, listRank2Ans)) {
+        EXPECT_EQ(treeNode->val, ans);
+    }
+
+    auto &listRank3 = listOfDepths[2];
+    std::vector<int> listRank3Ans{1, 4, 16, 64};
+    for (auto [treeNode, ans] : std::ranges::zip_view(listRank3, listRank3Ans)) {
+        EXPECT_EQ(treeNode->val, ans);
+    }
 }

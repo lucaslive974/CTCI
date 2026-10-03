@@ -51,7 +51,7 @@ template <typename T> struct Tree {
         }
     }
 
-    auto empty() -> bool { return root == nullptr; }
+    [[nodiscard]] auto empty() const -> bool { return root == nullptr; }
 
     void append(T value) { append(root, std::move(value)); }
 

@@ -177,5 +177,8 @@ class IV : public Chapter {
   public:
     static bool routeBetweenNodes(const Node<int> &orig, const Node<int> &dest);
     static auto minimalTree(const std::vector<int> &nodes) -> Tree<int>;
+
+    template <typename T> using ListNode = List<std::shared_ptr<TNode<T>>>;
+    static auto listOfDepths(const Tree<int> &tree) -> std::vector<ListNode<int>>;
 };
 } // namespace CTCI
