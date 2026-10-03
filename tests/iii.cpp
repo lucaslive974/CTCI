@@ -139,6 +139,42 @@ auto createDog() -> std::unique_ptr<Dog> { return std::make_unique<Dog>(); }
 auto createCat() -> std::unique_ptr<Cat> { return std::make_unique<Cat>(); }
 } // namespace
 
+using QueueInt = CTCI::III::Queue<int>;
+
+TEST(III, QUEUE_INITIALIZATION) {
+    QueueInt queue{5, 4, 3, 2, 1};
+
+    EXPECT_EQ(queue.front(), 5);
+}
+
+TEST(III, QUEUE_PUSH) {
+    QueueInt queue{4, 2, 1};
+
+    queue.push(3);
+    for (size_t i = 0; i < 3; ++i)
+        queue.pop();
+
+    EXPECT_EQ(queue.front(), 3);
+}
+
+TEST(III, QUEUE_POP) {
+    QueueInt queue{5, 3, 1};
+
+    queue.pop();
+    EXPECT_EQ(queue.front(), 3);
+}
+
+TEST(III, QUEUE_EMPTY) {
+    QueueInt queue{5, 2};
+
+    EXPECT_FALSE(queue.empty());
+
+    for (size_t i = 0; i < 2; ++i)
+        queue.pop();
+
+    EXPECT_TRUE(queue.empty());
+}
+
 TEST(III, ANIMAL_SHELTER_ENQUEUE_ANIMALS) {
     AnimalShelter shelter;
 

@@ -1,4 +1,4 @@
-#include "chapters.hpp"
+#include "stack.hpp"
 #include <gtest/gtest.h>
 
 using StackInt = CTCI::Stack<int>;

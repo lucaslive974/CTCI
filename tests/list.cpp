@@ -1,8 +1,9 @@
-#include "chapters.hpp"
+#include "list.hpp"
 #include "testing_utils.hpp"
+
 #include <gtest/gtest.h>
 
-TEST(COMMON, LIST_INITIALIZER_LIST_INIT) {
+TEST(LIST, INITIALIZER_LIST_INIT) {
     CTCI::List<int> list{0, 1, 2, 3, 4};
 
     EXPECT_FALSE(list.empty());
@@ -14,7 +15,7 @@ TEST(COMMON, LIST_INITIALIZER_LIST_INIT) {
     }
 }
 
-TEST(COMMON, LIST_INITIALIZE_VECTOR_INIT) {
+TEST(LIST, INITIALIZE_VECTOR_INIT) {
     std::vector<int> vec{5, 4, 3, 2, 1};
     CTCI::List<int> list{vec};
 
@@ -25,7 +26,7 @@ TEST(COMMON, LIST_INITIALIZE_VECTOR_INIT) {
     }
 }
 
-TEST(COMMON, LIST_EMPTY) {
+TEST(LIST, EMPTY) {
     CTCI::List<int> list;
 
     EXPECT_TRUE(list.empty());
@@ -34,7 +35,7 @@ TEST(COMMON, LIST_EMPTY) {
     EXPECT_FALSE(list.empty());
 }
 
-TEST(COMMON, LIST_APPEND_ITENS) {
+TEST(LIST, APPEND_ITENS) {
     CTCI::List<int> list;
 
     list.append(5);
@@ -44,7 +45,7 @@ TEST(COMMON, LIST_APPEND_ITENS) {
     EXPECT_EQ(list.head->next->val, 4);
 }
 
-TEST(COMMON, LIST_COPY_INITIALIZER) {
+TEST(LIST, COPY_INITIALIZER) {
     CTCI::List<int> a{1, 2, 3};
     CTCI::List<int> b;
 
@@ -55,7 +56,7 @@ TEST(COMMON, LIST_COPY_INITIALIZER) {
     internal::testListIsEqual(a, b);
 }
 
-TEST(COMMON, LIST_MOVE_INITIALIZER) {
+TEST(LIST, MOVE_INITIALIZER) {
     CTCI::List<int> a{1, 2, 3, 4, 5};
     CTCI::List<int> b = std::move(a);
 
@@ -66,7 +67,7 @@ TEST(COMMON, LIST_MOVE_INITIALIZER) {
     EXPECT_EQ(b.tail->val, 5);
 }
 
-TEST(COMMON, LIST_REVERT) {
+TEST(LIST, REVERT) {
     CTCI::List<int> a{1, 2, 3, 4, 5};
     CTCI::List<int> b{5, 4, 3, 2, 1};
 
@@ -75,12 +76,12 @@ TEST(COMMON, LIST_REVERT) {
     internal::testListIsEqual(a, b);
 }
 
-TEST(COMMON, LIST_REVERT_EMPTY) {
+TEST(LIST, REVERT_EMPTY) {
     CTCI::List<int> a;
     EXPECT_NO_THROW(CTCI::revertLinkedList(a));
 }
 
-TEST(COMMON, LIST_APPEND_EXPIRING_LIST) {
+TEST(LIST, APPEND_EXPIRING_LIST) {
     CTCI::List<int> a{1, 2, 3};
     CTCI::List<int> b{4, 5, 6};
     CTCI::List<int> ans{1, 2, 3, 4, 5, 6};
@@ -92,13 +93,13 @@ TEST(COMMON, LIST_APPEND_EXPIRING_LIST) {
     EXPECT_EQ(b.tail, nullptr);
 }
 
-TEST(COMMON, LIST_FRONT) {
+TEST(LIST, FRONT) {
     CTCI::List<int> a{3, 2, 1};
     a.pop();
     EXPECT_EQ(a.front(), 2);
 }
 
-TEST(COMMON, LIST_POP) {
+TEST(LIST, POP) {
     CTCI::List<int> a{3, 2, 1};
 
     for (size_t i = 0; i < 2; ++i)
@@ -111,7 +112,7 @@ TEST(COMMON, LIST_POP) {
 }
 
 /* Deque Tests */
-TEST(COMMON, DEQUE_INITIALIZATION) {
+TEST(DEQUE, INITIALIZATION) {
     CTCI::Deque<int> deque{1, 2, 3};
 
     auto elOne = deque.head;
@@ -126,14 +127,14 @@ TEST(COMMON, DEQUE_INITIALIZATION) {
     EXPECT_EQ(elThree->next, nullptr);
 }
 
-TEST(COMMON, DEQUE_INIT_EMPTY) {
+TEST(DEQUE, INIT_EMPTY) {
     CTCI::Deque<int> deque;
 
     EXPECT_EQ(deque.head, nullptr);
     EXPECT_EQ(deque.tail, nullptr);
 }
 
-TEST(COMMON, DEQUE_POP_FRONT) {
+TEST(DEQUE, POP_FRONT) {
     CTCI::Deque<int> deque{1};
 
     EXPECT_NE(deque.head, nullptr);
@@ -143,7 +144,7 @@ TEST(COMMON, DEQUE_POP_FRONT) {
     EXPECT_EQ(deque.tail, nullptr);
 }
 
-TEST(COMMON, DEQUE_POP_BACK) {
+TEST(DEQUE, POP_BACK) {
     CTCI::Deque<int> deque{2};
 
     EXPECT_NE(deque.tail, nullptr);
@@ -153,7 +154,7 @@ TEST(COMMON, DEQUE_POP_BACK) {
     EXPECT_EQ(deque.tail, nullptr);
 }
 
-TEST(COMMON, DEQUE_POP_MIDDLE) {
+TEST(DEQUE, POP_MIDDLE) {
     CTCI::Deque<int> deque{1, 2, 3};
 
     auto node = deque.head->next;
@@ -164,7 +165,7 @@ TEST(COMMON, DEQUE_POP_MIDDLE) {
     EXPECT_EQ(deque.head->next->next, nullptr);
 }
 
-TEST(COMMON, DEQUE_POP_HEAD_NODE) {
+TEST(DEQUE, POP_HEAD_NODE) {
     CTCI::Deque<int> deque{1, 2, 3};
 
     deque.pop(deque.head);
@@ -173,21 +174,21 @@ TEST(COMMON, DEQUE_POP_HEAD_NODE) {
     EXPECT_EQ(deque.head->prev, nullptr);
 }
 
-TEST(COMMON, DEQUE_POP_TAIL_NODE) {
+TEST(DEQUE, POP_TAIL_NODE) {
     CTCI::Deque<int> deque{2, 4};
 
     deque.pop(deque.tail);
     EXPECT_EQ(deque.head->next, nullptr);
 }
 
-TEST(COMMON, DEQUE_POP_MIDDLE_NODE) {
+TEST(DEQUE, POP_MIDDLE_NODE) {
     CTCI::Deque<int> deque{1, 2, 3, 4};
 
     deque.pop(deque.head->next->next); // 3
     EXPECT_EQ(deque.head->next->next->val, 4);
 }
 
-TEST(COMMON, DEQUE_EMPTY) {
+TEST(DEQUE, EMPTY) {
     CTCI::Deque<int> deque{2, 3, 4};
 
     deque.popFront();
