@@ -61,14 +61,14 @@ TEST(IV_MINIMAL_TREE, ODD_VECTOR) {
     EXPECT_EQ(root->right->val, 5);
     EXPECT_EQ(root->right->left->val, 4);
 
-    EXPECT_EQ(tree.rank, 3);
+    EXPECT_EQ(tree.depth, 3);
 }
 
 TEST(IV_MINIMAL_TREE, EVEN_VECTOR) {
     std::vector vec{1, 2, 4, 8};
     auto tree = IV::minimalTree(vec);
 
-    EXPECT_EQ(tree.rank, 3);
+    EXPECT_EQ(tree.depth, 3);
 
     auto root = tree.root;
     EXPECT_EQ(root->val, 4);
@@ -82,7 +82,7 @@ TEST(IV_MINIMAL_TREE, SMALL_VECTOR_THREE_ELEMENTS) {
     std::vector vec{1, 2, 3};
     auto tree = IV::minimalTree(vec);
 
-    EXPECT_EQ(tree.rank, 2);
+    EXPECT_EQ(tree.depth, 2);
 
     auto root = tree.root;
     EXPECT_EQ(root->val, 2);
@@ -94,7 +94,7 @@ TEST(IV_MINIMAL_TREE, SMALL_VECTOR_TWO_ELEMENTS) {
     std::vector vec{1, 2};
     auto tree = IV::minimalTree(vec);
 
-    EXPECT_EQ(tree.rank, 2);
+    EXPECT_EQ(tree.depth, 2);
 
     auto root = tree.root;
     EXPECT_EQ(root->val, 2);
@@ -105,7 +105,7 @@ TEST(IV_MINIMAL_TREE, SMALL_VECTOR_ONE_ELEMENT) {
     std::vector vec{2};
     auto tree = IV::minimalTree(vec);
 
-    EXPECT_EQ(tree.rank, 1);
+    EXPECT_EQ(tree.depth, 1);
 
     auto root = tree.root;
     EXPECT_EQ(root->val, 2);
@@ -115,7 +115,7 @@ TEST(IV_MINIMAL_TREE, BIG_VECTOR) {
     std::vector vec{1, 2, 4, 8, 16, 32, 64, 128, 256};
 
     auto tree = IV::minimalTree(vec);
-    EXPECT_EQ(tree.rank, 4);
+    EXPECT_EQ(tree.depth, 4);
 }
 
 TEST(IV_LIST_OF_DEPTHS, TREE_EMPTY) {

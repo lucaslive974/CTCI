@@ -13,12 +13,12 @@ template <typename T> struct TNode {
   public:
     std::shared_ptr<NodeType> left = nullptr;
     std::shared_ptr<NodeType> right = nullptr;
-    size_t rank = 1;
+    size_t depth = 1;
     T val = T{};
 
     TNode() = default;
     TNode(T val) : val(std::move(val)) {};
-    TNode(T val, size_t rank) : val(std::move(val)), rank(rank) {};
+    TNode(T val, size_t depth) : val(std::move(val)), depth(depth) {};
 };
 
 template <typename T> struct Tree {
@@ -26,7 +26,7 @@ template <typename T> struct Tree {
     using Pointer = std::shared_ptr<NodeType>;
 
     Pointer root = nullptr;
-    size_t rank = 0;
+    size_t depth = 0;
 
     Tree() = default;
     Tree(std::initializer_list<T> list) : Tree(std::vector<T>{list.begin(), list.end()}) {};
@@ -58,18 +58,18 @@ template <typename T> struct Tree {
 
     Pointer append(T value) { return append(root, std::move(value)); }
 
-    Pointer append(Pointer &node, T value, size_t nrank = 1) {
+    Pointer append(Pointer &node, T value, size_t ndepth = 1) {
         if (node == nullptr) {
-            node = std::make_shared<NodeType>(value, nrank);
-            rank = std::max(rank, nrank);
+            node = std::make_shared<NodeType>(value, ndepth);
+            depth = std::max(depth, ndepth);
             return node;
         }
 
         Pointer ret = nullptr;
         if (value < node->val)
-            ret = append(node->left, std::move(value), node->rank + 1);
+            ret = append(node->left, std::move(value), node->depth + 1);
         else
-            ret = append(node->right, std::move(value), node->rank + 1);
+            ret = append(node->right, std::move(value), node->depth + 1);
 
         return ret;
     }
