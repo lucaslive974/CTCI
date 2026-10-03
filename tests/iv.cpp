@@ -109,3 +109,10 @@ TEST(IV_MINIMAL_TREE, SMALL_VECTOR_ONE_ELEMENT) {
     auto root = tree.root;
     EXPECT_EQ(root->val, 2);
 }
+
+TEST(IV_MINIMAL_TREE, BIG_VECTOR) {
+    std::vector vec{1, 2, 4, 8, 16, 32, 64, 128, 256};
+
+    auto tree = IV::minimalTree(vec);
+    EXPECT_EQ(tree.rank, 4);
+}
