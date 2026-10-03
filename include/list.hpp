@@ -1,6 +1,9 @@
 #pragma once
 
+#include <cstddef>
+#include <iterator>
 #include <memory>
+#include <type_traits>
 #include <vector>
 
 namespace CTCI {
@@ -15,12 +18,14 @@ template <typename T> struct Node {
 };
 
 template <typename T> struct List {
-    using value_type = T;
-    using node_type = Node<value_type>;
+    using ValueType = T;
+    using NodeType = Node<ValueType>;
+    using Pointer = std::shared_ptr<NodeType>;
+    using ConstPointer = std::shared_ptr<const NodeType>;
 
-    std::shared_ptr<node_type> head = nullptr;
-    std::shared_ptr<node_type> tail = nullptr;
-    List(std::shared_ptr<node_type> node = nullptr) : head(node), tail(node) {}
+    Pointer head = nullptr;
+    Pointer tail = nullptr;
+    List(Pointer node = nullptr) : head(node), tail(node) {}
     List(std::initializer_list<T> list) { append(list); }
     List(std::vector<T> &list) { append(list); }
     ~List() {
@@ -53,7 +58,7 @@ template <typename T> struct List {
     }
 
     void append(T val) {
-        auto node = std::make_shared<node_type>(val);
+        auto node = std::make_shared<NodeType>(val);
         append(node);
     }
 
@@ -69,7 +74,7 @@ template <typename T> struct List {
         }
     }
 
-    void append(std::shared_ptr<node_type> &node) {
+    void append(Pointer &node) {
         if (!head) {
             head = node;
             tail = node;
@@ -100,6 +105,49 @@ template <typename T> struct List {
     auto front() -> T { return head->val; }
 
     [[nodiscard]] bool empty() const { return !head; }
+
+    template <bool isConst> class Iterator {
+        std::conditional_t<isConst, ConstPointer, Pointer> node;
+
+      public:
+        using iterator_category = std::forward_iterator_tag;
+        using difference_type = std::ptrdiff_t;
+        using value_type = ValueType;
+        using pointer = std::conditional_t<isConst, const ValueType *, ValueType *>;
+        using reference = std::conditional_t<isConst, const ValueType &, ValueType &>;
+
+        Iterator() : node(nullptr) {}
+        explicit Iterator(std::conditional_t<isConst, ConstPointer, Pointer> node) : node(node) {}
+
+        reference operator*() const { return node->val; }
+        reference operator*() { return node->val; }
+
+        pointer operator->() const { return &node->val; }
+        pointer operator->() { return &node->val; }
+
+        Iterator &operator++() {
+            node = node->next;
+            return *this;
+        }
+
+        Iterator &operator++(int) {
+            Iterator tmp = *this;
+            ++(*this);
+            return tmp;
+        }
+
+        friend bool operator==(const Iterator &a, const Iterator &b) { return a.node == b.node; }
+        friend bool operator!=(const Iterator &a, const Iterator &b) { return a.node != b.node; }
+    };
+
+    using ConstForwardIterator = Iterator</**isConst=*/true>;
+    using ForwardIterator = Iterator</**isConst=*/false>;
+
+    ConstForwardIterator begin() const { return ConstForwardIterator{head}; }
+    ForwardIterator begin() { return ForwardIterator{head}; }
+
+    ConstForwardIterator end() const { return ConstForwardIterator{nullptr}; }
+    ForwardIterator end() { return ForwardIterator{nullptr}; }
 };
 
 template <typename T> using Queue = List<T>;
