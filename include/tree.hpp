@@ -13,16 +13,19 @@ template <typename T> struct TNode {
   public:
     std::shared_ptr<NodeType> left = nullptr;
     std::shared_ptr<NodeType> right = nullptr;
+    size_t rank = 1;
     T val = T{};
 
     TNode() = default;
     TNode(T val) : val(std::move(val)) {};
+    TNode(T val, size_t rank) : val(std::move(val)), rank(rank) {};
 };
 
 template <typename T> struct Tree {
     using NodeType = TNode<T>;
+    using Pointer = std::shared_ptr<NodeType>;
 
-    std::shared_ptr<NodeType> root = nullptr;
+    Pointer root = nullptr;
     size_t rank = 0;
 
     Tree() = default;
@@ -35,7 +38,7 @@ template <typename T> struct Tree {
         if (empty())
             return;
 
-        Queue<std::shared_ptr<NodeType>> queue;
+        Queue<Pointer> queue;
 
         queue.append(root);
         while (!queue.empty()) {
@@ -53,20 +56,22 @@ template <typename T> struct Tree {
 
     [[nodiscard]] auto empty() const -> bool { return root == nullptr; }
 
-    void append(T value) { append(root, std::move(value)); }
+    Pointer append(T value) { return append(root, std::move(value)); }
 
-  private:
-    void append(std::shared_ptr<NodeType> &node, T value, size_t nrank = 1) {
+    Pointer append(Pointer &node, T value, size_t nrank = 1) {
         if (node == nullptr) {
-            node = std::make_shared<NodeType>(value);
+            node = std::make_shared<NodeType>(value, nrank);
             rank = std::max(rank, nrank);
-            return;
+            return node;
         }
 
+        Pointer ret = nullptr;
         if (value < node->val)
-            append(node->left, std::move(value), nrank + 1);
+            ret = append(node->left, std::move(value), node->rank + 1);
         else
-            append(node->right, std::move(value), nrank + 1);
+            ret = append(node->right, std::move(value), node->rank + 1);
+
+        return ret;
     }
 };
 

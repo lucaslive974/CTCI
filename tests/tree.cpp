@@ -18,14 +18,23 @@ TEST(TREE, TREE_APPEND_SUBTREE) {
     Tree<int> tree{5};
     auto &root = tree.root;
 
-    tree.append(4);
-    EXPECT_EQ(root->left->val, 4);
+    auto subTreeLeft = tree.append(root, 4);
+    EXPECT_EQ(root->left, subTreeLeft);
 
-    tree.append(3);
-    EXPECT_EQ(root->left->left->val, 3);
+    auto subTreeRight = tree.append(root, 6);
+    EXPECT_EQ(root->right, subTreeRight);
 
-    tree.append(4);
-    EXPECT_EQ(root->left->right->val, 4);
+    auto subTreeRightLeft = tree.append(subTreeRight, 5);
+    EXPECT_EQ(root->right->left, subTreeRightLeft);
+
+    auto subTreeRightRight = tree.append(subTreeRight, 7);
+    EXPECT_EQ(root->right->right, subTreeRightRight);
+
+    auto subTreeLeftLeft = tree.append(subTreeLeft, 3);
+    EXPECT_EQ(root->left->left, subTreeLeftLeft);
+
+    auto subTreeLeftRight = tree.append(subTreeLeft, 4);
+    EXPECT_EQ(root->left->right, subTreeLeftRight);
 }
 
 TEST(TREE, EMPTY_TREE_DESTRUCTOR) {
