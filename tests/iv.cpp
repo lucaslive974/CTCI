@@ -193,3 +193,38 @@ TEST(IV_LIST_OF_DEPTHS, TREE_RANK_3_PERFECT) {
         EXPECT_EQ(treeNode->val, ans);
     }
 }
+
+TEST(IV_CHECK_BALANCED, EMPTY_TREE) {
+    Tree<int> tree;
+    EXPECT_TRUE(IV::checkBalanced(tree));
+}
+
+TEST(IV_CHECK_BALANCED, PERFECT_TREES) {
+    Tree<int> tree{2, 1, 3};
+    EXPECT_TRUE(IV::checkBalanced(tree));
+}
+
+TEST(IV_CHECK_BALANCED, COMPLETE_TREE) {
+    Tree<int> tree{2, 1};
+    EXPECT_TRUE(IV::checkBalanced(tree));
+}
+
+TEST(IV_CHECK_BALANCED, FULL_TREE) {
+    Tree<int> tree{2, 1, 4, 3, 5};
+    EXPECT_TRUE(IV::checkBalanced(tree));
+}
+
+TEST(IV_CHECK_BALANCED, TREE_DEGENERATED_TO_LIST) {
+    Tree<int> tree{1, 2, 3};
+    EXPECT_FALSE(IV::checkBalanced(tree));
+}
+
+TEST(IV_CHECK_BALANCED, TREE_HEAVY_RIGHT) {
+    Tree<int> tree{2, 1, 3, 4, 5};
+    EXPECT_FALSE(IV::checkBalanced(tree));
+}
+
+TEST(IV_CHECK_BALANCED, TREE_HEAVY_LEFT) {
+    Tree<int> tree{3, 1, 2, 2, 4};
+    EXPECT_FALSE(IV::checkBalanced(tree));
+}

@@ -76,3 +76,25 @@ auto IV::listOfDepths(const Tree<int> &tree) -> std::vector<ListNode<int>> {
     makeListOfDepths(res.front());
     return res;
 };
+
+static auto treeHeight(const Tree<int>::Pointer &node) -> int {
+    if (node == nullptr)
+        return 0;
+
+    auto left = treeHeight(node->left);
+    auto right = treeHeight(node->right);
+
+    return std::max(left, right) + 1;
+}
+
+static auto checkBalanced(const Tree<int>::Pointer &subTree) -> bool {
+    auto fb = treeHeight(subTree->right) - treeHeight(subTree->left);
+    return abs(fb) <= 1;
+}
+
+auto IV::checkBalanced(const Tree<int> &tree) -> bool {
+    if (tree.empty())
+        return true;
+
+    return ::checkBalanced(tree.root);
+};

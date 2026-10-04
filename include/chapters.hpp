@@ -180,5 +180,6 @@ class IV : public Chapter {
 
     template <typename T> using ListNode = List<std::shared_ptr<TNode<T>>>;
     static auto listOfDepths(const Tree<int> &tree) -> std::vector<ListNode<int>>;
+    static auto checkBalanced(const Tree<int> &tree) -> bool;
 };
 } // namespace CTCI
