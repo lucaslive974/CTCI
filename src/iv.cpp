@@ -98,3 +98,22 @@ auto IV::checkBalanced(const Tree<int> &tree) -> bool {
 
     return ::checkBalanced(tree.root);
 };
+
+static bool checkBST(const Tree<int>::Pointer &node) {
+    if (node == nullptr)
+        return true;
+
+    auto &val = node->val;
+    auto &left = node->left;
+    auto &right = node->right;
+
+    bool leftIsEqualGreater = left && left->val >= val;
+    bool rightIsLesser = right && right->val < val;
+
+    if (leftIsEqualGreater || rightIsLesser)
+        return false;
+
+    return checkBST(left) && checkBST(right);
+}
+
+auto IV::validateBST(const Tree<int> &tree) -> bool { return checkBST(tree.root); };

@@ -1,5 +1,6 @@
 #include <chapters.hpp>
 #include <gtest/gtest.h>
+#include <memory>
 #include <ranges>
 
 using namespace CTCI;
@@ -227,4 +228,130 @@ TEST(IV_CHECK_BALANCED, TREE_HEAVY_RIGHT) {
 TEST(IV_CHECK_BALANCED, TREE_HEAVY_LEFT) {
     Tree<int> tree{3, 1, 2, 2, 4};
     EXPECT_FALSE(IV::checkBalanced(tree));
+}
+
+TEST(IV_VALIDATE_BST, TREE_BST) {
+    using Tp = Tree<int>::NodeType;
+
+    auto root = std::make_shared<Tp>(5);
+    auto left = std::make_shared<Tp>(3);
+    auto right = std::make_shared<Tp>(7);
+
+    root->left = std::move(left);
+    root->right = std::move(right);
+
+    Tree<int> tree;
+    tree.root = root;
+
+    EXPECT_TRUE(IV::validateBST(tree));
+}
+
+TEST(IV_VALIDATE_BST, TREE_BST_DUPLICATES) {
+    using Tp = Tree<int>::NodeType;
+
+    auto root = std::make_shared<Tp>(5);
+    auto left = std::make_shared<Tp>(3);
+    auto leftRight = std::make_shared<Tp>(3);
+    auto right = std::make_shared<Tp>(7);
+
+    left->right = std::move(leftRight);
+
+    root->left = std::move(left);
+    root->right = std::move(right);
+
+    Tree<int> tree;
+    tree.root = root;
+
+    EXPECT_TRUE(IV::validateBST(tree));
+}
+
+TEST(IV_VALIDATE_BST, TREE_EMPTY) {
+    Tree<int> tree;
+    EXPECT_TRUE(IV::validateBST(tree));
+}
+
+TEST(IV_VALIDATE_BST, TREE_NON_BST_LEFT) {
+    using Tp = Tree<int>::NodeType;
+
+    auto root = std::make_shared<Tp>(3);
+    auto left = std::make_shared<Tp>(4);
+    auto right = std::make_shared<Tp>(7);
+
+    root->left = std::move(left);
+    root->right = std::move(right);
+
+    Tree<int> tree;
+    tree.root = root;
+
+    EXPECT_FALSE(IV::validateBST(tree));
+}
+
+TEST(IV_VALIDATE_BST, TREE_NON_BST_LEFT_DUPLICATES) {
+    using Tp = Tree<int>::NodeType;
+
+    auto root = std::make_shared<Tp>(3);
+    auto left = std::make_shared<Tp>(2);
+    auto leftLeft = std::make_shared<Tp>(2);
+    auto right = std::make_shared<Tp>(7);
+
+    left->left = std::move(leftLeft);
+
+    root->left = std::move(left);
+    root->right = std::move(right);
+
+    Tree<int> tree;
+    tree.root = root;
+
+    EXPECT_FALSE(IV::validateBST(tree));
+}
+
+TEST(IV_VALIDATE_BST, TREE_NON_BST_RIGHT) {
+    using Tp = Tree<int>::NodeType;
+
+    auto root = std::make_shared<Tp>(3);
+    auto left = std::make_shared<Tp>(1);
+    auto right = std::make_shared<Tp>(2);
+
+    root->left = std::move(left);
+    root->right = std::move(right);
+
+    Tree<int> tree;
+    tree.root = root;
+
+    EXPECT_FALSE(IV::validateBST(tree));
+}
+
+TEST(IV_VALIDATE_BST, TREE_NON_BST_RIGHT_II) {
+    using Tp = Tree<int>::NodeType;
+
+    auto root = std::make_shared<Tp>(4);
+    auto left = std::make_shared<Tp>(2);
+    auto right = std::make_shared<Tp>(6);
+    auto rightLeft = std::make_shared<Tp>(8);
+
+    right->left = std::move(rightLeft);
+
+    root->left = std::move(left);
+    root->right = std::move(right);
+
+    Tree<int> tree;
+    tree.root = root;
+
+    EXPECT_FALSE(IV::validateBST(tree));
+}
+
+TEST(IV_VALIDATE_BST, TREE_NON_BST_BOTH) {
+    using Tp = Tree<int>::NodeType;
+
+    auto root = std::make_shared<Tp>(3);
+    auto left = std::make_shared<Tp>(4);
+    auto right = std::make_shared<Tp>(2);
+
+    root->left = std::move(left);
+    root->right = std::move(right);
+
+    Tree<int> tree;
+    tree.root = root;
+
+    EXPECT_FALSE(IV::validateBST(tree));
 }
