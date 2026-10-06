@@ -35,14 +35,23 @@ template <Hashable T, bool Directed = true> class Graph {
     Graph(std::initializer_list<T> init) : Graph(std::vector<T>(init.begin(), init.end())) {}
     Graph(std::initializer_list<std::pair<T, T>> init) : Graph(std::vector<std::pair<T, T>>(init.begin(), init.end())) {};
 
-    template <std::ranges::range R> Graph(const R &&rng) {
+    template <std::ranges::range R> Graph(R &&rng) {
         for (const auto &el : rng)
             append(el);
     }
 
     void append(const T &val) { appendNode(val); }
 
-    void append(const std::pair<T, T> &pair) {
+    void append(const std::pair<T, T> &pair) { appendEdge(pair); }
+
+    void appendNode(T val) {
+        if (!nodes.contains(val)) {
+            auto node = std::make_shared<NodeType>(val);
+            nodes.insert({val, node});
+        }
+    }
+
+    void appendEdge(const std::pair<T, T> &pair) {
         auto &[a, b] = pair;
 
         appendNode(a);
@@ -52,13 +61,6 @@ template <Hashable T, bool Directed = true> class Graph {
         std::shared_ptr<NodeType> nodeB = getNode(std::move(b));
 
         appendEdge({nodeA, nodeB});
-    }
-
-    void appendNode(T val) {
-        if (!nodes.contains(val)) {
-            auto node = std::make_shared<NodeType>(val);
-            nodes.insert({val, node});
-        }
     }
 
     void appendEdge(const std::pair<std::shared_ptr<NodeType>, std::shared_ptr<NodeType>> &pair) {
