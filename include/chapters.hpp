@@ -176,6 +176,7 @@ class IV : public Chapter {
     template <typename T> using Node = std::shared_ptr<GNode<T>>;
 
   public:
+    IV(std::string name = "Trees and Graphs");
     static bool routeBetweenNodes(const Node<int> &orig, const Node<int> &dest);
     static auto minimalTree(const std::vector<int> &nodes) -> Tree<int>;
 

@@ -395,11 +395,10 @@ class IV_BUILD_ORDER : public testing::Test {
   protected:
     IV_BUILD_ORDER() = default;
 
-    List<IV::Project> projects{'a', 'b', 'c', 'd', 'e', 'f'};
-    List<std::pair<IV::Project, IV::Project>> dependencies{
-        {'a', 'd'}, {'f', 'b'}, {'b', 'd'}, {'f', 'a'}, {'d', 'c'},
+    IV::BuildInfo info{
+        .projects = {'a', 'b', 'c', 'd', 'e', 'f'},
+        .dependencies = {{'a', 'd'}, {'f', 'b'}, {'b', 'd'}, {'f', 'a'}, {'d', 'c'}},
     };
-    IV::BuildInfo info{.projects = projects, .dependencies = dependencies};
 };
 
 TEST_F(IV_BUILD_ORDER, GRAPH_NON_CYCLIC) {
