@@ -25,6 +25,8 @@ template <typename T> struct List {
 
     Pointer head = nullptr;
     Pointer tail = nullptr;
+    size_t size = 0;
+
     List(Pointer node = nullptr) : head(node), tail(node) {}
     List(std::initializer_list<T> list) { append(list); }
     List(std::vector<T> &list) { append(list); }
@@ -46,14 +48,18 @@ template <typename T> struct List {
     List(List &&other) noexcept {
         head = other.head;
         tail = other.tail;
+        size = other.size;
 
         other.head = nullptr;
         other.tail = nullptr;
+        other.size = 0;
     }
 
     List &operator=(List other) noexcept {
+        using std::swap;
         swap(head, other.head);
         swap(tail, other.tail);
+        swap(size, other.size);
         return *this;
     }
 
@@ -75,6 +81,8 @@ template <typename T> struct List {
     }
 
     void append(Pointer &node) {
+        ++size;
+
         if (!head) {
             head = node;
             tail = node;
@@ -91,12 +99,16 @@ template <typename T> struct List {
 
         tail->next = other.head;
         tail = other.tail;
+        size += other.size;
 
         other.head = nullptr;
         other.tail = nullptr;
+        other.size = 0;
     }
 
     void pop() {
+        --size;
+
         head = head->next;
         if (empty())
             tail = nullptr;

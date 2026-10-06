@@ -111,6 +111,30 @@ TEST(LIST, POP) {
     EXPECT_TRUE(a.empty());
 }
 
+TEST(LIST, EMPTY_SIZE) {
+    CTCI::List<int> a;
+    EXPECT_EQ(a.size, 0);
+}
+
+TEST(LIST, SIZE) {
+    CTCI::List<int> a{5, 4, 3, 2, 1};
+
+    EXPECT_EQ(a.size, 5);
+
+    a.pop();
+    EXPECT_EQ(a.size, 4);
+}
+
+TEST(LIST, APPEND_SIZE) {
+    CTCI::List<int> a{1, 2, 3};
+    CTCI::List<int> b{4, 5, 6};
+
+    a.append(std::move(b));
+
+    EXPECT_EQ(a.size, 6);
+    EXPECT_EQ(b.size, 0);
+}
+
 /* Deque Tests */
 TEST(DEQUE, INITIALIZATION) {
     CTCI::Deque<int> deque{1, 2, 3};
