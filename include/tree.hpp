@@ -2,6 +2,7 @@
 
 #include "list.hpp"
 
+#include <initializer_list>
 #include <memory>
 #include <vector>
 
@@ -11,6 +12,7 @@ template <typename T> struct TNode {
     using NodeType = TNode<T>;
 
   public:
+    std::shared_ptr<NodeType> parent = nullptr;
     std::shared_ptr<NodeType> left = nullptr;
     std::shared_ptr<NodeType> right = nullptr;
     size_t depth = 1;
@@ -19,6 +21,8 @@ template <typename T> struct TNode {
     TNode() = default;
     TNode(T val) : val(std::move(val)) {};
     TNode(T val, size_t depth) : val(std::move(val)), depth(depth) {};
+    TNode(T val, size_t depth, std::shared_ptr<NodeType> parent)
+        : val(std::move(val)), depth(depth), parent(std::move(parent)) {}
 };
 
 template <typename T> struct Tree {
@@ -49,6 +53,7 @@ template <typename T> struct Tree {
                 continue;
 
             queue.append({node->left, node->right});
+            node->parent = nullptr;
             node->left = nullptr;
             node->right = nullptr;
         }
@@ -58,18 +63,18 @@ template <typename T> struct Tree {
 
     Pointer append(T value) { return append(root, std::move(value)); }
 
-    Pointer append(Pointer &node, T value, size_t ndepth = 1) {
+    Pointer append(Pointer &node, T value, size_t ndepth = 1, Pointer parent = nullptr) { // NOLINT
         if (node == nullptr) {
-            node = std::make_shared<NodeType>(value, ndepth);
+            node = std::make_shared<NodeType>(value, ndepth, std::move(parent));
             depth = std::max(depth, ndepth);
             return node;
         }
 
         Pointer ret = nullptr;
         if (value < node->val)
-            ret = append(node->left, std::move(value), node->depth + 1);
+            ret = append(/**node=*/node->left, std::move(value), node->depth + 1, /**parent=*/node);
         else
-            ret = append(node->right, std::move(value), node->depth + 1);
+            ret = append(/**node=*/node->right, std::move(value), node->depth + 1, /**parent=*/node);
 
         return ret;
     }

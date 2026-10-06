@@ -355,3 +355,35 @@ TEST(IV_VALIDATE_BST, TREE_NON_BST_BOTH) {
 
     EXPECT_FALSE(IV::validateBST(tree));
 }
+
+class IV_SUCESSOR_TEST : public testing::Test {
+  protected:
+    IV_SUCESSOR_TEST() = default;
+
+    Tree<int> tree{4, 2, 3, 1, 6, 5};
+    Tree<int> treeEmpty;
+};
+
+TEST_F(IV_SUCESSOR_TEST, EMPTY_NODE) { EXPECT_EQ(IV::sucessor(treeEmpty.root), nullptr); }
+
+TEST_F(IV_SUCESSOR_TEST, LAST_NODE) { EXPECT_EQ(IV::sucessor(tree.root->right), nullptr); }
+
+TEST_F(IV_SUCESSOR_TEST, RIGHT_CHILD) {
+    auto node = tree.root->left;
+    auto ans = node->right;
+    EXPECT_EQ(IV::sucessor(node), ans);
+}
+
+TEST_F(IV_SUCESSOR_TEST, LEFTMOST_RIGHT_SUBTREE) {
+    auto node = tree.root;
+    auto ans = node->right->left;
+
+    EXPECT_EQ(IV::sucessor(node), ans);
+}
+
+TEST_F(IV_SUCESSOR_TEST, IMMEDIATE_PARENT) {
+    auto parent = tree.root->left;
+    auto leftChild = parent->left;
+
+    EXPECT_EQ(IV::sucessor(leftChild), parent);
+}

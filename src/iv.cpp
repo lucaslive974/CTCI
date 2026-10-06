@@ -117,3 +117,26 @@ static bool checkBST(const Tree<int>::Pointer &node) {
 }
 
 auto IV::validateBST(const Tree<int> &tree) -> bool { return checkBST(tree.root); };
+
+auto IV::sucessor(const Tree<int>::Pointer &node) -> Tree<int>::Pointer {
+    if (node == nullptr)
+        return nullptr;
+
+    if (node->right != nullptr) {
+        auto next = node->right;
+        while (next->left != nullptr)
+            next = next->left;
+
+        return next;
+    }
+
+    auto child = node;
+    auto parent = node->parent;
+
+    while (parent && parent->right == child) {
+        child = parent;
+        parent = parent->parent;
+    }
+
+    return parent;
+};

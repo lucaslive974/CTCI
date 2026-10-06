@@ -182,5 +182,7 @@ class IV : public Chapter {
     static auto listOfDepths(const Tree<int> &tree) -> std::vector<ListNode<int>>;
     static auto checkBalanced(const Tree<int> &tree) -> bool;
     static auto validateBST(const Tree<int> &tree) -> bool;
+
+    static auto sucessor(const Tree<int>::Pointer &node) -> Tree<int>::Pointer;
 };
 } // namespace CTCI
