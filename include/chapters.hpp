@@ -3,6 +3,7 @@
 #include "chapter.hpp"
 #include "data_structures.hpp"
 #include <memory>
+#include <stdexcept>
 #include <vector>
 
 namespace CTCI {
@@ -182,7 +183,18 @@ class IV : public Chapter {
     static auto listOfDepths(const Tree<int> &tree) -> std::vector<ListNode<int>>;
     static auto checkBalanced(const Tree<int> &tree) -> bool;
     static auto validateBST(const Tree<int> &tree) -> bool;
-
     static auto sucessor(const Tree<int>::Pointer &node) -> Tree<int>::Pointer;
+
+    class CircularReferenceError : public std::runtime_error {
+      public:
+        CircularReferenceError(const char *msg) : std::runtime_error(msg) {};
+    };
+
+    using Project = char;
+    struct BuildInfo {
+        List<Project> projects;
+        List<std::pair<Project, Project>> dependencies;
+    };
+    static auto buildOrder(const BuildInfo &info) -> List<Project>;
 };
 } // namespace CTCI

@@ -1,5 +1,6 @@
 #include "chapters.hpp"
-#include "unordered_set"
+#include <unordered_map>
+#include <unordered_set>
 
 using namespace CTCI;
 
@@ -132,7 +133,6 @@ auto IV::sucessor(const Tree<int>::Pointer &node) -> Tree<int>::Pointer {
 
     auto child = node;
     auto parent = node->parent;
-
     while (parent && parent->right == child) {
         child = parent;
         parent = parent->parent;
@@ -140,3 +140,37 @@ auto IV::sucessor(const Tree<int>::Pointer &node) -> Tree<int>::Pointer {
 
     return parent;
 };
+
+auto IV::buildOrder(const BuildInfo &info) -> List<Project> {
+    Graph<Project> graph{info.projects};
+
+    std::unordered_map<Project, size_t> inDegree;
+    for (const auto &dependencie : info.dependencies) {
+        graph.appendEdge(dependencie);
+        inDegree[dependencie.second]++;
+    }
+
+    Queue<Project> qready;
+    for (const auto &project : info.projects) {
+        if (inDegree[project] == 0)
+            qready.append(project);
+    }
+
+    List<Project> buildList;
+    while (!qready.empty()) {
+        auto project = qready.front();
+        qready.pop();
+
+        buildList.append(project);
+
+        for (const auto &dependent : graph.getNode(project)->neighbors) {
+            if (--inDegree[dependent->val] == 0)
+                qready.append(dependent->val);
+        }
+    }
+
+    if (buildList.size != info.projects.size)
+        throw CircularReferenceError{"[Circular reference found on build graph]"};
+
+    return buildList;
+}

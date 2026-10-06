@@ -1,3 +1,6 @@
+#include "list.hpp"
+#include "testing_utils.hpp"
+
 #include <chapters.hpp>
 #include <gtest/gtest.h>
 #include <memory>
@@ -386,4 +389,32 @@ TEST_F(IV_SUCESSOR_TEST, IMMEDIATE_PARENT) {
     auto leftChild = parent->left;
 
     EXPECT_EQ(IV::sucessor(leftChild), parent);
+}
+
+class IV_BUILD_ORDER : public testing::Test {
+  protected:
+    IV_BUILD_ORDER() = default;
+
+    List<IV::Project> projects{'a', 'b', 'c', 'd', 'e', 'f'};
+    List<std::pair<IV::Project, IV::Project>> dependencies{
+        {'a', 'd'}, {'f', 'b'}, {'b', 'd'}, {'f', 'a'}, {'d', 'c'},
+    };
+    IV::BuildInfo info{.projects = projects, .dependencies = dependencies};
+};
+
+TEST_F(IV_BUILD_ORDER, GRAPH_NON_CYCLIC) {
+    auto buildList = IV::buildOrder(info);
+
+    List<IV::Project> ans{'e', 'f', 'b', 'a', 'd', 'c'};
+    internal::testListIsEqual(buildList, ans);
+}
+
+TEST_F(IV_BUILD_ORDER, GRAPH_CYCLIC) {
+    info.dependencies.append({'d', 'a'});
+    EXPECT_THROW(IV::buildOrder(info), IV::CircularReferenceError);
+}
+
+TEST_F(IV_BUILD_ORDER, GRAPH_CYCLIC_II) {
+    info.dependencies.append({'a', 'f'});
+    EXPECT_THROW(IV::buildOrder(info), IV::CircularReferenceError);
 }
