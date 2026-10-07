@@ -1,11 +1,12 @@
 #include "concepts.hpp"
 #include "list.hpp"
+#include <type_traits>
 
 namespace CTCI {
 
-template <Hashable Key, typename ValueType> class HashMap {
+template <bool IsSet, Hashable Key, typename ValueType> class Map {
   private:
-    using Entry = std::pair<Key, ValueType>;
+    using Entry = std::conditional_t<IsSet, Key, std::pair<Key, ValueType>>;
     using Bucket = List<Entry>;
     using Buckets = std::vector<Bucket>;
 
@@ -25,8 +26,13 @@ template <Hashable Key, typename ValueType> class HashMap {
         Buckets newBuckets{_totalSize *= 2};
 
         for (auto &entry : *this) {
-            auto &bucket = newBuckets[hash(entry.first)];
-            insert(bucket, std::move(entry));
+            if constexpr (IsSet) {
+                auto &bucket = newBuckets[hash(entry)];
+                insert(bucket, std::move(entry));
+            } else {
+                auto &bucket = newBuckets[hash(entry.first)];
+                insert(bucket, std::move(entry));
+            }
             _loadFactor /= 2;
         }
 
@@ -34,20 +40,30 @@ template <Hashable Key, typename ValueType> class HashMap {
     }
 
     void insert(Bucket &bucket, Entry entry) {
-        auto &[key, val] = entry;
-        for (auto &[bKey, bVal] : bucket) {
-            if (bKey == key) {
-                bVal = val;
-                return;
+        if constexpr (IsSet) {
+            for (auto &key : bucket) {
+                if (key == entry)
+                    return;
             }
+            bucket.push(entry);
+        } else {
+            auto &[key, val] = entry;
+            for (auto &[bKey, bVal] : bucket) {
+                if (bKey == key) {
+                    bVal = val;
+                    return;
+                }
+            }
+            bucket.push(entry);
         }
-        bucket.push(entry);
     }
 
   public:
-    HashMap() = default;
-    HashMap(size_t size) : _totalSize(size), buckets(size) {};
+    Map() = default;
+    Map(size_t size) : _totalSize(size), buckets(size) {};
 
+    template <bool S = IsSet>
+        requires(!S)
     ValueType &get(Key key) {
         auto hkey = hash(key);
         auto &bucket = buckets[hkey];
@@ -66,17 +82,26 @@ template <Hashable Key, typename ValueType> class HashMap {
         if (_loadFactor > 0.80)
             resize();
 
-        auto &bucket = buckets[hash(entry.first)];
-        insert(bucket, std::move(entry));
+        if constexpr (IsSet) {
+            auto &bucket = buckets[hash(entry)];
+            insert(bucket, std::move(entry));
+        } else {
+            auto &bucket = buckets[hash(entry.first)];
+            insert(bucket, std::move(entry));
+        }
     }
 
     [[nodiscard]] bool contains(Key key) const {
         auto bucket = buckets[hash(key)];
         for (auto &entry : bucket) {
-            if (entry.first == key)
-                return true;
+            if constexpr (IsSet) {
+                if (entry == key)
+                    return true;
+            } else {
+                if (entry.first == key)
+                    return true;
+            }
         }
-
         return false;
     }
 
@@ -137,5 +162,8 @@ template <Hashable Key, typename ValueType> class HashMap {
     ConstForwardIterator begin() const { return {&buckets}; }
     ConstForwardIterator end() const { return {}; }
 };
+
+template <Hashable Key, typename Value> using HashMap = Map</**IsSet=*/false, Key, Value>;
+template <Hashable Key> using Set = Map</**IsSet=*/true, Key, Key>;
 
 } // namespace CTCI

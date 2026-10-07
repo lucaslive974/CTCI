@@ -1,4 +1,4 @@
-#include "map.hpp"
+#include "associative_containers.hpp"
 
 #include <gtest/gtest.h>
 #include <ranges>
@@ -131,4 +131,43 @@ TEST(MAP, IT_POS_INCREMENT) {
     auto begin = map.begin()++;
     EXPECT_EQ(begin->second, 2);
     EXPECT_EQ(++begin, map.end());
+}
+
+TEST(SET, INSERT_DUPLICATE) {
+   Set<int> set; 
+   
+   set.insert(1);
+   set.insert(1);
+   
+   EXPECT_TRUE(set.contains(1));
+}
+
+TEST(SET, CONTAINS) {
+    Set<int> set;
+
+    set.insert(1);
+    EXPECT_TRUE(set.contains(1));
+    EXPECT_FALSE(set.contains(2));
+}
+
+TEST(SET, CONTAINS_WITH_COLISSIONS) {
+    Set<int> set;
+
+    set.insert(0);
+    set.insert(101);
+
+    EXPECT_TRUE(set.contains(0));
+    EXPECT_TRUE(set.contains(101));
+}
+
+TEST(SET, RESIZE) {
+    Set<int> set{2};
+
+    set.insert(1);
+    set.insert(2);
+    set.insert(3);
+
+    EXPECT_TRUE(set.contains(1));
+    EXPECT_TRUE(set.contains(2));
+    EXPECT_TRUE(set.contains(3));
 }
