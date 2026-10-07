@@ -12,7 +12,7 @@ auto IV::routeBetweenNodes(const Node<int> &orig, const Node<int> &dest) -> bool
         return true;
 
     Queue<Node<int>> queue;
-    queue.append(orig);
+    queue.push(orig);
 
     std::unordered_set<Node<int>> visited{orig};
 
@@ -27,7 +27,7 @@ auto IV::routeBetweenNodes(const Node<int> &orig, const Node<int> &dest) -> bool
             if (neighbor == dest)
                 return true;
 
-            queue.append(neighbor);
+            queue.push(neighbor);
             visited.insert(neighbor);
         }
     }
@@ -61,10 +61,10 @@ auto IV::listOfDepths(const Tree<int> &tree) -> std::vector<ListNode<int>> {
         ListNode<int> children;
         for (const auto &parent : parents) {
             if (parent->left != nullptr)
-                children.append(parent->left);
+                children.push(parent->left);
 
             if (parent->right != nullptr)
-                children.append(parent->right);
+                children.push(parent->right);
         }
 
         if (children.empty())
@@ -153,7 +153,7 @@ auto IV::buildOrder(const BuildInfo &info) -> List<Project> {
     Queue<Project> qready;
     for (const auto &project : info.projects) {
         if (inDegree[project] == 0)
-            qready.append(project);
+            qready.push(project);
     }
 
     List<Project> buildList;
@@ -161,11 +161,11 @@ auto IV::buildOrder(const BuildInfo &info) -> List<Project> {
         auto project = qready.front();
         qready.pop();
 
-        buildList.append(project);
+        buildList.push(project);
 
         for (const auto &dependent : graph.getNode(project)->neighbors) {
             if (--inDegree[dependent->val] == 0)
-                qready.append(dependent->val);
+                qready.push(dependent->val);
         }
     }
 

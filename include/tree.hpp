@@ -44,7 +44,7 @@ template <typename T> struct Tree {
 
         Queue<Pointer> queue;
 
-        queue.append(root);
+        queue.push(root);
         while (!queue.empty()) {
             auto node = queue.front();
             queue.pop();
@@ -52,7 +52,7 @@ template <typename T> struct Tree {
             if (node == nullptr)
                 continue;
 
-            queue.append({node->left, node->right});
+            queue.push({node->left, node->right});
             node->parent = nullptr;
             node->left = nullptr;
             node->right = nullptr;

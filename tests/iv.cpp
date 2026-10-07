@@ -409,11 +409,11 @@ TEST_F(IV_BUILD_ORDER, GRAPH_NON_CYCLIC) {
 }
 
 TEST_F(IV_BUILD_ORDER, GRAPH_CYCLIC) {
-    info.dependencies.append({'d', 'a'});
+    info.dependencies.push({'d', 'a'});
     EXPECT_THROW(IV::buildOrder(info), IV::CircularReferenceError);
 }
 
 TEST_F(IV_BUILD_ORDER, GRAPH_CYCLIC_II) {
-    info.dependencies.append({'a', 'f'});
+    info.dependencies.push({'a', 'f'});
     EXPECT_THROW(IV::buildOrder(info), IV::CircularReferenceError);
 }

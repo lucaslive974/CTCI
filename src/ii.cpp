@@ -71,9 +71,9 @@ auto II::partition(List<int> &list, int x) -> void {
     auto head = list.head;
     while (head != nullptr) {
         if (head->val < x) {
-            left.append(head->val);
+            left.push(head->val);
         } else {
-            right.append(head->val);
+            right.push(head->val);
         }
         head = head->next;
     }
@@ -83,7 +83,7 @@ auto II::partition(List<int> &list, int x) -> void {
         return;
     }
 
-    left.append(std::move(right));
+    left.push(std::move(right));
     list = std::move(left);
 };
 
@@ -111,7 +111,7 @@ auto II::sumLists(List<int> &a, List<int> &b) -> List<int> { // NOLINT
         carry = digit / 10;
         digit %= 10;
 
-        res.append(digit);
+        res.push(digit);
     };
 
     return res;
