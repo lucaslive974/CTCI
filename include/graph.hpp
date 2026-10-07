@@ -1,5 +1,6 @@
+#include <concepts.hpp>
+
 #include <memory>
-#include <unordered_map>
 #include <vector>
 
 namespace CTCI {
@@ -11,11 +12,6 @@ template <typename T> struct GNode {
     GNode(T val) : val(std::move(val)) {};
     void addNeighbor(std::shared_ptr<GNode> neighbor) { neighbors.push_back(std::move(neighbor)); }
 };
-
-template <typename T>
-concept Hashable = requires(T a) {
-    { std::hash<T>{}(a) } -> std::same_as<std::size_t>;
-} && std::equality_comparable<T>;
 
 template <Hashable T, bool Directed = true> class Graph {
     using ValueType = T;
