@@ -124,8 +124,8 @@ template <Hashable Key, typename ValueType> class HashMap {
         pointer operator->() const { return &actual->val; }
         pointer operator->() { return &actual->val; }
 
-        friend bool operator==(Iterator &a, Iterator &b) { return a.actual == b.actual; };
-        friend bool operator!=(Iterator &a, Iterator &b) { return a.actual != b.actual; };
+        friend bool operator==(const Iterator &a, const Iterator &b) { return a.actual == b.actual; };
+        friend bool operator!=(const Iterator &a, const Iterator &b) { return a.actual != b.actual; };
     };
 
     using ForwardIterator = Iterator</*IsConst=*/false>;

@@ -128,8 +128,7 @@ TEST(MAP, IT_POS_INCREMENT) {
     map.insert({1, 1});
     map.insert({2, 2});
 
-    auto it = map.begin();
-
-    EXPECT_EQ((it++)->second, 2);
-    // EXPECT_EQ(it, map.end());
+    auto begin = map.begin()++;
+    EXPECT_EQ(begin->second, 2);
+    EXPECT_EQ(++begin, map.end());
 }
