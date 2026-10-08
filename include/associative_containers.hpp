@@ -71,13 +71,13 @@ template <bool IsSet, Hashable Key, typename ValueType> class Map {
 
     template <bool S = IsSet>
         requires(!S)
-    ValueType &at(Key key) {
+    ValueType &at(Key key) const {
         auto it = find(key);
 
         if (it == end())
             throw OutOfRange{"Element inexistent"};
 
-        return it->second;
+        return const_cast<ValueType &>(it->second);
     }
 
     template <std::ranges::range R> void insert(R &&rng) {
@@ -155,7 +155,7 @@ template <bool IsSet, Hashable Key, typename ValueType> class Map {
 
         Iterator() : actual(nullptr) {}
         Iterator(std::vector<List<Entry>> *buckets) : buckets(buckets) { next(); }
-        explicit Iterator(std::vector<List<Entry>> *buckets, size_t nBucket, List<Entry>::Pointer ptr)
+        explicit Iterator(std::vector<List<Entry>> *buckets, List<Entry>::Pointer ptr, size_t nBucket)
             : buckets(buckets), nBucket(nBucket), actual(std::move(ptr)) {}
 
         Iterator &operator++() {
@@ -183,11 +183,11 @@ template <bool IsSet, Hashable Key, typename ValueType> class Map {
     using ForwardIterator = Iterator</*IsConst=*/false>;
     using ConstForwardIterator = Iterator</*IsConst=*/true>;
 
-    ForwardIterator begin() { return {&buckets}; }
-    ForwardIterator end() { return {}; }
-
   private:
-    ForwardIterator find(Bucket &bucket, size_t hKey, Key key) {
+    template <typename ItTy> ItTy find(Key key) const {
+        auto hashKey = hash(key);
+        auto &bucket = buckets.at(hashKey);
+
         auto head = bucket.head;
         while (head != nullptr) {
             if constexpr (IsSet) {
@@ -200,19 +200,17 @@ template <bool IsSet, Hashable Key, typename ValueType> class Map {
             head = head->next;
         }
 
-        return ForwardIterator{&buckets, hKey, head};
+        return ItTy{const_cast<Buckets *>(&buckets), const_cast<List<Entry>::Pointer &>(head), hashKey};
     }
 
   public:
-    ForwardIterator find(Key key) {
-        auto hkey = hash(key);
-        auto &bucket = buckets.at(hkey);
-
-        return find(bucket, hkey, key);
-    }
+    ForwardIterator begin() { return {&buckets}; }
+    ForwardIterator end() { return {}; }
+    ForwardIterator find(Key key) { return find<ForwardIterator>(key); };
 
     ConstForwardIterator begin() const { return {&buckets}; }
     ConstForwardIterator end() const { return {}; }
+    ConstForwardIterator find(Key key) const { return find<ConstForwardIterator>(key); }
 };
 
 template <Hashable Key, typename Value> using HashMap = Map</**IsSet=*/false, Key, Value>;

@@ -12,7 +12,7 @@ class IV_ROUTE_BETWEEN_NODES_TEST : public testing::Test {
   protected:
     IV_ROUTE_BETWEEN_NODES_TEST() = default;
 
-    Graph<int> graph{{0, 1}, {1, 2}, {2, 0}, {2, 3}, {3, 2}, {4, 6}, {6, 5}, {5, 4}};
+    const Graph<int> graph{{0, 1}, {1, 2}, {2, 0}, {2, 3}, {3, 2}, {4, 6}, {6, 5}, {5, 4}};
 };
 
 TEST_F(IV_ROUTE_BETWEEN_NODES_TEST, ROUTE_BETWEEN_NODES_TRUE) {

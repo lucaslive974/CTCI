@@ -149,3 +149,11 @@ TEST(SET, RESIZE) {
     EXPECT_TRUE(set.contains(2));
     EXPECT_TRUE(set.contains(3));
 }
+
+TEST(SET, FIND) {
+    const Set<int> set{1, 2, 102};
+
+    EXPECT_NE(set.find(1), set.end());
+    EXPECT_NE(set.find(102), set.end());
+    EXPECT_EQ(set.find(3), set.end());
+}

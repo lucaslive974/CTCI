@@ -68,7 +68,7 @@ template <Hashable T, bool Directed = true> class Graph {
             nodeB->neighbors.push_back(nodeA);
     }
 
-    std::shared_ptr<NodeType> getNode(T val) {
+    std::shared_ptr<NodeType> getNode(T val) const {
         auto ptr = nodes.find(val);
         if (ptr == nodes.end())
             return nullptr;
