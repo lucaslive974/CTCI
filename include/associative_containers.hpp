@@ -1,7 +1,9 @@
 #pragma once
 
 #include "concepts.hpp"
+#include "exceptions.hpp"
 #include "list.hpp"
+
 #include <initializer_list>
 #include <type_traits>
 
@@ -42,16 +44,6 @@ template <bool IsSet, Hashable Key, typename ValueType> class Map {
         buckets = std::move(newBuckets);
     }
 
-    ValueType &get(Bucket &bucket, Key key) {
-        for (auto &entry : bucket) {
-            if (entry.first == key)
-                return entry.second;
-        }
-
-        insert({key, ValueType{}});
-        return get(bucket, key);
-    }
-
     void insert(Bucket &bucket, Entry entry) {
         if constexpr (IsSet) {
             for (auto &key : bucket) {
@@ -79,11 +71,13 @@ template <bool IsSet, Hashable Key, typename ValueType> class Map {
 
     template <bool S = IsSet>
         requires(!S)
-    ValueType &get(Key key) {
-        auto hkey = hash(key);
-        auto &bucket = buckets[hkey];
+    ValueType &at(Key key) {
+        auto it = find(key);
 
-        return get(bucket, key);
+        if (it == end())
+            throw OutOfRange{"Element inexistent"};
+
+        return it->second;
     }
 
     template <std::ranges::range R> void insert(R &&rng) {
@@ -122,7 +116,14 @@ template <bool IsSet, Hashable Key, typename ValueType> class Map {
     template <bool A = IsSet>
         requires(!A)
     ValueType &operator[](Key key) {
-        return get(key);
+        auto it = find(key);
+
+        if (it == end()) {
+            insert({key, ValueType{}});
+            it = find(key);
+        }
+
+        return it->second;
     };
 
     void clear() {
@@ -152,8 +153,10 @@ template <bool IsSet, Hashable Key, typename ValueType> class Map {
         using pointer = std::conditional_t<IsConst, const Entry *, Entry *>;
         using reference = std::conditional_t<IsConst, const Entry &, Entry &>;
 
-        Iterator(List<Entry>::Pointer ptr = nullptr) : actual(ptr) {};
+        Iterator() : actual(nullptr) {}
         Iterator(std::vector<List<Entry>> *buckets) : buckets(buckets) { next(); }
+        explicit Iterator(std::vector<List<Entry>> *buckets, size_t nBucket, List<Entry>::Pointer ptr)
+            : buckets(buckets), nBucket(nBucket), actual(std::move(ptr)) {}
 
         Iterator &operator++() {
             actual = actual->next;
@@ -182,6 +185,31 @@ template <bool IsSet, Hashable Key, typename ValueType> class Map {
 
     ForwardIterator begin() { return {&buckets}; }
     ForwardIterator end() { return {}; }
+
+  private:
+    ForwardIterator find(Bucket &bucket, size_t hKey, Key key) {
+        auto head = bucket.head;
+        while (head != nullptr) {
+            if constexpr (IsSet) {
+                if (head->val == key)
+                    break;
+            } else {
+                if (head->val.first == key)
+                    break;
+            }
+            head = head->next;
+        }
+
+        return ForwardIterator{&buckets, hKey, head};
+    }
+
+  public:
+    ForwardIterator find(Key key) {
+        auto hkey = hash(key);
+        auto &bucket = buckets.at(hkey);
+
+        return find(bucket, hkey, key);
+    }
 
     ConstForwardIterator begin() const { return {&buckets}; }
     ConstForwardIterator end() const { return {}; }

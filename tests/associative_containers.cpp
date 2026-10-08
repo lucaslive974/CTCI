@@ -1,4 +1,5 @@
 #include "associative_containers.hpp"
+#include "exceptions.hpp"
 
 #include <gtest/gtest.h>
 #include <ranges>
@@ -11,15 +12,15 @@ TEST(MAP, INSERT) {
     map.insert({1, 2});
     map.insert({2, 1});
 
-    EXPECT_EQ(map.get(1), 2);
-    EXPECT_EQ(map.get(2), 1);
+    EXPECT_EQ(map.at(1), 2);
+    EXPECT_EQ(map.at(2), 1);
 }
 
 TEST(MAP, INSERT_UPDATE) {
     HashMap<int, int> map{{1, 1}};
 
     map.insert({1, 2});
-    EXPECT_EQ(map.get(1), 2);
+    EXPECT_EQ(map.at(1), 2);
 }
 
 TEST(MAP, INSERT_COLLISIONS) {
@@ -27,8 +28,8 @@ TEST(MAP, INSERT_COLLISIONS) {
 
     map.insert({101, 101});
 
-    EXPECT_EQ(map.get(0), 0);
-    EXPECT_EQ(map.get(101), 101);
+    EXPECT_EQ(map.at(0), 0);
+    EXPECT_EQ(map.at(101), 101);
 }
 
 TEST(MAP, SUBSCRIPT_OPERATOR) {
@@ -44,16 +45,16 @@ TEST(MAP, SUBSCRIPT_OPERATOR_INEXISTENT_INSERT_DEFAULT) {
     EXPECT_EQ(map[1], 0);
 }
 
-TEST(MAP, GET_INEXISTENT_VALUE_CREATE_VALUE_DEFAULT) {
+TEST(MAP, GET_INEXISTENT_VALUE_THROWS) {
     HashMap<int, int> map;
-    EXPECT_EQ(map.get(1), 0);
+    EXPECT_THROW(map.at(1), CTCI::OutOfRange);
 }
 
 TEST(MAP, GET_WITH_COLLISIONS) {
     HashMap<int, int> map{{0, 0}, {101, 101}};
 
-    EXPECT_EQ(map.get(0), 0);
-    EXPECT_EQ(map.get(101), 101);
+    EXPECT_EQ(map.at(0), 0);
+    EXPECT_EQ(map.at(101), 101);
 }
 
 TEST(MAP, CONTAINS) {
@@ -73,9 +74,9 @@ TEST(MAP, RESIZE) {
     HashMap<int, int> map{/*size=*/3, /*list=*/{{1, 1}, {2, 2}, {3, 3}}};
 
     EXPECT_EQ(map.size(), 3);
-    EXPECT_EQ(map.get(1), 1);
-    EXPECT_EQ(map.get(2), 2);
-    EXPECT_EQ(map.get(3), 3);
+    EXPECT_EQ(map.at(1), 1);
+    EXPECT_EQ(map.at(2), 2);
+    EXPECT_EQ(map.at(3), 3);
 };
 
 TEST(MAP, SIZE) {
@@ -87,10 +88,10 @@ TEST(MAP, SIZE) {
 }
 
 TEST(MAP, CLEAR) {
-    HashMap<int, int> map{ {1, 1}};
-    
+    HashMap<int, int> map{{1, 1}};
+
     EXPECT_EQ(map.size(), 1);
-    
+
     map.clear();
     EXPECT_EQ(map.size(), 0);
 }

@@ -1,3 +1,5 @@
+#include "associative_containers.hpp"
+
 #include <concepts.hpp>
 
 #include <memory>
@@ -16,7 +18,7 @@ template <typename T> struct GNode {
 template <Hashable T, bool Directed = true> class Graph {
     using ValueType = T;
     using NodeType = GNode<T>;
-    std::unordered_map<ValueType, std::shared_ptr<NodeType>> nodes;
+    HashMap<ValueType, std::shared_ptr<NodeType>> nodes;
 
   public:
     Graph() = default;
@@ -66,7 +68,7 @@ template <Hashable T, bool Directed = true> class Graph {
             nodeB->neighbors.push_back(nodeA);
     }
 
-    std::shared_ptr<NodeType> getNode(T val) const {
+    std::shared_ptr<NodeType> getNode(T val) {
         auto ptr = nodes.find(val);
         if (ptr == nodes.end())
             return nullptr;
