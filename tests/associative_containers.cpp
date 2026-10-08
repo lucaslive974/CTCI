@@ -86,6 +86,15 @@ TEST(MAP, SIZE) {
     EXPECT_EQ(map.size(), 2);
 }
 
+TEST(MAP, CLEAR) {
+    HashMap<int, int> map{ {1, 1}};
+    
+    EXPECT_EQ(map.size(), 1);
+    
+    map.clear();
+    EXPECT_EQ(map.size(), 0);
+}
+
 TEST(MAP, FOR_RANGE_ITERATOR) {
     HashMap<int, int> map{{2, 2}, {105, 105}};
 

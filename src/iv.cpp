@@ -1,6 +1,5 @@
+#include "associative_containers.hpp"
 #include "chapters.hpp"
-#include <unordered_map>
-#include <unordered_set>
 
 using namespace CTCI;
 
@@ -14,7 +13,7 @@ auto IV::routeBetweenNodes(const Node<int> &orig, const Node<int> &dest) -> bool
     Queue<Node<int>> queue;
     queue.push(orig);
 
-    std::unordered_set<Node<int>> visited{orig};
+    Set<Node<int>> visited{orig};
 
     while (!queue.empty()) {
         auto node = queue.front();
@@ -144,7 +143,7 @@ auto IV::sucessor(const Tree<int>::Pointer &node) -> Tree<int>::Pointer {
 auto IV::buildOrder(const BuildInfo &info) -> List<Project> {
     Graph<Project> graph{info.projects};
 
-    std::unordered_map<Project, size_t> inDegree;
+    HashMap<Project, size_t> inDegree;
     for (const auto &dependencie : info.dependencies) {
         graph.appendEdge(dependencie);
         inDegree[dependencie.second]++;

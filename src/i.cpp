@@ -1,9 +1,8 @@
+#include "associative_containers.hpp"
 #include "chapters.hpp"
+
 #include <algorithm>
 #include <cstring>
-#include <unistd.h>
-#include <unordered_map>
-#include <unordered_set>
 
 using namespace CTCI;
 
@@ -11,7 +10,7 @@ I::I(std::string name) : Chapter(std::move(name)) {};
 
 auto I::isUnique(const std::string &s) -> bool {
     // Default
-    std::unordered_set<char> characters;
+    Set<char> characters;
     for (const auto &c : s) {
         if (characters.contains(c))
             return false;
@@ -23,11 +22,11 @@ auto I::isUnique(const std::string &s) -> bool {
 };
 
 auto I::checkPermutation(const std::string &s1, const std::string &s2) -> bool {
-    std::unordered_map<char, unsigned int> freq1;
+    HashMap<char, unsigned int> freq1;
     for (const auto &c : s1)
         ++freq1[c];
 
-    std::unordered_map<char, unsigned int> freq2;
+    HashMap<char, unsigned int> freq2;
     for (const auto &c : s2)
         ++freq2[c];
 
@@ -59,7 +58,7 @@ auto I::urlify(std::string s, size_t length) -> std::string {
 }
 
 auto I::palindromePerm(const std::string &s) -> bool {
-    std::unordered_map<char, unsigned int> freq;
+    HashMap<char, unsigned int> freq;
     size_t n = 0;
     for (const auto &c : s) {
         if (std::isspace(c) != 0)

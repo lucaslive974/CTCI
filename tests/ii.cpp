@@ -1,5 +1,7 @@
+#include "associative_containers.hpp"
 #include "chapters.hpp"
 #include "testing_utils.hpp"
+
 #include <gtest/gtest.h>
 
 using II = CTCI::II;
@@ -100,8 +102,8 @@ TEST(II, PARTITION_LIST) {
     CTCI::List<int> list{3, 5, 8, 5, 10, 2, 1};
     II::partition(list, k);
 
-    std::unordered_map<int, int> leftNums;
-    std::unordered_map<int, int> rightNums;
+    CTCI::HashMap<int, int> leftNums;
+    CTCI::HashMap<int, int> rightNums;
 
     bool isRightSide = false;
 

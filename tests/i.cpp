@@ -52,15 +52,26 @@ TEST(I, URLIFY) {
     EXPECT_EQ(I::urlify(s2, 13), R"(%20%20www.youtube)");
 }
 
-TEST(I, PALINDROME_PERMUTATION) {
+TEST(I, PALINDROME_PERMUTATION_ODD_SIZE) {
+    std::string s1{"cbabc"};
+    EXPECT_TRUE(I::palindromePerm(s1));
+
+    std::string s2{"aadbc"};
+    EXPECT_FALSE(I::palindromePerm(s2));
+
+    std::string s3{"adbca"};
+    EXPECT_FALSE(I::palindromePerm(s3));
+}
+
+TEST(I, PALINDROME_PERMUTATION_EVEN_SIZE) {
     std::string s1{"Tact Coa"};
     EXPECT_TRUE(I::palindromePerm(s1));
 
-    std::string s2{"abcdbbcd"};
+    std::string s2{"bcdbbcda"};
     EXPECT_FALSE(I::palindromePerm(s2));
-
-    std::string s3{"aadbc"};
-    EXPECT_FALSE(I::palindromePerm(s3));
+    
+    std::string s3{ "cdbcdb"};
+    EXPECT_TRUE(I::palindromePerm(s3));
 }
 
 TEST(I, ONE_AWAY) {

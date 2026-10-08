@@ -1,3 +1,5 @@
+#pragma once
+
 #include "concepts.hpp"
 #include "list.hpp"
 #include <initializer_list>
@@ -46,7 +48,7 @@ template <bool IsSet, Hashable Key, typename ValueType> class Map {
                 return entry.second;
         }
 
-        bucket.push({key, ValueType{}});
+        insert({key, ValueType{}});
         return get(bucket, key);
     }
 
@@ -119,9 +121,15 @@ template <bool IsSet, Hashable Key, typename ValueType> class Map {
 
     template <bool A = IsSet>
         requires(!A)
-    ValueType operator[](Key key) {
+    ValueType &operator[](Key key) {
         return get(key);
     };
+
+    void clear() {
+        buckets.clear();
+        _loadFactor = 0;
+        _size = 0;
+    }
 
     [[nodiscard]] size_t size() const noexcept { return _size; }
 

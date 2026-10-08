@@ -1,6 +1,5 @@
+#include "associative_containers.hpp"
 #include "chapters.hpp"
-#include <unordered_map>
-#include <unordered_set>
 #include <format>
 
 using namespace CTCI;
@@ -9,7 +8,7 @@ auto II::removeDups(CTCI::List<int> &list) -> void {
     if (list.empty())
         return;
 
-    std::unordered_map<int, int> freq;
+    HashMap<int, int> freq;
 
     auto head = list.head;
     while (head != nullptr) {
@@ -152,7 +151,7 @@ auto II::palindrome(List<char> &list) -> bool {
 }
 
 auto II::intersection(List<int> &a, List<int> &b) -> std::shared_ptr<Node<int>> { // NOLINT
-    std::unordered_set<void *> existents;
+    Set<void *> existents;
 
     auto head = a.head;
     while (head != nullptr) {

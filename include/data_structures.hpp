@@ -2,6 +2,7 @@
 
 // NOLINTBEGIN
 
+#include "associative_containers.hpp"
 #include "deque.hpp"
 #include "graph.hpp"
 #include "list.hpp"
