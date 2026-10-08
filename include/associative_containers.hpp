@@ -40,6 +40,16 @@ template <bool IsSet, Hashable Key, typename ValueType> class Map {
         buckets = std::move(newBuckets);
     }
 
+    ValueType &get(Bucket &bucket, Key key) {
+        for (auto &entry : bucket) {
+            if (entry.first == key)
+                return entry.second;
+        }
+
+        bucket.push({key, ValueType{}});
+        return get(bucket, key);
+    }
+
     void insert(Bucket &bucket, Entry entry) {
         if constexpr (IsSet) {
             for (auto &key : bucket) {
@@ -71,13 +81,7 @@ template <bool IsSet, Hashable Key, typename ValueType> class Map {
         auto hkey = hash(key);
         auto &bucket = buckets[hkey];
 
-        for (auto &entry : bucket) {
-            if (entry.first == key)
-                return entry.second;
-        }
-
-        bucket.push({key, ValueType{}});
-        return get(key);
+        return get(bucket, key);
     }
 
     template <std::ranges::range R> void insert(R &&rng) {
