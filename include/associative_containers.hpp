@@ -1,5 +1,6 @@
 #include "concepts.hpp"
 #include "list.hpp"
+#include <initializer_list>
 #include <type_traits>
 
 namespace CTCI {
@@ -60,7 +61,9 @@ template <bool IsSet, Hashable Key, typename ValueType> class Map {
 
   public:
     Map() = default;
-    Map(size_t size) : _totalSize(size), buckets(size) {};
+    Map(size_t size) : _totalSize(size), buckets(size) {}
+    Map(std::initializer_list<Entry> list) { insert(list); }
+    Map(size_t size, std::initializer_list<Entry> list) : _totalSize(size), buckets(size) { insert(list); }
 
     template <bool S = IsSet>
         requires(!S)
@@ -75,6 +78,11 @@ template <bool IsSet, Hashable Key, typename ValueType> class Map {
 
         bucket.push({key, ValueType{}});
         return get(key);
+    }
+
+    template <std::ranges::range R> void insert(R &&rng) {
+        for (auto &el : rng)
+            insert(el);
     }
 
     void insert(Entry entry) {
@@ -105,7 +113,11 @@ template <bool IsSet, Hashable Key, typename ValueType> class Map {
         return false;
     }
 
-    ValueType operator[](Key key) { return get(key); };
+    template <bool A = IsSet>
+        requires(!A)
+    ValueType operator[](Key key) {
+        return get(key);
+    };
 
     [[nodiscard]] size_t size() const noexcept { return _size; }
 
