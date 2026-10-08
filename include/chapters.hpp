@@ -197,5 +197,8 @@ class IV : public Chapter {
         List<std::pair<Project, Project>> dependencies;
     };
     static auto buildOrder(const BuildInfo &info) -> List<Project>;
+
+    using TreeNode = Tree<int>::Pointer;
+    static auto findCommonAncestor(TreeNode &a, TreeNode &b) -> TreeNode;
 };
 } // namespace CTCI

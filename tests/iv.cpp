@@ -1,5 +1,6 @@
 #include "list.hpp"
 #include "testing_utils.hpp"
+#include "tree.hpp"
 
 #include <chapters.hpp>
 #include <gtest/gtest.h>
@@ -416,4 +417,41 @@ TEST_F(IV_BUILD_ORDER, GRAPH_CYCLIC) {
 TEST_F(IV_BUILD_ORDER, GRAPH_CYCLIC_II) {
     info.dependencies.push({'a', 'f'});
     EXPECT_THROW(IV::buildOrder(info), IV::CircularReferenceError);
+}
+
+class IV_FIRST_COMMON_ANCESTOR : public testing::Test {
+  protected:
+    IV_FIRST_COMMON_ANCESTOR() = default;
+
+    using TreePointer = Tree<int>::Pointer;
+
+    Tree<int> tree{4, 3, 2, 1, 6, 5, 7};
+};
+
+TEST_F(IV_FIRST_COMMON_ANCESTOR, ROOT_NODE) { EXPECT_EQ(IV::findCommonAncestor(tree.root, tree.root), tree.root); }
+
+TEST_F(IV_FIRST_COMMON_ANCESTOR, SAME_NODE) {
+    auto node2 = tree.root->left;
+    EXPECT_EQ(IV::findCommonAncestor(node2, node2), node2);
+}
+
+TEST_F(IV_FIRST_COMMON_ANCESTOR, NULL_NODE) {
+    TreePointer node1 = nullptr;
+    auto node2 = tree.root->left;
+    EXPECT_EQ(IV::findCommonAncestor(node1, node2), nullptr);
+    EXPECT_EQ(IV::findCommonAncestor(node2, node1), nullptr);
+    EXPECT_EQ(IV::findCommonAncestor(node1, node1), nullptr);
+}
+
+TEST_F(IV_FIRST_COMMON_ANCESTOR, SAME_BRANCHES) {
+    auto node1 = tree.root->left->left;
+    auto node2 = tree.root->left;
+    EXPECT_EQ(IV::findCommonAncestor(node1, node2), node2);
+    EXPECT_EQ(IV::findCommonAncestor(node2, node1), node2);
+}
+
+TEST_F(IV_FIRST_COMMON_ANCESTOR, DIFFERENT_BRANCHES) {
+    auto node1 = tree.root->left->left;
+    auto node7 = tree.root->right->right;
+    EXPECT_EQ(IV::findCommonAncestor(node1, node7), tree.root);
 }

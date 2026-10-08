@@ -173,3 +173,25 @@ auto IV::buildOrder(const BuildInfo &info) -> List<Project> {
 
     return buildList;
 }
+
+auto IV::findCommonAncestor(TreeNode &a, TreeNode &b) -> TreeNode { // NOLINT
+    Set<TreeNode> path;
+
+    auto head = a;
+    while (head != nullptr) {
+        path.insert(head);
+        head = head->parent;
+    }
+
+    head = b;
+    TreeNode ans = nullptr;
+
+    while (head != nullptr) {
+        if (path.contains(head))
+            return head;
+
+        head = head->parent;
+    }
+
+    return ans;
+}
