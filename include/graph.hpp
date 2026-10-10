@@ -15,7 +15,7 @@ template <typename T> struct GNode {
     void addNeighbor(std::shared_ptr<GNode> neighbor) { neighbors.push_back(std::move(neighbor)); }
 };
 
-template <Hashable T, bool Directed = true> class Graph {
+template <concepts::Hashable T, bool Directed = true> class Graph {
     using ValueType = T;
     using NodeType = GNode<T>;
     HashMap<ValueType, std::shared_ptr<NodeType>> nodes;

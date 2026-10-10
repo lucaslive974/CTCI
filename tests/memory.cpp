@@ -1,10 +1,12 @@
 #include "memory.hpp"
+#include "concepts.hpp"
 
 #include <gtest/gtest.h>
 
 using namespace CTCI;
 
 TEST(ALLOCATOR, STATELESS_ALLOCATOR) {
+    static_assert(concepts::Allocator<Allocator<int>>);
     Allocator<int> a1;
     Allocator<int> a2;
 

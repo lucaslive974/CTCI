@@ -9,7 +9,7 @@
 
 namespace CTCI {
 
-template <bool IsSet, Hashable Key, typename ValueType> class Map {
+template <bool IsSet, concepts::Hashable Key, typename ValueType> class Map {
   private:
     using Entry = std::conditional_t<IsSet, Key, std::pair<Key, ValueType>>;
     using Bucket = List<Entry>;
@@ -213,7 +213,7 @@ template <bool IsSet, Hashable Key, typename ValueType> class Map {
     ConstForwardIterator find(Key key) const { return find<ConstForwardIterator>(key); }
 };
 
-template <Hashable Key, typename Value> using HashMap = Map</**IsSet=*/false, Key, Value>;
-template <Hashable Key> using Set = Map</**IsSet=*/true, Key, Key>;
+template <concepts::Hashable Key, typename Value> using HashMap = Map</**IsSet=*/false, Key, Value>;
+template <concepts::Hashable Key> using Set = Map</**IsSet=*/true, Key, Key>;
 
 } // namespace CTCI
