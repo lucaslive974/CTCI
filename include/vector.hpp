@@ -94,11 +94,11 @@ template <typename Ty, concepts::Allocator Allocator = Allocator<Ty>>
     Vector(std::initializer_list<Ty> list) : Vector(std::ranges::subrange(list.begin(), list.end())) {}
     template <std::ranges::range R> Vector(R &&rng) : Vector(rng.size()) {
         for (auto [i, el] : std::views::enumerate(rng))
-            _data[i] = el;
+            _alloc.construct(_data + i, el);
     }
     Vector(size_t size, Ty value) : Vector(size) {
         for (auto i : std::views::iota(0UZ, size))
-            _data[i] = value;
+            _alloc.construct(_data + i, value);
     }
     template <typename... Args>
         requires(sizeof...(Args) > 0)

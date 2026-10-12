@@ -9,5 +9,6 @@
 #include "matrix.hpp"
 #include "stack.hpp"
 #include "tree.hpp"
+#include "vector.hpp"
 
 // NOLINTEND

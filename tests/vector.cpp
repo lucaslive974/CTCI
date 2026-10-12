@@ -235,6 +235,13 @@ TEST(VECTOR, EQUALITY) {
     EXPECT_TRUE(a != b);
 }
 
+TEST(VECTOR, VECTOR_OF_VECTOR) {
+    Vector<Vector<int>> vec(3, Vector<int>(3, 0));
+    
+    EXPECT_EQ(vec.size(), 3);
+    EXPECT_EQ(vec.front().size(), 3);
+}
+
 TEST(VECTOR, STL_COMPATIBILITY) {
     Vector<int> vec{1, 2, 3};
 
