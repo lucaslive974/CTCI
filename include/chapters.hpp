@@ -4,7 +4,6 @@
 #include "data_structures.hpp"
 #include <memory>
 #include <stdexcept>
-#include <vector>
 
 namespace CTCI {
 
@@ -17,8 +16,8 @@ class I : public Chapter {
     static auto palindromePerm(const std::string &s) -> bool;
     static auto oneAway(std::string &s1, std::string &s2) -> bool;
     static auto stringCompression(const std::string &s1) -> std::string;
-    static auto rotateMatrix(std::vector<std::vector<int>> &matrix) -> void;
-    static auto zeroMatrix(std::vector<std::vector<int>> &matrix) -> void;
+    static auto rotateMatrix(Vector<Vector<int>> &matrix) -> void;
+    static auto zeroMatrix(Vector<Vector<int>> &matrix) -> void;
     static auto stringRotation(std::string s1, const std::string &s2) -> bool;
 };
 
@@ -41,7 +40,7 @@ class III : public Chapter {
     static auto sortStack(Stack<int> &stack) -> void;
 
     template <typename T> class SetOfStacks {
-        std::vector<Stack<T>> stacks;
+        Vector<Stack<T>> stacks;
         size_t threshold = 10;
         size_t totalSize = 0;
 
@@ -178,10 +177,10 @@ class IV : public Chapter {
   public:
     IV(std::string name = "Trees and Graphs");
     static bool routeBetweenNodes(const Node<int> &orig, const Node<int> &dest);
-    static auto minimalTree(const std::vector<int> &nodes) -> Tree<int>;
+    static auto minimalTree(const Vector<int> &nodes) -> Tree<int>;
 
     template <typename T> using ListNode = List<std::shared_ptr<TNode<T>>>;
-    static auto listOfDepths(const Tree<int> &tree) -> std::vector<ListNode<int>>;
+    static auto listOfDepths(const Tree<int> &tree) -> Vector<ListNode<int>>;
     static auto checkBalanced(const Tree<int> &tree) -> bool;
     static auto validateBST(const Tree<int> &tree) -> bool;
     static auto sucessor(const Tree<int>::Pointer &node) -> Tree<int>::Pointer;

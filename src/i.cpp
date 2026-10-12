@@ -181,7 +181,7 @@ auto I::zeroMatrix(Matrix<int> &matrix) -> void {
             matrix[row][i] = 0;
     };
 
-    std::vector<std::pair<int, int>> zerosPos;
+    Vector<std::pair<int, int>> zerosPos;
     for (size_t i = 0; i < m; ++i) {
         for (size_t j = 0; j < n; ++j) {
             if (matrix[i][j] == 0)

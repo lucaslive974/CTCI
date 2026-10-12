@@ -33,7 +33,7 @@ template <typename T> struct Tree {
     size_t depth = 0;
 
     Tree() = default;
-    Tree(std::initializer_list<T> list) : Tree(std::vector<T>{list.begin(), list.end()}) {};
+    Tree(std::initializer_list<T> list) : Tree(Vector<T>{list.begin(), list.end()}) {};
     template <std::ranges::range R> Tree(R &&rng) {
         for (auto &ent : rng)
             append(ent);

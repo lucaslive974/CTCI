@@ -1,10 +1,11 @@
 #pragma once
 
+#include "vector.hpp"
+
 #include <cstddef>
 #include <iterator>
 #include <memory>
 #include <type_traits>
-#include <vector>
 
 namespace CTCI {
 
@@ -29,7 +30,7 @@ template <typename T> struct List {
 
     List(Pointer node = nullptr) : head(node), tail(node) {}
     List(std::initializer_list<T> list) { push(list); }
-    List(std::vector<T> &list) { push(list); }
+    List(Vector<T> &list) { push(list); }
     ~List() {
         if (empty())
             return;
@@ -74,7 +75,7 @@ template <typename T> struct List {
         }
     }
 
-    void push(std::vector<T> &list) {
+    void push(Vector<T> &list) {
         for (T &item : list) {
             push(item);
         }

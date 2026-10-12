@@ -16,7 +16,7 @@ TEST(LIST, INITIALIZER_LIST_INIT) {
 }
 
 TEST(LIST, INITIALIZE_VECTOR_INIT) {
-    std::vector<int> vec{5, 4, 3, 2, 1};
+    CTCI::Vector<int> vec{5, 4, 3, 2, 1};
     CTCI::List<int> list{vec};
 
     auto head = list.head;

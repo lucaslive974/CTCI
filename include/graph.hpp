@@ -1,14 +1,12 @@
 #include "associative_containers.hpp"
 
 #include <concepts.hpp>
-
 #include <memory>
-#include <vector>
 
 namespace CTCI {
 
 template <typename T> struct GNode {
-    std::vector<std::shared_ptr<GNode>> neighbors;
+    Vector<std::shared_ptr<GNode>> neighbors;
     T val = T{};
 
     GNode(T val) : val(std::move(val)) {};
@@ -30,8 +28,8 @@ template <concepts::Hashable T, bool Directed = true> class Graph {
         nodes.clear();
     };
 
-    Graph(std::initializer_list<T> init) : Graph(std::vector<T>(init.begin(), init.end())) {}
-    Graph(std::initializer_list<std::pair<T, T>> init) : Graph(std::vector<std::pair<T, T>>(init.begin(), init.end())) {};
+    Graph(std::initializer_list<T> init) : Graph(Vector<T>(init.begin(), init.end())) {}
+    Graph(std::initializer_list<std::pair<T, T>> init) : Graph(Vector<std::pair<T, T>>(init.begin(), init.end())) {};
 
     template <std::ranges::range R> Graph(R &&rng) {
         for (const auto &el : rng)

@@ -34,7 +34,7 @@ auto IV::routeBetweenNodes(const Node<int> &orig, const Node<int> &dest) -> bool
     return false;
 };
 
-auto IV::minimalTree(const std::vector<int> &nodes) -> Tree<int> {
+auto IV::minimalTree(const Vector<int> &nodes) -> Tree<int> {
     Tree<int> tree;
     auto minTree = [&tree, &nodes](this auto const &self, Tree<int>::Pointer &subTree, size_t start, size_t end) {
         if (start >= end)
@@ -51,11 +51,11 @@ auto IV::minimalTree(const std::vector<int> &nodes) -> Tree<int> {
     return tree;
 };
 
-auto IV::listOfDepths(const Tree<int> &tree) -> std::vector<ListNode<int>> {
+auto IV::listOfDepths(const Tree<int> &tree) -> Vector<ListNode<int>> {
     if (tree.empty())
         return {};
 
-    std::vector<ListNode<int>> res{ListNode<int>{tree.root}};
+    Vector<ListNode<int>> res{ListNode<int>{tree.root}};
     auto makeListOfDepths = [&tree, &res](this auto &self, const ListNode<int> &parents) -> void {
         ListNode<int> children;
         for (const auto &parent : parents) {

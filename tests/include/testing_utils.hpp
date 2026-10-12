@@ -1,10 +1,11 @@
 #include "chapters.hpp"
+
 #include <gtest/gtest.h>
 
 namespace {} // namespace
 
 namespace internal {
-template <typename T> void testMatrixIsEqual(std::vector<std::vector<T>> &a, std::vector<std::vector<T>> &b) { // NOLINT
+template <typename T> void testMatrixIsEqual(CTCI::Vector<CTCI::Vector<T>> &a, CTCI::Vector<CTCI::Vector<T>> &b) { // NOLINT
     size_t m = a.size();
     size_t n = a.front().size();
     for (size_t i = 0; i < m; ++i) {

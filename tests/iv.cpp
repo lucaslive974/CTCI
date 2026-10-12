@@ -53,7 +53,7 @@ TEST_F(IV_ROUTE_BETWEEN_NODES_TEST, ROUTE_BETWEEN_NODES_NULL_PARAMETERS) {
 };
 
 TEST(IV_MINIMAL_TREE, ODD_VECTOR) {
-    std::vector vec{1, 2, 3, 4, 5};
+    Vector<int> vec{1, 2, 3, 4, 5};
     auto tree = IV::minimalTree(vec);
 
     auto root = tree.root;
@@ -70,7 +70,7 @@ TEST(IV_MINIMAL_TREE, ODD_VECTOR) {
 }
 
 TEST(IV_MINIMAL_TREE, EVEN_VECTOR) {
-    std::vector vec{1, 2, 4, 8};
+    Vector<int> vec{1, 2, 4, 8};
     auto tree = IV::minimalTree(vec);
 
     EXPECT_EQ(tree.depth, 3);
@@ -84,7 +84,7 @@ TEST(IV_MINIMAL_TREE, EVEN_VECTOR) {
 }
 
 TEST(IV_MINIMAL_TREE, SMALL_VECTOR_THREE_ELEMENTS) {
-    std::vector vec{1, 2, 3};
+    Vector<int> vec{1, 2, 3};
     auto tree = IV::minimalTree(vec);
 
     EXPECT_EQ(tree.depth, 2);
@@ -96,7 +96,7 @@ TEST(IV_MINIMAL_TREE, SMALL_VECTOR_THREE_ELEMENTS) {
 }
 
 TEST(IV_MINIMAL_TREE, SMALL_VECTOR_TWO_ELEMENTS) {
-    std::vector vec{1, 2};
+    Vector<int> vec{1, 2};
     auto tree = IV::minimalTree(vec);
 
     EXPECT_EQ(tree.depth, 2);
@@ -107,7 +107,7 @@ TEST(IV_MINIMAL_TREE, SMALL_VECTOR_TWO_ELEMENTS) {
 }
 
 TEST(IV_MINIMAL_TREE, SMALL_VECTOR_ONE_ELEMENT) {
-    std::vector vec{2};
+    Vector<int> vec{2};
     auto tree = IV::minimalTree(vec);
 
     EXPECT_EQ(tree.depth, 1);
@@ -117,7 +117,7 @@ TEST(IV_MINIMAL_TREE, SMALL_VECTOR_ONE_ELEMENT) {
 }
 
 TEST(IV_MINIMAL_TREE, BIG_VECTOR) {
-    std::vector vec{1, 2, 4, 8, 16, 32, 64, 128, 256};
+    Vector<int> vec{1, 2, 4, 8, 16, 32, 64, 128, 256};
 
     auto tree = IV::minimalTree(vec);
     EXPECT_EQ(tree.depth, 4);
@@ -152,7 +152,7 @@ TEST(IV_LIST_OF_DEPTHS, TREE_RANK_2_PERFECT) {
     EXPECT_EQ(listRank1.front()->val, 2);
 
     auto &listRank2 = listOfDepths[1];
-    std::vector<int> listRank2Ans{1, 4};
+    Vector<int> listRank2Ans{1, 4};
     for (auto [treeNode, ans] : std::ranges::zip_view(listRank2, listRank2Ans)) {
         EXPECT_EQ(treeNode->val, ans);
     }
@@ -168,7 +168,7 @@ TEST(IV_LIST_OF_DEPTHS, TREE_RANK_2_FULL) {
     EXPECT_EQ(listRank1.front()->val, 2);
 
     auto &listRank2 = listOfDepths[1];
-    std::vector<int> listRank2Ans{1};
+    Vector<int> listRank2Ans{1};
     for (auto [treeNode, ans] : std::ranges::zip_view(listRank2, listRank2Ans)) {
         EXPECT_EQ(treeNode->val, ans);
     }
@@ -187,13 +187,13 @@ TEST(IV_LIST_OF_DEPTHS, TREE_RANK_3_PERFECT) {
     EXPECT_EQ(listRank1.front()->val, 8);
 
     auto &listRank2 = listOfDepths[1];
-    std::vector<int> listRank2Ans{2, 32};
+    Vector<int> listRank2Ans{2, 32};
     for (auto [treeNode, ans] : std::ranges::zip_view(listRank2, listRank2Ans)) {
         EXPECT_EQ(treeNode->val, ans);
     }
 
     auto &listRank3 = listOfDepths[2];
-    std::vector<int> listRank3Ans{1, 4, 16, 64};
+    Vector<int> listRank3Ans{1, 4, 16, 64};
     for (auto [treeNode, ans] : std::ranges::zip_view(listRank3, listRank3Ans)) {
         EXPECT_EQ(treeNode->val, ans);
     }

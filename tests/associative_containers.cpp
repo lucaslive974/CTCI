@@ -99,7 +99,7 @@ TEST(MAP, CLEAR) {
 TEST(MAP, FOR_RANGE_ITERATOR) {
     HashMap<int, int> map{{2, 2}, {105, 105}};
 
-    std::vector<int> ans{2, 105};
+    Vector<int> ans{2, 105};
     for (const auto &[entry, val] : std::views::zip(map, ans)) {
         if (entry.second != val)
             FAIL();

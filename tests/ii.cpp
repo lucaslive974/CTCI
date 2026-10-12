@@ -15,7 +15,7 @@ TEST(II, REMOVE_DUPS) {
 }
 
 TEST(II, REMOVE_DUPS_ALL_UNIQUES) {
-    std::vector<int> els{5, 4, 3, 2, 1};
+    CTCI::Vector<int> els{5, 4, 3, 2, 1};
 
     CTCI::List<int> l1{els};
     CTCI::List<int> l2{els};

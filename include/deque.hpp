@@ -1,8 +1,9 @@
 #pragma once
 
 #include "list.hpp"
+#include "vector.hpp"
+
 #include <memory>
-#include <vector>
 
 namespace CTCI {
 
@@ -25,7 +26,7 @@ template <typename T> struct Deque {
 
     Deque() = default;
     Deque(std::initializer_list<T> list) { append(list); }
-    Deque(std::vector<T> vec) { append(vec); }
+    Deque(Vector<T> vec) { append(vec); }
     ~Deque() {
         while (head) {
             head->prev = nullptr;
@@ -56,7 +57,7 @@ template <typename T> struct Deque {
             append(std::move(el));
     }
 
-    void append(std::vector<T> vec) {
+    void append(Vector<T> vec) {
         for (auto el : vec)
             append(el);
     }

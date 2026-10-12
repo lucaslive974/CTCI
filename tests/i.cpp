@@ -69,8 +69,8 @@ TEST(I, PALINDROME_PERMUTATION_EVEN_SIZE) {
 
     std::string s2{"bcdbbcda"};
     EXPECT_FALSE(I::palindromePerm(s2));
-    
-    std::string s3{ "cdbcdb"};
+
+    std::string s3{"cdbcdb"};
     EXPECT_TRUE(I::palindromePerm(s3));
 }
 
@@ -154,7 +154,7 @@ TEST(I, TRANSPOSE_MATRIX_NON_SQUARE) {
 
 TEST(I, TRANPOSE_MATRIX_EMPTY) {
     CTCI::Matrix<int> m1;
-    CTCI::Matrix<int> m2{1, CTCI::Row<int>{}};
+    CTCI::Matrix<int> m2(1, CTCI::Row<int>{});
 
     EXPECT_NO_THROW(I::rotateMatrix(m1));
     EXPECT_NO_THROW(I::rotateMatrix(m2));

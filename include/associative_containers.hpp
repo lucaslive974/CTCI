@@ -13,7 +13,7 @@ template <bool IsSet, concepts::Hashable Key, typename ValueType> class Map {
   private:
     using Entry = std::conditional_t<IsSet, Key, std::pair<Key, ValueType>>;
     using Bucket = List<Entry>;
-    using Buckets = std::vector<Bucket>;
+    using Buckets = Vector<Bucket>;
 
     Buckets buckets{101};
 
@@ -136,7 +136,7 @@ template <bool IsSet, concepts::Hashable Key, typename ValueType> class Map {
 
     template <bool IsConst> class Iterator {
         List<Entry>::Pointer actual = nullptr;
-        std::vector<List<Entry>> *buckets;
+        Vector<List<Entry>> *buckets;
         size_t nBucket = 0;
 
         void next() {
@@ -154,8 +154,8 @@ template <bool IsSet, concepts::Hashable Key, typename ValueType> class Map {
         using reference = std::conditional_t<IsConst, const Entry &, Entry &>;
 
         Iterator() : actual(nullptr) {}
-        Iterator(std::vector<List<Entry>> *buckets) : buckets(buckets) { next(); }
-        explicit Iterator(std::vector<List<Entry>> *buckets, List<Entry>::Pointer ptr, size_t nBucket)
+        Iterator(Vector<List<Entry>> *buckets) : buckets(buckets) { next(); }
+        explicit Iterator(Vector<List<Entry>> *buckets, List<Entry>::Pointer ptr, size_t nBucket)
             : buckets(buckets), nBucket(nBucket), actual(std::move(ptr)) {}
 
         Iterator &operator++() {
