@@ -9,15 +9,15 @@
 #include <concepts>
 #include <cstring>
 #include <initializer_list>
+#include <iterator>
 #include <ranges>
 #include <type_traits>
 
 namespace CTCI {
 
 template <typename Ty, concepts::Allocator Allocator = Allocator<Ty>>
-    requires std::movable<Ty> && std::copyable<Ty> ||
-                 std::is_trivially_move_constructible_v<Ty> && std::is_trivially_copy_constructible_v<Ty>
-                 class Vector {
+    requires concepts::Movable<Ty> || concepts::Copyable<Ty>
+class Vector {
     using RandomAccessIterator = iterators::ContiguousIteratorImpl<false, Ty>;
     using ConstRandomAccessIterator = iterators::ContiguousIteratorImpl<true, Ty>;
 
@@ -32,7 +32,7 @@ template <typename Ty, concepts::Allocator Allocator = Allocator<Ty>>
     }
 
     void transferData(Ty *src, Ty *dest, size_t size) {
-        if constexpr (std::is_trivially_move_constructible_v<Ty>) {
+        if constexpr (std::is_trivially_copyable_v<Ty>) {
             std::memmove(dest, src, sizeInBytes(size));
         } else {
             for (auto i : std::views::iota(0UZ, size))
@@ -54,7 +54,7 @@ template <typename Ty, concepts::Allocator Allocator = Allocator<Ty>>
             it = RandomAccessIterator{_data, static_cast<size_t>(it - begin())};
         }
 
-        if constexpr (std::is_trivially_move_constructible_v<Ty>) {
+        if constexpr (std::is_trivially_copyable_v<Ty>) {
             size_t offset = it - begin();
             if (it != end())
                 std::memmove(_data + offset + insertingSize, _data + offset, sizeInBytes(_size - offset));
@@ -64,8 +64,8 @@ template <typename Ty, concepts::Allocator Allocator = Allocator<Ty>>
             auto left = it;
             auto right = end();
 
-            *right = *left;
-            *left = *head;
+            *right = std::move(*left);
+            *left = std::move(*head);
 
             (++head, ++left, ++right);
         }
@@ -82,42 +82,32 @@ template <typename Ty, concepts::Allocator Allocator = Allocator<Ty>>
         _data = dest;
     }
 
-    Vector(size_t size) : _size(size) {
-        adjustCapacity(_size);
+    void _init(size_t size) {
+        adjustCapacity(size);
         _data = _alloc.allocate(_capacity);
+        _size = size;
     }
 
     static size_t sizeInBytes(size_t size) { return size * sizeof(Ty); }
 
   public:
-    Vector() : Vector(0) {};
-    Vector(std::initializer_list<Ty> list) : Vector(std::ranges::subrange(list.begin(), list.end())) {}
-    template <std::ranges::range R> Vector(R &&rng) : Vector(rng.size()) {
-        for (auto [i, el] : std::views::enumerate(rng))
-            _alloc.construct(_data + i, el);
-    }
-    Vector(size_t size, Ty value) : Vector(size) {
-        for (auto i : std::views::iota(0UZ, size))
-            _alloc.construct(_data + i, value);
-    }
-    template <typename... Args>
-        requires(sizeof...(Args) > 0)
-    Vector(size_t size, Args &&...args) : Vector(size) {
-        for (auto i : std::views::iota(0UZ, size))
-            _alloc.construct(_data + i, std::forward<Args>(args)...);
-    }
-    Vector(Vector &other) {
+    Vector() { _init(0); };
+
+    Vector(const Vector &other)
+        requires concepts::Copyable<Ty>
+    {
         _data = _alloc.allocate(other._capacity);
         _size = other._size;
         _capacity = other._capacity;
         _alloc = other._alloc;
-        if constexpr (std::is_trivially_copy_constructible_v<Ty>) {
+        if constexpr (std::is_trivially_copyable_v<Ty>) {
             std::memcpy(_data, other._data, sizeInBytes(other._size));
         } else {
             for (auto [actual, other] : std::views::zip(*this, other))
                 actual = other;
         }
     }
+
     Vector(Vector &&other) noexcept {
         _data = other._data;
         _size = other._size;
@@ -128,6 +118,7 @@ template <typename Ty, concepts::Allocator Allocator = Allocator<Ty>>
         other._size = 0;
         other._capacity = 64;
     }
+
     Vector &operator=(Vector other) {
         using std::swap;
         swap(_data, other._data);
@@ -136,20 +127,54 @@ template <typename Ty, concepts::Allocator Allocator = Allocator<Ty>>
         swap(_alloc, other._alloc);
         return *this;
     }
+
     ~Vector() {
         destroyData(_data, _size);
         _alloc.deallocate(_data, _capacity);
     }
 
-    Ty at(size_t idx) {
+    Vector(std::initializer_list<Ty> list) : Vector(list.begin(), list.end()) {}
+
+    template <std::ranges::range R>
+        requires(!std::same_as<std::remove_cvref_t<R>, Vector>)
+    Vector(R &&rng) : Vector(rng.begin(), rng.end()) {}
+
+    template <typename Iterator>
+        requires std::input_iterator<Iterator>
+    Vector(Iterator begin, Iterator end) {
+        _init(end - begin);
+
+        size_t i = 0;
+        while (begin != end) {
+            _alloc.construct(_data + i, std::move(*begin));
+            (++i, ++begin);
+        }
+    }
+
+    Vector(size_t size, const Ty value = Ty{}) {
+        _init(size);
+        for (auto i : std::views::iota(0UZ, size))
+            _alloc.construct(_data + i, std::move(value));
+    }
+    template <typename... Args>
+
+    Vector(size_t size, Args &&...args)
+        requires(sizeof...(Args) > 0)
+    {
+        _init(size);
+        for (auto i : std::views::iota(0UZ, size))
+            _alloc.construct(_data + i, std::forward<Args>(args)...);
+    }
+
+    Ty &at(size_t idx) const {
         if (idx >= _size)
             throw OutOfRange{"[Index out of index bounds]"};
         return _data[idx];
     }
 
-    Ty &operator[](size_t idx) { return _data[idx]; }
+    Ty &operator[](size_t idx) const { return _data[idx]; }
 
-    void pushBack(Ty value) { insert(end(), {std::move(value)}); }
+    void pushBack(Ty value) { emplaceBack(std::move(value)); }
     void popBack() {
         destroyData(_data + _size - 1, 1);
         --_size;
@@ -158,7 +183,14 @@ template <typename Ty, concepts::Allocator Allocator = Allocator<Ty>>
     void insert(RandomAccessIterator it, Ty value) { insertData(it, Vector<Ty>{std::move(value)}); }
     void insert(RandomAccessIterator it, std::initializer_list<Ty> list) { insertData(it, list); }
     template <std::ranges::range R> void insert(RandomAccessIterator it, R &&rng) { insertData(it, rng); }
-    template <typename... Args> void emplaceBack(Args... args) { insertData(end(), Vector<Ty>{Ty{args...}}); }
+    template <typename... Args> Ty &emplaceBack(Args &&...args) {
+        if (_size + 1 >= _capacity)
+            resize(_capacity);
+        _alloc.construct(_data + _size, std::forward<Args>(args)...);
+        ++_size;
+
+        return back();
+    }
 
     void erase(RandomAccessIterator first) { erase(first, first); }
     void erase(RandomAccessIterator first, RandomAccessIterator second) {
@@ -198,8 +230,8 @@ template <typename Ty, concepts::Allocator Allocator = Allocator<Ty>>
     [[nodiscard]] Ty *data() { return _data; }
     [[nodiscard]] const Ty *cdata() { return _data; }
 
-    [[nodiscard]] Ty front() const { return _data[0]; }
-    [[nodiscard]] Ty back() const { return _data[_size - 1]; }
+    [[nodiscard]] Ty &front() const { return _data[0]; }
+    [[nodiscard]] Ty &back() const { return _data[_size - 1]; }
 
     RandomAccessIterator begin() { return {_data, 0UZ}; }
     RandomAccessIterator end() { return {_data, _size}; }
@@ -210,6 +242,6 @@ template <typename Ty, concepts::Allocator Allocator = Allocator<Ty>>
     /* STL Compatibility */
     void push_back(Ty value) { pushBack(std::move(value)); }
     void pop_back() { popBack(); }
-    template <typename... Args> void emplace_back(Args... args) { emplaceBack(args...); }
+    template <typename... Args> Ty &emplace_back(Args &&...args) { return emplaceBack(std::forward<Args>(args)...); }
 };
 } // namespace CTCI

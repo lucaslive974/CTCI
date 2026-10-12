@@ -2,13 +2,14 @@
 
 #include <cstddef>
 #include <type_traits>
+#include <utility>
 
 namespace CTCI {
 
 template <typename T> struct Allocator {
     using value_type = T;
     using pointer = T *;
-    using const_pointer = const T*;
+    using const_pointer = const T *;
     using void_pointer = void *;
     using size_type = std::size_t;
 
@@ -22,7 +23,7 @@ template <typename T> struct Allocator {
     };
     void deallocate(pointer p, size_type n) { ::operator delete(p); };
 
-    template <typename... Args> void construct(pointer xp, Args... args) { ::new (xp) T(args...); };
+    template <typename... Args> void construct(pointer xp, Args &&...args) { ::new (xp) T(std::forward<Args>(args)...); };
     void destroy(pointer xp) {
         if constexpr (!std::is_trivially_destructible_v<T>) {
             xp->~T();

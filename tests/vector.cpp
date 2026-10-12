@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <gtest/gtest.h>
+#include <memory>
 
 using namespace CTCI;
 
@@ -56,6 +57,13 @@ TEST_F(VECTOR_NON_TRIVIAL_TYPE, NON_TRIVIAL_TYPE) {
     EXPECT_NO_FATAL_FAILURE({ Vector<NonTrivial> vec(2, 1); });
 }
 
+TEST_F(VECTOR_NON_TRIVIAL_TYPE, NON_TRIVIAL_COPY_CONSTRUCT) {
+    EXPECT_NO_FATAL_FAILURE({
+        Vector<NonTrivial> a(1);
+        Vector<NonTrivial> b = a; // NOLINT
+    });
+}
+
 TEST_F(VECTOR_NON_TRIVIAL_TYPE, NON_TRIVIAL_RESIZE) {
     Vector<NonTrivial> vec(63, 1);
 
@@ -97,6 +105,37 @@ TEST_F(VECTOR_NON_TRIVIAL_TYPE, NON_TRIVIAL_ERASE) {
     EXPECT_EQ(vec.back().value, 4);
 }
 
+class VECTOR_MOVE_ONLY_TYPE : public testing::Test {
+
+  protected:
+    struct MoveOnly {
+        int value = 0;
+        MoveOnly() = default;
+        MoveOnly(int val) : value(val) {};
+        MoveOnly(const MoveOnly &other) = delete; // NOLINT
+        MoveOnly(MoveOnly &&other) noexcept {
+            value = other.value;
+            other.value = 0;
+        }
+        MoveOnly &operator=(MoveOnly &&other) noexcept {
+            value = other.value;
+            other.value = 0;
+            return *this;
+        };
+    };
+};
+
+TEST_F(VECTOR_MOVE_ONLY_TYPE, MOVE_ONLY_TYPES) {
+    Vector<MoveOnly> vec;
+
+    vec.emplaceBack(1);
+    EXPECT_EQ(vec.back().value, 1);
+
+    vec.pushBack(MoveOnly{2});
+    EXPECT_EQ(vec.back().value, 2);
+    EXPECT_EQ(vec.size(), 2);
+}
+
 TEST(VECTOR, COPY_CONSTRUCTOR_AND_ASSIGNMENT_TRIVIAL) {
     Vector<int> vec{3, 2, 1};
     Vector<int> copy;
@@ -129,7 +168,8 @@ TEST(VECTOR, AT_SHOULD_VERIFY_BOUNDARIES) {
 }
 
 TEST(VECTOR, AUTO_RESIZING) {
-    Vector<int> vec{std::views::iota(0, 63)};
+    auto view = std::views::iota(0, 63);
+    Vector<int> vec{view.begin(), view.end()};
 
     vec.pushBack(64);
     EXPECT_EQ(vec[63], 64);
@@ -164,8 +204,11 @@ TEST(VECTOR, INSERT_MIDDLE) {
 
 TEST(VECTOR, INSERT_RANGE) {
     Vector<int> vec;
-    vec.insert(vec.end(), {1, 2, 3});
+    vec.insert(vec.end(), {0, 1, 2});
     EXPECT_EQ(vec.size(), 3);
+    
+    vec.insert(vec.end(), std::views::iota(3, 65));
+    EXPECT_EQ(vec.size(), 65);
 }
 
 TEST(VECTOR, POP_BACK) {
@@ -237,7 +280,7 @@ TEST(VECTOR, EQUALITY) {
 
 TEST(VECTOR, VECTOR_OF_VECTOR) {
     Vector<Vector<int>> vec(3, Vector<int>(3, 0));
-    
+
     EXPECT_EQ(vec.size(), 3);
     EXPECT_EQ(vec.front().size(), 3);
 }
@@ -254,6 +297,12 @@ TEST(VECTOR, STL_COMPATIBILITY) {
 
     vec.pop_back();
     EXPECT_EQ(vec.size(), 4);
+
+    Vector<std::unique_ptr<int>> vecSmartPtr;
+    vecSmartPtr.emplace_back(std::make_unique<int>(1));
+
+    EXPECT_EQ(vecSmartPtr.size(), 1);
+    EXPECT_EQ(*(vecSmartPtr.front()), 1);
 }
 
 TEST(VECTOR, RANGE) {
