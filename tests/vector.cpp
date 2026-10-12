@@ -206,7 +206,7 @@ TEST(VECTOR, INSERT_RANGE) {
     Vector<int> vec;
     vec.insert(vec.end(), {0, 1, 2});
     EXPECT_EQ(vec.size(), 3);
-    
+
     vec.insert(vec.end(), std::views::iota(3, 65));
     EXPECT_EQ(vec.size(), 65);
 }
@@ -217,6 +217,13 @@ TEST(VECTOR, POP_BACK) {
     vec.popBack();
     EXPECT_EQ(vec.size(), 2);
     EXPECT_EQ(vec.back(), 2);
+
+    vec.popBack();
+    EXPECT_EQ(vec.size(), 1);
+    EXPECT_EQ(vec.back(), 1);
+
+    vec.popBack();
+    EXPECT_TRUE(vec.empty());
 }
 
 TEST(VECTOR, EMPTY) {
@@ -255,6 +262,14 @@ TEST(VECTOR, EMPLACE_BACK) {
     EXPECT_EQ(vec.back(), 3);
 }
 
+TEST(VECTOR, EMPLACE_BACK_WITH_RESIZE) {
+    Vector<int> vec{std::views::iota(0, 63)};
+
+    EXPECT_NO_FATAL_FAILURE(vec.emplaceBack(63));
+    EXPECT_EQ(vec.size(), 64);
+    EXPECT_EQ(vec.back(), 63);
+}
+
 TEST(VECTOR, CLEAR) {
     Vector<int> vec{1, 2, 3};
     vec.clear();
@@ -264,6 +279,13 @@ TEST(VECTOR, CLEAR) {
     vec.pushBack(1);
     EXPECT_EQ(vec.size(), 1);
     EXPECT_EQ(vec.front(), 1);
+}
+
+TEST(VECTOR, RAW_DATA) {
+    Vector<int> vec{1, 2, 3};
+
+    vec.data()[0] = 2;
+    EXPECT_EQ(*vec.cdata(), 2);
 }
 
 TEST(VECTOR, EQUALITY) {

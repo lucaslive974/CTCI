@@ -156,8 +156,8 @@ class Vector {
         for (auto i : std::views::iota(0UZ, size))
             _alloc.construct(_data + i, std::move(value));
     }
-    template <typename... Args>
 
+    template <typename... Args>
     Vector(size_t size, Args &&...args)
         requires(sizeof...(Args) > 0)
     {
@@ -203,7 +203,7 @@ class Vector {
             std::memmove(_data + startOffset, _data + endOffset, end() - second);
         } else {
             while (endOffset < size())
-                _data[startOffset++] = _data[endOffset++];
+                _alloc.construct(_data + startOffset++, std::move(_data[endOffset++]));
         }
 
         _size -= amount;
