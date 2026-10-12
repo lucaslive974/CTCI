@@ -88,6 +88,15 @@ TEST_F(VECTOR_NON_TRIVIAL_TYPE, NON_TRIVIAL_INSERT) {
     EXPECT_EQ(vec.size(), 3);
 }
 
+TEST_F(VECTOR_NON_TRIVIAL_TYPE, NON_TRIVIAL_INSERT_WITH_RESIZE) {
+    Vector<NonTrivial> vec(63, NonTrivial{});
+
+    vec.insert(vec.end(), {1, 2, 3});
+
+    EXPECT_EQ(vec.size(), 66);
+    EXPECT_EQ(vec.capacity(), 128);
+}
+
 TEST_F(VECTOR_NON_TRIVIAL_TYPE, NON_TRIVIAL_COPY) {
     Vector<NonTrivial> vec{1, 2};
     auto vecCopy = vec;
