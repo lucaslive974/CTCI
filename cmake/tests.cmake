@@ -57,6 +57,13 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
             ${IGNORE_TEST_RE}
             -format=text
 
+            COMMAND
+            ${LLVM_COV_TOOL} show $<TARGET_FILE:CTCI_TEST>
+            ${INSTR_PROFILE}
+            ${IGNORE_TEST_RE}
+            -format=html 
+            -output-dir=html-coverage
+
             WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
             DEPENDS CTCI_TEST
             COMMENT "Generating LLVM coverage report..."
