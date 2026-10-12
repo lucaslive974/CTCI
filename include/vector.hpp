@@ -5,6 +5,7 @@
 #include "iterators.hpp"
 #include "memory.hpp"
 
+#include <algorithm>
 #include <concepts>
 #include <cstring>
 #include <initializer_list>
@@ -29,8 +30,6 @@ template <typename Ty, concepts::Allocator Allocator = Allocator<Ty>>
         while (_capacity <= size)
             _capacity <<= 1;
     }
-
-    size_t sizeInBytes(size_t size) { return size * sizeof(Ty); }
 
     void transferData(Ty *src, Ty *dest, size_t size) {
         if constexpr (std::is_trivially_move_constructible_v<Ty>) {
@@ -88,12 +87,18 @@ template <typename Ty, concepts::Allocator Allocator = Allocator<Ty>>
         _data = _alloc.allocate(_capacity);
     }
 
+    static size_t sizeInBytes(size_t size) { return size * sizeof(Ty); }
+
   public:
     Vector() : Vector(0) {};
     Vector(std::initializer_list<Ty> list) : Vector(std::ranges::subrange(list.begin(), list.end())) {}
     template <std::ranges::range R> Vector(R &&rng) : Vector(rng.size()) {
-        for (auto [idx, el] : std::views::enumerate(rng))
-            _data[idx] = el;
+        for (auto [i, el] : std::views::enumerate(rng))
+            _data[i] = el;
+    }
+    Vector(size_t size, Ty value) : Vector(size) {
+        for (auto i : std::views::iota(0UZ, size))
+            _data[i] = value;
     }
     template <typename... Args>
         requires(sizeof...(Args) > 0)
@@ -177,9 +182,21 @@ template <typename Ty, concepts::Allocator Allocator = Allocator<Ty>>
         _size = 0;
     }
 
+    /* Equality */
+    friend bool operator==(const Vector &a, const Vector &b) {
+        return !std::ranges::any_of(std::views::zip(a, b), [](auto tuple) {
+            auto [va, vb] = tuple;
+            return va != vb;
+        });
+    }
+    friend bool operator!=(const Vector &a, const Vector &b) { return !(a == b); }
+
     [[nodiscard]] size_t size() const { return _size; }
     [[nodiscard]] size_t capacity() const { return _capacity; }
     [[nodiscard]] bool empty() const { return _size == 0; }
+
+    [[nodiscard]] Ty *data() { return _data; }
+    [[nodiscard]] const Ty *cdata() { return _data; }
 
     [[nodiscard]] Ty front() const { return _data[0]; }
     [[nodiscard]] Ty back() const { return _data[_size - 1]; }

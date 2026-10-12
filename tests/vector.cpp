@@ -1,6 +1,7 @@
 #include "vector.hpp"
 #include "exceptions.hpp"
 
+#include <algorithm>
 #include <gtest/gtest.h>
 
 using namespace CTCI;
@@ -161,6 +162,12 @@ TEST(VECTOR, INSERT_MIDDLE) {
     EXPECT_EQ(vec[3], 3);
 }
 
+TEST(VECTOR, INSERT_RANGE) {
+    Vector<int> vec;
+    vec.insert(vec.end(), {1, 2, 3});
+    EXPECT_EQ(vec.size(), 3);
+}
+
 TEST(VECTOR, POP_BACK) {
     Vector<int> vec{1, 2, 3};
 
@@ -216,6 +223,18 @@ TEST(VECTOR, CLEAR) {
     EXPECT_EQ(vec.front(), 1);
 }
 
+TEST(VECTOR, EQUALITY) {
+    Vector<int> a{1, 2, 3};
+    Vector<int> b{1, 2, 3};
+
+    EXPECT_TRUE(a == b);
+    EXPECT_FALSE(a != b);
+
+    std::ranges::reverse(b);
+    EXPECT_FALSE(a == b);
+    EXPECT_TRUE(a != b);
+}
+
 TEST(VECTOR, STL_COMPATIBILITY) {
     Vector<int> vec{1, 2, 3};
 
@@ -235,6 +254,8 @@ TEST(VECTOR, RANGE) {
 
     for (const auto [el, val] : std::views::zip(vec, std::views::iota(1, 4)))
         EXPECT_EQ(el, val);
-
     EXPECT_EQ(vec.begin() + 3, vec.end());
+
+    const Vector<int> vecB;
+    EXPECT_EQ(vecB.begin(), vecB.end());
 }
