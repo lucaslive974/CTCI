@@ -1,7 +1,9 @@
 #include "memory.hpp"
 #include "concepts.hpp"
 
+#include <cmath>
 #include <gtest/gtest.h>
+#include <ranges>
 
 using namespace CTCI;
 
@@ -67,12 +69,35 @@ class SMART_PTR_TEST : public testing::Test {
         int value;
         Base(int val) : value(val) {};
         virtual ~Base() = default;
+
+        [[nodiscard]] virtual int calculate() const { return value * 2; }
     };
 
     struct Derived : public Base {
         char name = 'd';
         Derived(int val) : Base(val) {};
         ~Derived() = default;
+
+        [[nodiscard]] int calculate() const override { return value * 3; };
+    };
+
+    struct Math {
+        int value = 0;
+        Math(int val) : value(val) {};
+        virtual ~Math() = default;
+        [[nodiscard]] virtual double calculate() const = 0;
+    };
+
+    struct Square : Math {
+        Square(int val) : Math(val) {};
+        ~Square() = default;
+        [[nodiscard]] double calculate() const override { return pow(value, 2); }
+    };
+
+    struct Cubic : public Math {
+        Cubic(int val) : Math(val) {};
+        ~Cubic() = default;
+        [[nodiscard]] double calculate() const override { return pow(value, 3); }
     };
 };
 
@@ -105,6 +130,14 @@ TEST_F(SMART_PTR_TEST, RTTI_CONVERSIONS) {
     auto d = CTCI::makeShared<Base>(2);
     auto e = dynamicPointerCast<Derived>(d);
     EXPECT_EQ(nullptr, e);
+}
+
+TEST_F(SMART_PTR_TEST, POLYMORPHISM) {
+    std::vector<SharedPtr<Math>> vec{CTCI::makeShared<Square>(2), CTCI::makeShared<Cubic>(2)};
+
+    std::vector ans{4, 8};
+    for (auto [el, val] : std::views::zip(vec, ans))
+        EXPECT_EQ(el->calculate(), val);
 }
 
 TEST(SHARED_PTR_TRIVIAL, CORRECT_INITIALIZATION) {

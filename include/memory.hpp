@@ -98,6 +98,13 @@ template <typename T, typename Allocator = Allocator<T>> class SharedPtr {
         _alloc.template rebind<std::atomic_uint>().deallocate(_counter);
     };
 
+    template <typename U>
+    operator SharedPtr<U>()
+        requires(std::is_base_of_v<U, T>)
+    {
+        return std::move(SharedPtr<U>{_data, _counter});
+    }
+
     Reference operator*() const { return *_data; }
     Pointer operator->() const { return _data; }
     Pointer get() const { return _data; }
@@ -108,23 +115,22 @@ template <typename T, typename Allocator = Allocator<T>> class SharedPtr {
     friend bool operator==(const SharedPtr &a, const std::nullptr_t b) { return a._data == b; }
     friend bool operator==(const std::nullptr_t a, const SharedPtr &b) { return a == b._data; }
 
-    template <typename U> static SharedPtr<U> dynamicCast(SharedPtr<T> ptr) {
+    template <typename U> static SharedPtr<U> dynamicCast(SharedPtr<T> &ptr) {
         auto newPtr = dynamic_cast<U *>(ptr.get());
-        auto shared = SharedPtr<U>{newPtr, ptr._counter};
-        return std::move(shared);
+        return std::move(SharedPtr<U>{newPtr, ptr._counter});
     }
 
-    template <typename U> static SharedPtr<U> staticCast(SharedPtr<T> ptr) {
+    template <typename U> static SharedPtr<U> staticCast(SharedPtr<T> &ptr) {
         auto shared = SharedPtr<U>{static_cast<U *>(ptr.get()), ptr._counter};
         return std::move(shared);
     }
 };
 
-template <typename Ty, typename Allocator = Allocator<Ty>> class UniquePtr {
-    using Pointer = Ty *;
-    using ConstPointer = const Ty *;
-    using Reference = Ty &;
-    using ConstReference = const Ty &;
+template <typename T, typename Allocator = Allocator<T>> class UniquePtr {
+    using Pointer = T *;
+    using ConstPointer = const T *;
+    using Reference = T &;
+    using ConstReference = const T &;
     Pointer _data = nullptr;
     Allocator _alloc;
 
@@ -147,6 +153,15 @@ template <typename Ty, typename Allocator = Allocator<Ty>> class UniquePtr {
 
         _alloc.destroy(_data);
         _alloc.deallocate(_data);
+    }
+
+    template <typename U>
+    operator UniquePtr<U>()
+        requires(std::is_base_of_v<U, T>)
+    {
+        auto ptr = UniquePtr<U>{_data};
+        _data = nullptr;
+        return std::move(ptr);
     }
 
     Reference operator*() { return *_data; }
