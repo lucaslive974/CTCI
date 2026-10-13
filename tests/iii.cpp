@@ -1,5 +1,7 @@
 #include "chapters.hpp"
+#include "memory.hpp"
 #include "testing_utils.hpp"
+
 #include <gtest/gtest.h>
 
 using StacksInt = CTCI::III::SetOfStacks<int>;
@@ -135,8 +137,8 @@ using AnimalShelter = III::AnimalShelter;
 using Dog = AnimalShelter::Dog;
 using Cat = AnimalShelter::Cat;
 
-auto createDog() -> std::unique_ptr<Dog> { return std::make_unique<Dog>(); }
-auto createCat() -> std::unique_ptr<Cat> { return std::make_unique<Cat>(); }
+auto createDog() -> CTCI::UniquePtr<Dog> { return CTCI::make_unique<Dog>(); }
+auto createCat() -> CTCI::UniquePtr<Cat> { return CTCI::make_unique<Cat>(); }
 } // namespace
 
 using QueueInt = CTCI::III::Queue<int>;

@@ -29,9 +29,9 @@ auto III::sortStack(Stack<int> &stack) -> void {
 
 using AnimalShelter = III::AnimalShelter;
 
-void AnimalShelter::enqueue(std::unique_ptr<Animal> &&ptr) { animals.append(std::move(ptr)); }
+void AnimalShelter::enqueue(UniquePtr<Animal> &&ptr) { animals.append(std::move(ptr)); }
 
-auto AnimalShelter::dequeueAny() -> std::unique_ptr<AnimalShelter::Animal> {
+auto AnimalShelter::dequeueAny() -> UniquePtr<AnimalShelter::Animal> {
     if (empty())
         return nullptr;
 
@@ -41,11 +41,7 @@ auto AnimalShelter::dequeueAny() -> std::unique_ptr<AnimalShelter::Animal> {
     return std::move(tmp->val);
 };
 
-auto AnimalShelter::dequeueDog() -> std::unique_ptr<AnimalShelter::Animal> {
-    return dequeueAnimalOfType<AnimalShelter::Dog>();
-}
-auto AnimalShelter::dequeueCat() -> std::unique_ptr<AnimalShelter::Animal> {
-    return dequeueAnimalOfType<AnimalShelter::Cat>();
-}
+auto AnimalShelter::dequeueDog() -> UniquePtr<AnimalShelter::Animal> { return dequeueAnimalOfType<AnimalShelter::Dog>(); }
+auto AnimalShelter::dequeueCat() -> UniquePtr<AnimalShelter::Animal> { return dequeueAnimalOfType<AnimalShelter::Cat>(); }
 
 bool AnimalShelter::empty() { return animals.empty(); }

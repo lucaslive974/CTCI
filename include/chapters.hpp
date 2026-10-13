@@ -143,16 +143,16 @@ class III : public Chapter {
             Cat() = default;
         };
 
-        void enqueue(std::unique_ptr<Animal> &&ptr);
-        auto dequeueAny() -> std::unique_ptr<Animal>;
-        auto dequeueDog() -> std::unique_ptr<Animal>;
-        auto dequeueCat() -> std::unique_ptr<Animal>;
+        void enqueue(UniquePtr<Animal> &&ptr);
+        auto dequeueAny() -> UniquePtr<Animal>;
+        auto dequeueDog() -> UniquePtr<Animal>;
+        auto dequeueCat() -> UniquePtr<Animal>;
 
         bool empty();
 
       private:
-        CTCI::Deque<std::unique_ptr<Animal>> animals;
-        template <typename T> auto dequeueAnimalOfType() -> std::unique_ptr<AnimalShelter::Animal> {
+        CTCI::Deque<UniquePtr<Animal>> animals;
+        template <typename T> auto dequeueAnimalOfType() -> UniquePtr<AnimalShelter::Animal> {
             if (empty())
                 return nullptr;
 
@@ -160,7 +160,7 @@ class III : public Chapter {
             while (head != nullptr) {
                 if (dynamic_cast<T *>(head->val.get())) {
                     animals.pop(head);
-                    auto ptr = std::unique_ptr<T>(static_cast<T *>(head->val.release()));
+                    auto ptr = UniquePtr<T>(static_cast<T *>(head->val.release()));
                     return ptr;
                 }
                 head = head->next;
