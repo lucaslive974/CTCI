@@ -60,3 +60,126 @@ TEST(ALLOCATOR, ALLOCATOR_REQUIREMENTS) {
 
     EXPECT_NO_THROW(vec.clear());
 }
+
+class SMART_PTR_TEST : public testing::Test {
+  protected:
+    struct Base {
+        int value;
+        Base(int val) : value(val) {};
+        virtual ~Base() = default;
+    };
+
+    struct Derived : public Base {
+        char name = 'd';
+        Derived(int val) : Base(val) {};
+        ~Derived() = default;
+    };
+};
+
+TEST_F(SMART_PTR_TEST, LIFECYCLE_MANAGING) {
+    auto a = CTCI::makeUnique<Base>(1);
+    EXPECT_EQ((*a).value, 1);
+}
+
+TEST_F(SMART_PTR_TEST, HERITAGE) {
+    auto a = CTCI::makeUnique<Derived>(1);
+    EXPECT_NE(dynamic_cast<Base *>(a.get()), nullptr);
+
+    EXPECT_EQ(a->value, 1);
+    EXPECT_EQ(a->name, 'd');
+}
+
+TEST_F(SMART_PTR_TEST, RTTI_CONVERSIONS) {
+    auto a = CTCI::makeShared<Derived>(1);
+    EXPECT_EQ(a->name, 'd');
+
+    SharedPtr<Base> b = dynamicPointerCast<Base>(a);
+    EXPECT_NE(b, nullptr);
+    EXPECT_EQ(b->value, 1);
+
+    SharedPtr<Derived> c = staticPointerCast<Derived>(a);
+    EXPECT_EQ(c->name, 'd');
+
+    EXPECT_EQ(a.useCount(), 3);
+
+    auto d = CTCI::makeShared<Base>(2);
+    auto e = dynamicPointerCast<Derived>(d);
+    EXPECT_EQ(nullptr, e);
+}
+
+TEST(SHARED_PTR_TRIVIAL, CORRECT_INITIALIZATION) {
+    auto a = CTCI::makeShared<int>(1);
+
+    EXPECT_EQ(*a, 1);
+    EXPECT_EQ(a.useCount(), 1);
+
+    {
+
+        auto b = a; // NOLINT
+        EXPECT_EQ(*b, 1);
+        EXPECT_EQ(a, b);
+        EXPECT_EQ(b.useCount(), 2);
+    }
+
+    EXPECT_EQ(a.useCount(), 1);
+};
+
+TEST(SHARED_PTR_TRIVIAL, MOVE_INITIALIZATION) {
+    auto a = CTCI::makeShared<int>(1);
+
+    EXPECT_EQ(*a, 1);
+    EXPECT_EQ(a.useCount(), 1);
+
+    {
+
+        auto b = std::move(a); // NOLINT
+        EXPECT_EQ(*b, 1);
+        EXPECT_EQ(b.useCount(), 1);
+        EXPECT_NE(b, nullptr);
+    }
+
+    EXPECT_EQ(a, nullptr);
+};
+
+TEST(SHARED_PTR_TRIVIAL, MOVE_ASSIGMENT) {
+    SharedPtr<int> a;
+    auto b = CTCI::makeShared<int>(1);
+
+    a = b;
+    EXPECT_EQ(a.useCount(), 2);
+    EXPECT_EQ(*a, 1);
+}
+
+TEST(UNIQUE_PTR_TRIVIAL, CORRECT_INITIALIZATION) {
+    auto a = CTCI::makeUnique<int>(1);
+    EXPECT_EQ(*a, 1);
+}
+
+TEST(UNIQUE_PTR_TRIVIAL, MOVE_OPERATIONS) {
+    auto a = CTCI::makeUnique<int>(2);
+    UniquePtr<int> b;
+
+    EXPECT_EQ(*a, 2);
+    EXPECT_EQ(nullptr, b);
+
+    b = std::move(a);
+    EXPECT_EQ(a, nullptr);
+    EXPECT_EQ(*b, 2);
+}
+
+TEST(UNIQUE_PTR_TRIVIAL, RELEASE) {
+    auto a = CTCI::makeUnique<int>(2);
+    EXPECT_EQ(*a, 2);
+
+    UniquePtr<int> b{a.release()};
+    EXPECT_EQ(a, nullptr);
+    EXPECT_EQ(*b, 2);
+}
+
+TEST(SMART_PTR, STL_COMPATIBILITY) {
+    auto a = CTCI::make_unique<int>(1);
+    auto b = CTCI::make_shared<int>(2);
+
+    EXPECT_EQ(*a, 1);
+    EXPECT_EQ(*b, 2);
+}
