@@ -64,3 +64,17 @@ TEST(TREE, RANK_INCREASE) {
     tree.append(4);
     EXPECT_EQ(tree.depth, 3);
 }
+
+TEST(TREE, RANGES) {
+    Tree<int> tree;
+
+    for (const auto &node : tree)
+        FAIL();
+
+    tree.append(2);
+    tree.append(1);
+    tree.append(3);
+
+    for (const auto [node, val] : std::views::zip(tree, std::views::iota(1, 4)))
+        EXPECT_EQ(node->val, val);
+}

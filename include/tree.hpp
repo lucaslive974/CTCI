@@ -5,6 +5,7 @@
 #include "vector.hpp"
 
 #include <initializer_list>
+#include <iterator>
 
 namespace CTCI {
 
@@ -77,6 +78,79 @@ template <typename T> struct Tree {
 
         return ret;
     }
+
+    static auto sucessor(const Pointer &node) -> Pointer {
+        if (node == nullptr)
+            return nullptr;
+
+        if (node->right != nullptr) {
+            auto next = node->right;
+            while (next->left != nullptr)
+                next = next->left;
+
+            return next;
+        }
+
+        auto child = node;
+        auto parent = node->parent;
+        while (parent && parent->right == child) {
+            child = parent;
+            parent = parent->parent;
+        }
+
+        return parent;
+    };
+
+    template <bool IsConst> class IteratorImpl {
+        Pointer node = nullptr;
+
+      public:
+        using iterator_category = std::forward_iterator_tag;
+        using difference_type = std::ptrdiff_t;
+        using value_type = Pointer;
+        using pointer = std::conditional_t<IsConst, const Pointer, Pointer>;
+        using reference = std::conditional_t<IsConst, const Pointer &, Pointer &>;
+
+        IteratorImpl() = default;
+        IteratorImpl(std::nullptr_t _) : node(nullptr) {};
+        IteratorImpl(pointer ptr) : node(ptr) {};
+
+        IteratorImpl &operator++() {
+            node = sucessor(node);
+            return *this;
+        }
+
+        IteratorImpl operator++(int) {
+            auto tmp = *this;
+            ++(*this);
+            return tmp;
+        }
+
+        reference operator*() { return node; }
+        pointer operator->() { return &node; }
+
+        reference operator*() const { return node; }
+        pointer operator->() const { return &node; }
+
+        friend bool operator==(const IteratorImpl &a, const IteratorImpl &b) { return a.node == b.node; }
+        friend bool operator!=(const IteratorImpl &a, const IteratorImpl &b) { return !(a == b); }
+    };
+
+    using ForwardIterator = IteratorImpl<false>;
+    using ConstForwardIterator = IteratorImpl<true>;
+
+    ConstForwardIterator begin() const {
+        if (empty())
+            return nullptr;
+
+        auto head = root;
+        while (head->left != nullptr)
+            head = head->left;
+
+        return ConstForwardIterator{head};
+    }
+
+    ConstForwardIterator end() const { return nullptr; }
 };
 
 } // namespace CTCI
