@@ -155,6 +155,7 @@ TEST(SHARED_PTR_TRIVIAL, CORRECT_INITIALIZATION) {
     }
 
     EXPECT_EQ(a.useCount(), 1);
+    EXPECT_TRUE(a);
 };
 
 TEST(SHARED_PTR_TRIVIAL, MOVE_INITIALIZATION) {
@@ -171,6 +172,7 @@ TEST(SHARED_PTR_TRIVIAL, MOVE_INITIALIZATION) {
         EXPECT_NE(b, nullptr);
     }
 
+    EXPECT_TRUE(!a);
     EXPECT_EQ(a, nullptr);
 };
 
@@ -198,6 +200,9 @@ TEST(UNIQUE_PTR_TRIVIAL, MOVE_OPERATIONS) {
     b = std::move(a);
     EXPECT_EQ(a, nullptr);
     EXPECT_EQ(*b, 2);
+
+    EXPECT_FALSE(a);
+    EXPECT_TRUE(b);
 }
 
 TEST(UNIQUE_PTR_TRIVIAL, RELEASE) {

@@ -2,6 +2,7 @@
 
 #include <atomic>
 #include <cstddef>
+#include <functional>
 #include <type_traits>
 #include <utility>
 
@@ -59,12 +60,18 @@ template <typename T, typename Allocator = Allocator<T>> class SharedPtr {
     };
 
     SharedPtr(Pointer data) {
+        if (data == nullptr)
+            return;
+
         _data = data;
         _counter = _alloc.template rebind<std::atomic_uint>().allocate(1);
         _alloc.template rebind<std::atomic_uint>().construct(_counter, 1);
     };
 
     SharedPtr(const SharedPtr &other) {
+        if (other == nullptr)
+            return;
+
         other._counter->fetch_add(1);
         _data = other._data;
         _counter = other._counter;
@@ -105,6 +112,9 @@ template <typename T, typename Allocator = Allocator<T>> class SharedPtr {
         return std::move(SharedPtr<U>{_data, _counter});
     }
 
+    operator bool() const { return _data != nullptr; }
+    bool operator!() const { return !static_cast<bool>(*this); }
+
     Reference operator*() const { return *_data; }
     Pointer operator->() const { return _data; }
     Pointer get() const { return _data; }
@@ -142,7 +152,7 @@ template <typename T, typename Allocator = Allocator<T>> class UniquePtr {
 
     UniquePtr(UniquePtr &&other) noexcept { std::swap(_data, other._data); }
 
-    UniquePtr &operator=(UniquePtr &&other) noexcept {
+    UniquePtr &operator=(UniquePtr other) noexcept {
         std::swap(_data, other._data);
         return *this;
     }
@@ -172,6 +182,9 @@ template <typename T, typename Allocator = Allocator<T>> class UniquePtr {
         _data = nullptr;
         return tmp;
     }
+
+    operator bool() const { return _data != nullptr; }
+    bool operator!() const { return !static_cast<bool>(*this); }
 
     friend bool operator==(const UniquePtr &a, const std::nullptr_t b) { return a._data == b; }
     friend bool operator==(const std::nullptr_t a, const UniquePtr &b) { return a == b._data; }
@@ -212,3 +225,11 @@ template <typename T, typename... Args> UniquePtr<T> make_unique(Args &&...args)
 }
 
 } // namespace CTCI
+
+template <typename T> struct std::hash<CTCI::SharedPtr<T>> {
+    size_t operator()(const CTCI::SharedPtr<T> &ptr) const { return std::hash<T *>{}(ptr.get()); };
+};
+
+template <typename T> struct std::hash<CTCI::UniquePtr<T>> {
+    size_t operator()(const CTCI::UniquePtr<T> &ptr) const { return std::hash<T *>{}(ptr.get()); };
+};
