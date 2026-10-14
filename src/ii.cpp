@@ -51,7 +51,7 @@ auto II::kthLast(const List<int> &list, size_t k) -> int {
     return head->val;
 }
 
-auto II::deleteMiddleNode(std::shared_ptr<Node<int>> &node) -> void {
+auto II::deleteMiddleNode(SharedPtr<Node<int>> &node) -> void {
     if (node == nullptr)
         return;
 
@@ -121,7 +121,7 @@ auto II::palindrome(List<char> &list) -> bool {
     if (list.empty())
         return true;
 
-    std::shared_ptr<Node<char>> middle;
+    SharedPtr<Node<char>> middle;
     {
         auto fast = list.head;
         auto slow = list.head;
@@ -150,7 +150,7 @@ auto II::palindrome(List<char> &list) -> bool {
     return true;
 }
 
-auto II::intersection(List<int> &a, List<int> &b) -> std::shared_ptr<Node<int>> { // NOLINT
+auto II::intersection(List<int> &a, List<int> &b) -> SharedPtr<Node<int>> { // NOLINT
     Set<void *> existents;
 
     auto head = a.head;
@@ -170,7 +170,7 @@ auto II::intersection(List<int> &a, List<int> &b) -> std::shared_ptr<Node<int>> 
     return nullptr;
 }
 
-auto II::loopDetection(List<int> &list) -> std::shared_ptr<Node<int>> {
+auto II::loopDetection(List<int> &list) -> SharedPtr<Node<int>> {
     auto slow = list.head;
     auto fast = list.head;
 

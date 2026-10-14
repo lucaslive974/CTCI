@@ -1,28 +1,28 @@
 #pragma once
 
+#include "memory.hpp"
 #include "vector.hpp"
 
 #include <cstddef>
 #include <iterator>
-#include <memory>
 #include <type_traits>
 
 namespace CTCI {
 
 template <typename T> struct Node {
-    std::shared_ptr<Node> next = nullptr;
+    SharedPtr<Node> next = nullptr;
     T val = T{};
 
     Node() = default;
     Node(T val) : val(std::move(val)) {};
-    Node(T val, std::shared_ptr<Node> next) : Node(std::move(val)), next(std::move(next)) {};
+    Node(T val, SharedPtr<Node> next) : Node(std::move(val)), next(std::move(next)) {};
 };
 
 template <typename T> struct List {
     using ValueType = T;
     using NodeType = Node<ValueType>;
-    using Pointer = std::shared_ptr<NodeType>;
-    using ConstPointer = std::shared_ptr<const NodeType>;
+    using Pointer = SharedPtr<NodeType>;
+    using ConstPointer = SharedPtr<const NodeType>;
 
     Pointer head = nullptr;
     Pointer tail = nullptr;
@@ -65,7 +65,7 @@ template <typename T> struct List {
     }
 
     void push(T val) {
-        auto node = std::make_shared<NodeType>(val);
+        auto node = CTCI::make_shared<NodeType>(val);
         push(node);
     }
 
@@ -120,7 +120,7 @@ template <typename T> struct List {
     [[nodiscard]] bool empty() const { return !head; }
 
     template <bool isConst> class Iterator {
-        std::conditional_t<isConst, ConstPointer, Pointer> node;
+        Pointer node;
 
       public:
         using iterator_category = std::forward_iterator_tag;
@@ -130,7 +130,7 @@ template <typename T> struct List {
         using reference = std::conditional_t<isConst, const ValueType &, ValueType &>;
 
         Iterator() : node(nullptr) {}
-        explicit Iterator(std::conditional_t<isConst, ConstPointer, Pointer> node) : node(node) {}
+        explicit Iterator(std::conditional_t<isConst, const Pointer, Pointer> node) : node(node) {}
 
         reference operator*() const { return node->val; }
         reference operator*() { return node->val; }
@@ -165,7 +165,7 @@ template <typename T> struct List {
 
 template <typename T> using Queue = List<T>;
 
-template <typename T> auto revertLinkedList(std::shared_ptr<Node<T>> &node) -> void {
+template <typename T> auto revertLinkedList(SharedPtr<Node<T>> &node) -> void {
     if (node == nullptr)
         return;
 

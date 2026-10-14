@@ -237,9 +237,9 @@ TEST(IV_CHECK_BALANCED, TREE_HEAVY_LEFT) {
 TEST(IV_VALIDATE_BST, TREE_BST) {
     using Tp = Tree<int>::NodeType;
 
-    auto root = std::make_shared<Tp>(5);
-    auto left = std::make_shared<Tp>(3);
-    auto right = std::make_shared<Tp>(7);
+    auto root = CTCI::make_shared<Tp>(5);
+    auto left = CTCI::make_shared<Tp>(3);
+    auto right = CTCI::make_shared<Tp>(7);
 
     root->left = std::move(left);
     root->right = std::move(right);
@@ -253,10 +253,10 @@ TEST(IV_VALIDATE_BST, TREE_BST) {
 TEST(IV_VALIDATE_BST, TREE_BST_DUPLICATES) {
     using Tp = Tree<int>::NodeType;
 
-    auto root = std::make_shared<Tp>(5);
-    auto left = std::make_shared<Tp>(3);
-    auto leftRight = std::make_shared<Tp>(3);
-    auto right = std::make_shared<Tp>(7);
+    auto root = CTCI::make_shared<Tp>(5);
+    auto left = CTCI::make_shared<Tp>(3);
+    auto leftRight = CTCI::make_shared<Tp>(3);
+    auto right = CTCI::make_shared<Tp>(7);
 
     left->right = std::move(leftRight);
 
@@ -277,9 +277,9 @@ TEST(IV_VALIDATE_BST, TREE_EMPTY) {
 TEST(IV_VALIDATE_BST, TREE_NON_BST_LEFT) {
     using Tp = Tree<int>::NodeType;
 
-    auto root = std::make_shared<Tp>(3);
-    auto left = std::make_shared<Tp>(4);
-    auto right = std::make_shared<Tp>(7);
+    auto root = CTCI::make_shared<Tp>(3);
+    auto left = CTCI::make_shared<Tp>(4);
+    auto right = CTCI::make_shared<Tp>(7);
 
     root->left = std::move(left);
     root->right = std::move(right);
@@ -293,10 +293,10 @@ TEST(IV_VALIDATE_BST, TREE_NON_BST_LEFT) {
 TEST(IV_VALIDATE_BST, TREE_NON_BST_LEFT_DUPLICATES) {
     using Tp = Tree<int>::NodeType;
 
-    auto root = std::make_shared<Tp>(3);
-    auto left = std::make_shared<Tp>(2);
-    auto leftLeft = std::make_shared<Tp>(2);
-    auto right = std::make_shared<Tp>(7);
+    auto root = CTCI::make_shared<Tp>(3);
+    auto left = CTCI::make_shared<Tp>(2);
+    auto leftLeft = CTCI::make_shared<Tp>(2);
+    auto right = CTCI::make_shared<Tp>(7);
 
     left->left = std::move(leftLeft);
 
@@ -312,9 +312,9 @@ TEST(IV_VALIDATE_BST, TREE_NON_BST_LEFT_DUPLICATES) {
 TEST(IV_VALIDATE_BST, TREE_NON_BST_RIGHT) {
     using Tp = Tree<int>::NodeType;
 
-    auto root = std::make_shared<Tp>(3);
-    auto left = std::make_shared<Tp>(1);
-    auto right = std::make_shared<Tp>(2);
+    auto root = CTCI::make_shared<Tp>(3);
+    auto left = CTCI::make_shared<Tp>(1);
+    auto right = CTCI::make_shared<Tp>(2);
 
     root->left = std::move(left);
     root->right = std::move(right);
@@ -328,10 +328,10 @@ TEST(IV_VALIDATE_BST, TREE_NON_BST_RIGHT) {
 TEST(IV_VALIDATE_BST, TREE_NON_BST_RIGHT_II) {
     using Tp = Tree<int>::NodeType;
 
-    auto root = std::make_shared<Tp>(4);
-    auto left = std::make_shared<Tp>(2);
-    auto right = std::make_shared<Tp>(6);
-    auto rightLeft = std::make_shared<Tp>(8);
+    auto root = CTCI::make_shared<Tp>(4);
+    auto left = CTCI::make_shared<Tp>(2);
+    auto right = CTCI::make_shared<Tp>(6);
+    auto rightLeft = CTCI::make_shared<Tp>(8);
 
     right->left = std::move(rightLeft);
 
@@ -347,9 +347,9 @@ TEST(IV_VALIDATE_BST, TREE_NON_BST_RIGHT_II) {
 TEST(IV_VALIDATE_BST, TREE_NON_BST_BOTH) {
     using Tp = Tree<int>::NodeType;
 
-    auto root = std::make_shared<Tp>(3);
-    auto left = std::make_shared<Tp>(4);
-    auto right = std::make_shared<Tp>(2);
+    auto root = CTCI::make_shared<Tp>(3);
+    auto left = CTCI::make_shared<Tp>(4);
+    auto right = CTCI::make_shared<Tp>(2);
 
     root->left = std::move(left);
     root->right = std::move(right);

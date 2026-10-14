@@ -2,7 +2,6 @@
 
 #include "chapter.hpp"
 #include "data_structures.hpp"
-#include <memory>
 #include <stdexcept>
 
 namespace CTCI {
@@ -26,12 +25,12 @@ class II : public Chapter {
     II(std::string name = "CTCI::II::Linked Lists");
     static auto removeDups(List<int> &list) -> void;
     static auto kthLast(const List<int> &list, size_t k) -> int;
-    static auto deleteMiddleNode(std::shared_ptr<Node<int>> &node) -> void;
+    static auto deleteMiddleNode(SharedPtr<Node<int>> &node) -> void;
     static auto partition(List<int> &list, int x) -> void;
     static auto sumLists(List<int> &a, List<int> &b) -> List<int>;
     static auto palindrome(List<char> &list) -> bool;
-    static auto intersection(List<int> &a, List<int> &b) -> std::shared_ptr<Node<int>>;
-    static auto loopDetection(List<int> &list) -> std::shared_ptr<Node<int>>;
+    static auto intersection(List<int> &a, List<int> &b) -> SharedPtr<Node<int>>;
+    static auto loopDetection(List<int> &list) -> SharedPtr<Node<int>>;
 };
 
 class III : public Chapter {
@@ -172,14 +171,14 @@ class III : public Chapter {
 };
 
 class IV : public Chapter {
-    template <typename T> using Node = std::shared_ptr<GNode<T>>;
+    template <typename T> using Node = SharedPtr<GNode<T>>;
 
   public:
     IV(std::string name = "Trees and Graphs");
     static bool routeBetweenNodes(const Node<int> &orig, const Node<int> &dest);
     static auto minimalTree(const Vector<int> &nodes) -> Tree<int>;
 
-    template <typename T> using ListNode = List<std::shared_ptr<TNode<T>>>;
+    template <typename T> using ListNode = List<SharedPtr<TNode<T>>>;
     static auto listOfDepths(const Tree<int> &tree) -> Vector<ListNode<int>>;
     static auto checkBalanced(const Tree<int> &tree) -> bool;
     static auto validateBST(const Tree<int> &tree) -> bool;

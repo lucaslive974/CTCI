@@ -84,7 +84,7 @@ TEST(II, DELETE_MIDDLE_NODE) {
 TEST(II, DELETE_MIDDLE_NODE_NULL_NODE) {
     CTCI::List<int> list{1, 2};
 
-    std::shared_ptr<CTCI::Node<int>> node = nullptr;
+    CTCI::SharedPtr<CTCI::Node<int>> node = nullptr;
     EXPECT_NO_THROW(II::deleteMiddleNode(node));
 }
 
@@ -288,7 +288,7 @@ TEST(II, INTERSECTION_LIST_TRUE) {
     CTCI::List<int> a{1, 2};
     CTCI::List<int> b{3, 4};
 
-    auto nodeIntersecting = std::make_shared<CTCI::Node<int>>(5);
+    auto nodeIntersecting = CTCI::make_shared<CTCI::Node<int>>(5);
 
     a.push(nodeIntersecting);
     b.push(nodeIntersecting);
@@ -305,11 +305,11 @@ TEST(II, INTERSECTION_LIST_FALSE) {
 
 TEST(II, LOOP_DETECTION_LIST_CYCLIC) {
     CTCI::List<int> a{1, 2};
-    auto circularNodeI = std::make_shared<CTCI::Node<int>>(3);
+    auto circularNodeI = CTCI::make_shared<CTCI::Node<int>>(3);
     a.push(circularNodeI);
     a.push({4, 5});
 
-    auto circularNodeII = std::make_shared<CTCI::Node<int>>(6);
+    auto circularNodeII = CTCI::make_shared<CTCI::Node<int>>(6);
     circularNodeII->next = circularNodeI;
 
     a.push(circularNodeII);

@@ -1,10 +1,10 @@
 #pragma once
 
 #include "list.hpp"
+#include "memory.hpp"
+#include "vector.hpp"
 
 #include <initializer_list>
-#include <memory>
-#include <vector>
 
 namespace CTCI {
 
@@ -12,22 +12,21 @@ template <typename T> struct TNode {
     using NodeType = TNode<T>;
 
   public:
-    std::shared_ptr<NodeType> parent = nullptr;
-    std::shared_ptr<NodeType> left = nullptr;
-    std::shared_ptr<NodeType> right = nullptr;
+    SharedPtr<NodeType> parent = nullptr;
+    SharedPtr<NodeType> left = nullptr;
+    SharedPtr<NodeType> right = nullptr;
     size_t depth = 1;
     T val = T{};
 
     TNode() = default;
     TNode(T val) : val(std::move(val)) {};
     TNode(T val, size_t depth) : val(std::move(val)), depth(depth) {};
-    TNode(T val, size_t depth, std::shared_ptr<NodeType> parent)
-        : val(std::move(val)), depth(depth), parent(std::move(parent)) {}
+    TNode(T val, size_t depth, SharedPtr<NodeType> parent) : val(std::move(val)), depth(depth), parent(std::move(parent)) {}
 };
 
 template <typename T> struct Tree {
     using NodeType = TNode<T>;
-    using Pointer = std::shared_ptr<NodeType>;
+    using Pointer = SharedPtr<NodeType>;
 
     Pointer root = nullptr;
     size_t depth = 0;
@@ -65,7 +64,7 @@ template <typename T> struct Tree {
 
     Pointer append(Pointer &node, T value, size_t ndepth = 1, Pointer parent = nullptr) { // NOLINT
         if (node == nullptr) {
-            node = std::make_shared<NodeType>(value, ndepth, std::move(parent));
+            node = CTCI::make_shared<NodeType>(value, ndepth, std::move(parent));
             depth = std::max(depth, ndepth);
             return node;
         }

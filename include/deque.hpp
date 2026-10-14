@@ -1,43 +1,52 @@
 #pragma once
 
 #include "list.hpp"
+#include "memory.hpp"
 #include "vector.hpp"
-
-#include <memory>
 
 namespace CTCI {
 
 template <typename T> struct DNode {
-    std::shared_ptr<DNode> prev = nullptr;
-    std::shared_ptr<DNode> next = nullptr;
+    SharedPtr<DNode> prev = nullptr;
+    SharedPtr<DNode> next = nullptr;
     T val = T{};
 
     DNode() = default;
     DNode(T val) : val(std::move(val)) {};
-    DNode(T val, std::shared_ptr<DNode> next, std::shared_ptr<DNode> prev) // NOLINT
+    DNode(T val, SharedPtr<DNode> next, SharedPtr<DNode> prev) // NOLINT
         : Node<T>(std::move(val), std::move(next)), prev(std::move(prev)) {};
 };
 
 template <typename T> struct Deque {
     using nodeType = DNode<T>;
-    using nodePtr = std::shared_ptr<nodeType>;
+    using nodePtr = SharedPtr<nodeType>;
     nodePtr head = nullptr;
     nodePtr tail = nullptr;
 
     Deque() = default;
-    Deque(std::initializer_list<T> list) { append(list); }
-    Deque(Vector<T> vec) { append(vec); }
+
+    Deque(std::initializer_list<T> list) {
+        for (auto el : list)
+            append(el);
+    }
+
+    Deque(const Vector<T> &vec) {
+        for (auto el : vec)
+            append(el);
+    }
+
     ~Deque() {
         while (head) {
             head->prev = nullptr;
             head = head->next;
         }
     }
+
     [[nodiscard]] bool empty() const { return head == nullptr; }
 
-    void append(T &&val) {
-        auto ptr = std::make_shared<nodeType>(std::forward<T &&>(val));
-        append(ptr);
+    void append(T val) {
+        auto ptr = CTCI::make_shared<nodeType>(std::move(val));
+        append(std::move(ptr));
     }
 
     void append(nodePtr ptr) {
@@ -50,16 +59,6 @@ template <typename T> struct Deque {
         tail->next = ptr;
         ptr->prev = tail;
         tail = ptr;
-    }
-
-    void append(std::initializer_list<T> list) {
-        for (auto el : list)
-            append(std::move(el));
-    }
-
-    void append(Vector<T> vec) {
-        for (auto el : vec)
-            append(el);
     }
 
     void popFront() {
