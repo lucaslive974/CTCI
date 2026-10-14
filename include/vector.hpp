@@ -151,10 +151,16 @@ class Vector {
         }
     }
 
-    Vector(size_t size, const Ty value = Ty{}) {
+    Vector(size_t size) {
         _init(size);
         for (auto i : std::views::iota(0UZ, size))
-            _alloc.construct(_data + i, std::move(value));
+            _alloc.construct(_data + i, std::move(Ty{}));
+    }
+
+    Vector(size_t size, const Ty value) {
+        _init(size);
+        for (auto i : std::views::iota(0UZ, size))
+            _alloc.construct(_data + i, value);
     }
 
     template <typename... Args>
