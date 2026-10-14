@@ -95,8 +95,7 @@ static auto checkBalanced(const Tree<int>::Pointer &subTree) -> bool {
 auto IV::checkBalanced(const Tree<int> &tree) -> bool {
     if (tree.empty())
         return true;
-
-    return ::checkBalanced(tree.root);
+    return std::ranges::all_of(tree, [](const auto &node) { return ::checkBalanced(node); });
 };
 
 static bool checkBST(const Tree<int>::Pointer &node) {
@@ -118,27 +117,7 @@ static bool checkBST(const Tree<int>::Pointer &node) {
 
 auto IV::validateBST(const Tree<int> &tree) -> bool { return checkBST(tree.root); };
 
-auto IV::sucessor(const Tree<int>::Pointer &node) -> Tree<int>::Pointer {
-    if (node == nullptr)
-        return nullptr;
-
-    if (node->right != nullptr) {
-        auto next = node->right;
-        while (next->left != nullptr)
-            next = next->left;
-
-        return next;
-    }
-
-    auto child = node;
-    auto parent = node->parent;
-    while (parent && parent->right == child) {
-        child = parent;
-        parent = parent->parent;
-    }
-
-    return parent;
-};
+auto IV::sucessor(const Tree<int>::Pointer &node) -> Tree<int>::Pointer { return Tree<int>::sucessor(node); };
 
 auto IV::buildOrder(const BuildInfo &info) -> List<Project> {
     Graph<Project> graph{info.projects};
