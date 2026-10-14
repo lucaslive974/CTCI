@@ -1,5 +1,7 @@
 #pragma once
 
+#include "concepts.hpp"
+
 #include <atomic>
 #include <cstddef>
 #include <functional>
@@ -38,11 +40,11 @@ template <typename T> struct Allocator {
     friend bool operator!=(const Allocator &a, const Allocator &b) { return !(a == b); }
 };
 
-template <typename T, typename Allocator = Allocator<T>> class SharedPtr {
+template <typename T, concepts::Allocator Allocator = Allocator<T>> class SharedPtr {
     using Pointer = T *;
     using Reference = T &;
     using Counter = std::atomic_uint;
-    Allocator _alloc;
+    [[no_unique_address]] Allocator _alloc;
 
     Counter *_counter = nullptr;
     Pointer _data = nullptr;
@@ -136,13 +138,13 @@ template <typename T, typename Allocator = Allocator<T>> class SharedPtr {
     }
 };
 
-template <typename T, typename Allocator = Allocator<T>> class UniquePtr {
+template <typename T, concepts::Allocator Allocator = Allocator<T>> class UniquePtr {
     using Pointer = T *;
     using ConstPointer = const T *;
     using Reference = T &;
     using ConstReference = const T &;
     Pointer _data = nullptr;
-    Allocator _alloc;
+    [[no_unique_address]] Allocator _alloc;
 
   public:
     UniquePtr() = default;

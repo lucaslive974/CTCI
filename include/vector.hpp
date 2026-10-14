@@ -24,7 +24,7 @@ class Vector {
     Ty *_data = nullptr;
     size_t _capacity = 64;
     size_t _size = 0;
-    Allocator _alloc;
+    [[no_unique_address]] Allocator _alloc;
 
     void adjustCapacity(size_t size) {
         while (_capacity <= size)
