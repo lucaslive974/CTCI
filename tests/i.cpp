@@ -2,7 +2,7 @@
 #include "testing_utils.hpp"
 #include <gtest/gtest.h>
 
-using I = CTCI::I;
+using CTCI::I;
 
 TEST(I, IS_UNIQUE_TESTS) {
     std::string unique{"abcdefg"};

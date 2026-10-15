@@ -4,7 +4,7 @@
 
 #include <gtest/gtest.h>
 
-using II = CTCI::II;
+using CTCI::II;
 
 TEST(II, REMOVE_DUPS) {
     CTCI::List<int> list{1, 2, 3, 4, 3, 5};

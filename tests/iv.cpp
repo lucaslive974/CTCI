@@ -4,7 +4,6 @@
 
 #include <chapters.hpp>
 #include <gtest/gtest.h>
-#include <memory>
 #include <ranges>
 
 using namespace CTCI;

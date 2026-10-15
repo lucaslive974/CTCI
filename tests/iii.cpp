@@ -109,7 +109,7 @@ TEST(III, SET_OF_STACKS_IS_EMPTY_TWO_STACKS) {
     EXPECT_TRUE(stacks.empty());
 }
 
-using III = CTCI::III;
+using CTCI::III;
 
 TEST(III, SORT_STACK) {
     CTCI::Stack<int> a{3, 4, 1, 5, 2};
