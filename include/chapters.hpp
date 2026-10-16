@@ -201,5 +201,7 @@ class IV : public Chapter {
 
     static auto BSTSequences(const Tree<int>::Pointer &node) -> Vector<Vector<int>>;
     static auto BSTSequences(const Tree<int> &tree) -> Vector<Vector<int>>;
+
+    static auto checkSubtree(const Tree<int> &t1, const Tree<int> &t2) -> bool;
 };
 } // namespace CTCI

@@ -468,3 +468,39 @@ TEST(IV_BST_SEQUENCE, INIT) {
     for (auto [val, res] : std::views::zip(res, answers))
         EXPECT_EQ(val, res);
 }
+
+class IV_CHECK_SUBTREE : public testing::Test {
+  protected:
+    Tree<int> t1{6, 4, 5, 2, 3, 1, 8, 7, 9};
+};
+
+TEST_F(IV_CHECK_SUBTREE, SHOULD_RETURN_TRUE) {
+    Tree<int> t2{2, 3, 1};
+    Tree<int> t3{8, 7, 9};
+    Tree<int> t4{4, 5, 2, 3, 1};
+
+    EXPECT_TRUE(IV::checkSubtree(t1, t2));
+    EXPECT_TRUE(IV::checkSubtree(t1, t3));
+    EXPECT_TRUE(IV::checkSubtree(t1, t4));
+}
+
+TEST_F(IV_CHECK_SUBTREE, SHOULD_RETURN_FALSE) {
+    Tree<int> t2{3, 2, 1};
+    Tree<int> t3{8, 7};
+    Tree<int> t4{4, 5, 2, 3};
+
+    EXPECT_FALSE(IV::checkSubtree(t1, t2));
+    EXPECT_FALSE(IV::checkSubtree(t1, t3));
+    EXPECT_FALSE(IV::checkSubtree(t1, t4));
+}
+
+TEST_F(IV_CHECK_SUBTREE, EMPTY_T1_NON_EMPTY_T2_SHOULD_RETURN_FALSE) {
+    Tree<int> t2{2, 1, 3};
+    Tree<int> t3;
+    EXPECT_FALSE(IV::checkSubtree(t3, t2));
+}
+
+TEST_F(IV_CHECK_SUBTREE, NON_EMPTY_T1_EMPTY_T2_SHOULD_RETURN_TRUE) {
+    Tree<int> t2;
+    EXPECT_TRUE(IV::checkSubtree(t1, t2));
+}

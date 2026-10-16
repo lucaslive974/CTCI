@@ -225,3 +225,29 @@ auto IV::BSTSequences(const Tree<int>::Pointer &node) -> Vector<Vector<int>> {
 };
 
 auto IV::BSTSequences(const Tree<int> &tree) -> Vector<Vector<int>> { return BSTSequences(tree.root); }
+
+bool checkSubtree(const Tree<int>::Pointer &t1, const Tree<int>::Pointer &t2) { // NOLINT
+    if (t1 == nullptr && t2 == nullptr)
+        return true;
+
+    if (t1 == nullptr || t2 == nullptr)
+        return false;
+
+    if (t1->val != t2->val)
+        return false;
+
+    if (!checkSubtree(t1->left, t2->left))
+        return false;
+
+    if (!checkSubtree(t1->right, t2->right))
+        return false;
+
+    return true;
+};
+
+auto IV::checkSubtree(const Tree<int> &t1, const Tree<int> &t2) -> bool {
+    if (t2.empty())
+        return true;
+
+    return std::ranges::any_of(t1, [&t2](const auto &node) { return ::checkSubtree(node, t2.root); });
+}
