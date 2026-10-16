@@ -174,3 +174,54 @@ auto IV::findCommonAncestor(TreeNode &a, TreeNode &b) -> TreeNode { // NOLINT
 
     return ans;
 }
+
+struct WeaveVectorInfo {
+    const Vector<int> &vec;
+    size_t start = 0;
+};
+
+auto weaveVectors(const WeaveVectorInfo left, const WeaveVectorInfo right, Vector<int> &prefix, Vector<Vector<int>> &results)
+    -> void {
+    if (left.start == left.vec.size() || right.start == right.vec.size()) {
+        Vector<int> result = prefix;
+        for (auto idx : std::views::iota(left.start, left.vec.size()))
+            result.push_back(left.vec[idx]);
+        for (auto idx : std::views::iota(right.start, right.vec.size()))
+            result.push_back(right.vec[idx]);
+        results.push_back(std::move(result));
+        return;
+    }
+
+    prefix.push_back(left.vec[left.start]);
+    weaveVectors(/*left=*/{.vec = left.vec, .start = left.start + 1},
+                 /*right=*/{.vec = right.vec, .start = right.start}, prefix, results);
+    prefix.pop_back();
+
+    prefix.push_back(right.vec[right.start]);
+    weaveVectors(/*left=*/{.vec = left.vec, .start = left.start},
+                 /*right=*/{.vec = right.vec, .start = right.start + 1}, prefix, results);
+    prefix.pop_back();
+};
+
+auto IV::BSTSequences(const Tree<int>::Pointer &node) -> Vector<Vector<int>> {
+    if (node == nullptr)
+        return {{}};
+
+    Vector<Vector<int>> result;
+    Vector<int> prefix{node->val};
+
+    auto leftSeq = BSTSequences(node->left);
+    auto rightSeq = BSTSequences(node->right);
+
+    for (const auto &left : leftSeq) {
+        for (const auto &right : rightSeq) {
+            Vector<Vector<int>> weaved;
+            weaveVectors(/*left=*/{.vec = left}, /*right=*/{.vec = right}, prefix, weaved);
+            result.insert(result.end(), weaved);
+        }
+    }
+
+    return result;
+};
+
+auto IV::BSTSequences(const Tree<int> &tree) -> Vector<Vector<int>> { return BSTSequences(tree.root); }

@@ -454,3 +454,17 @@ TEST_F(IV_FIRST_COMMON_ANCESTOR, DIFFERENT_BRANCHES) {
     auto node7 = tree.root->right->right;
     EXPECT_EQ(IV::findCommonAncestor(node1, node7), tree.root);
 }
+
+TEST(IV_BST_SEQUENCE, INIT) {
+    Tree<int> tree{2, 1, 3};
+
+    auto res = IV::BSTSequences(tree);
+
+    Vector<Vector<int>> answers{
+        {2, 1, 3},
+        {2, 3, 1},
+    };
+
+    for (auto [val, res] : std::views::zip(res, answers))
+        EXPECT_EQ(val, res);
+}

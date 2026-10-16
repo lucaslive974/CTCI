@@ -198,5 +198,8 @@ class IV : public Chapter {
 
     using TreeNode = Tree<int>::Pointer;
     static auto findCommonAncestor(TreeNode &a, TreeNode &b) -> TreeNode;
+
+    static auto BSTSequences(const Tree<int>::Pointer &node) -> Vector<Vector<int>>;
+    static auto BSTSequences(const Tree<int> &tree) -> Vector<Vector<int>>;
 };
 } // namespace CTCI
