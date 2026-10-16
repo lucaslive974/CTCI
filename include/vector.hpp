@@ -60,14 +60,13 @@ class Vector {
                 std::memmove(_data + offset + insertingSize, _data + offset, sizeInBytes(_size - offset));
             std::memmove(_data + offset, values._data, sizeInBytes(insertingSize));
         } else {
-            auto head = values.begin();
-            auto left = it;
-            auto right = end();
+            auto left = it - begin();
+            auto right = end() - begin();
 
-            *right = std::move(*left);
-            *left = std::move(*head);
-
-            (++head, ++left, ++right);
+            for (auto idx : std::views::iota(0UZ, values.size())) {
+                _alloc.construct(_data + right + idx, std::move(*(_data + left + idx)));
+                _alloc.construct(_data + left + idx, std::move(values[idx]));
+            }
         }
 
         _size += values.size();
@@ -99,12 +98,12 @@ class Vector {
         _data = _alloc.allocate(other._capacity);
         _size = other._size;
         _capacity = other._capacity;
-        _alloc = other._alloc;
+
         if constexpr (std::is_trivially_copyable_v<Ty>) {
             std::memcpy(_data, other._data, sizeInBytes(other._size));
         } else {
-            for (auto [actual, other] : std::views::zip(*this, other))
-                actual = other;
+            for (auto idx : std::views::iota(0UZ, other.size()))
+                _alloc.construct(_data + idx, other[idx]);
         }
     }
 
@@ -112,7 +111,6 @@ class Vector {
         _data = other._data;
         _size = other._size;
         _capacity = other._capacity;
-        _alloc = other._alloc;
 
         other._data = nullptr;
         other._size = 0;
@@ -188,7 +186,7 @@ class Vector {
 
     void insert(RandomAccessIterator it, Ty value) { insertData(it, Vector<Ty>{std::move(value)}); }
     void insert(RandomAccessIterator it, std::initializer_list<Ty> list) { insertData(it, list); }
-    template <std::ranges::range R> void insert(RandomAccessIterator it, R &&rng) { insertData(it, rng); }
+    template <std::ranges::range R> void insert(RandomAccessIterator it, R &&rng) { insertData(it, std::forward<R>(rng)); }
     template <typename... Args> Ty &emplaceBack(Args &&...args) {
         if (_size + 1 >= _capacity)
             resize(_capacity);

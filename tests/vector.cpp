@@ -114,6 +114,11 @@ TEST_F(VECTOR_NON_TRIVIAL_TYPE, NON_TRIVIAL_ERASE) {
     EXPECT_EQ(vec.back().value, 4);
 }
 
+TEST_F(VECTOR_NON_TRIVIAL_TYPE, DEFAULT_CONSTRUCTOR_SHOULD_INITALIZE_DATA) {
+    Vector<NonTrivial> vec;
+    EXPECT_NO_FATAL_FAILURE({ vec.insert(vec.end(), {1}); });
+}
+
 class VECTOR_MOVE_ONLY_TYPE : public testing::Test {
 
   protected:
