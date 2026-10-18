@@ -85,6 +85,16 @@ TEST(TREE, NODE_SIZE_SHOULD_INIT_AS_ONE) {
     EXPECT_EQ(tree.root->size, 1);
 }
 
+TEST(TREE, TREE_SIZE_CORRECT_OUTPUT) {
+    Tree<int> tree{4, 2, 1, 3, 6, 5, 7};
+    EXPECT_EQ(tree.size(), 7);
+}
+
+TEST(TREE, EMPTY_TREE_CORRECT_OUTPUT) {
+    Tree<int> tree;
+    EXPECT_EQ(tree.size(), 0);
+}
+
 TEST(TREE, NODE_SIZE_SHOULD_INCREMENT_ON_APPEND) {
     Tree<int> tree{2};
 
