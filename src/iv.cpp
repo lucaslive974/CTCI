@@ -252,3 +252,30 @@ auto IV::checkSubtree(const Tree<int> &t1, const Tree<int> &t2) -> bool {
 
     return std::ranges::any_of(t1, [&t2](const auto &node) { return ::checkSubtree(node, t2.root); });
 }
+
+auto IV::pathsWithSum(const Tree<int> &tree, int target) -> size_t {
+    using Pointer = Tree<int>::Pointer;
+    size_t result = 0;
+
+    auto calculate = [&target, &result](this auto &self, const Pointer &node, int actual, List<Pointer> list = {}) {
+        if (node == nullptr)
+            return;
+
+        actual += node->val;
+        list.push(node);
+
+        while (actual > target) {
+            actual -= list.front()->val;
+            list.pop();
+        }
+
+        if (actual == target)
+            ++result;
+
+        self(node->left, actual, list);
+        self(node->right, actual, list);
+    };
+
+    calculate(tree.root, 0);
+    return result;
+}

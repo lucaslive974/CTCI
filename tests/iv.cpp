@@ -556,3 +556,22 @@ TEST_F(IV_GET_RANDOM_NUMBER, ALL_NODES_SHOULD_HAVE_SAME_PROBABILITY) {
     for (auto &[_, count] : map)
         EXPECT_NEAR(count, 2000, 200);
 }
+
+TEST(IV_PATHS_WITH_SUMS, INIT) {
+    Tree<int> tree{4, 6, 5, 7};
+
+    auto &root = tree.root;
+
+    auto two = tree.append(root->left, 2);
+    auto three = tree.append(two->right, 3);
+    auto twoII = tree.append(three->left, 2);
+    auto one = tree.append(twoII->left, 1);
+    auto oneII = tree.append(twoII->right, 1);
+
+    EXPECT_EQ(IV::pathsWithSum(tree, 6), 4);
+    EXPECT_EQ(IV::pathsWithSum(tree, 5), 3);
+    EXPECT_EQ(IV::pathsWithSum(tree, 11), 2);
+    EXPECT_EQ(IV::pathsWithSum(tree, 4), 1);
+    EXPECT_EQ(IV::pathsWithSum(tree, 15), 1);
+    EXPECT_EQ(IV::pathsWithSum(tree, 14), 0);
+}

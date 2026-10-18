@@ -211,5 +211,7 @@ class IV : public Chapter {
         auto uniformDistribution = std::uniform_int_distribution<size_t>{1UZ, tree.size()};
         return tree.find(uniformDistribution(ctx));
     };
+
+    static auto pathsWithSum(const Tree<int> &tree, int target) -> size_t;
 };
 } // namespace CTCI
