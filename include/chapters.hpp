@@ -2,6 +2,7 @@
 
 #include "chapter.hpp"
 #include "data_structures.hpp"
+#include <random>
 #include <stdexcept>
 
 namespace CTCI {
@@ -198,10 +199,17 @@ class IV : public Chapter {
 
     using TreeNode = Tree<int>::Pointer;
     static auto findCommonAncestor(TreeNode &a, TreeNode &b) -> TreeNode;
-
     static auto BSTSequences(const Tree<int>::Pointer &node) -> Vector<Vector<int>>;
     static auto BSTSequences(const Tree<int> &tree) -> Vector<Vector<int>>;
-
     static auto checkSubtree(const Tree<int> &t1, const Tree<int> &t2) -> bool;
+
+    template <std::uniform_random_bit_generator Context>
+    static auto getRandomNode(const Tree<int> &tree, Context &ctx) -> Tree<int>::Pointer {
+        if (tree.empty())
+            return nullptr;
+
+        auto uniformDistribution = std::uniform_int_distribution<size_t>{1UZ, tree.size()};
+        return tree.find(uniformDistribution(ctx));
+    };
 };
 } // namespace CTCI

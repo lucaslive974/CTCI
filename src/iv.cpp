@@ -1,5 +1,6 @@
 #include "associative_containers.hpp"
 #include "chapters.hpp"
+#include <random>
 
 using namespace CTCI;
 

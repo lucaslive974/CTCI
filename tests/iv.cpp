@@ -4,6 +4,7 @@
 
 #include <chapters.hpp>
 #include <gtest/gtest.h>
+#include <random>
 #include <ranges>
 
 using namespace CTCI;
@@ -503,4 +504,55 @@ TEST_F(IV_CHECK_SUBTREE, EMPTY_T1_NON_EMPTY_T2_SHOULD_RETURN_FALSE) {
 TEST_F(IV_CHECK_SUBTREE, NON_EMPTY_T1_EMPTY_T2_SHOULD_RETURN_TRUE) {
     Tree<int> t2;
     EXPECT_TRUE(IV::checkSubtree(t1, t2));
+}
+
+class IV_GET_RANDOM_NUMBER : public testing::Test {
+  protected:
+    IV_GET_RANDOM_NUMBER() = default;
+
+    Tree<int> tree{4, 2, 1, 3, 6, 5, 7};
+    std::mt19937_64 ctx{1}; // NOLINT
+};
+
+TEST_F(IV_GET_RANDOM_NUMBER, FIND_REACHES_THE_RIGHT_NODE) {
+    auto &root = tree.root;
+    EXPECT_EQ(tree.find(7), root);
+    EXPECT_EQ(tree.find(6), root->right);
+    EXPECT_EQ(tree.find(5), root->right->right);
+    EXPECT_EQ(tree.find(4), root->right->left);
+    EXPECT_EQ(tree.find(3), root->left);
+    EXPECT_EQ(tree.find(2), root->left->right);
+    EXPECT_EQ(tree.find(1), root->left->left);
+}
+
+TEST_F(IV_GET_RANDOM_NUMBER, FIND_EMPTY_TREE_SHOULD_RETURN_NULLPTR) {
+    Tree<int> tree;
+    EXPECT_EQ(tree.find(1), nullptr);
+}
+
+TEST_F(IV_GET_RANDOM_NUMBER, TREE_WITHOUT_LEFT_BRANCH) {
+    Tree<int> tree{1, 2, 3};
+
+    auto &root = tree.root;
+    EXPECT_EQ(tree.find(3), root);
+    EXPECT_EQ(tree.find(2), root->right);
+    EXPECT_EQ(tree.find(1), root->right->right);
+}
+
+TEST_F(IV_GET_RANDOM_NUMBER, EMPTY_TREE_SHOULD_RETURN_NULLPTR) {
+    Tree<int> tree;
+    EXPECT_EQ(IV::getRandomNode(tree, ctx), nullptr);
+}
+
+TEST_F(IV_GET_RANDOM_NUMBER, ALL_NODES_SHOULD_HAVE_SAME_PROBABILITY) {
+    Tree<int> customTree{4, 2, 3, 1, 6};
+    HashMap<Tree<int>::Pointer, size_t> map;
+
+    for (auto step : std::views::iota(0, 10'000)) {
+        auto node = IV::getRandomNode(customTree, ctx);
+        map[node]++;
+    }
+
+    for (auto &[_, count] : map)
+        EXPECT_NEAR(count, 2000, 200);
 }

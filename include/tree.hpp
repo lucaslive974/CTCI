@@ -83,6 +83,27 @@ template <typename T> struct Tree {
         return ret;
     }
 
+    Pointer find(size_t idx) const {
+        auto head = root;
+        while (head) {
+            if (head->size == idx)
+                break;
+
+            auto &left = head->left;
+            if (left) {
+                if (idx <= left->size) {
+                    head = left;
+                    continue;
+                }
+                idx -= left->size;
+            }
+
+            head = head->right;
+        }
+
+        return head;
+    }
+
     static auto sucessor(const Pointer &node) -> Pointer {
         if (node == nullptr)
             return nullptr;
