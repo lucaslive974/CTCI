@@ -17,6 +17,7 @@ template <typename T> struct TNode {
     SharedPtr<NodeType> left = nullptr;
     SharedPtr<NodeType> right = nullptr;
     size_t depth = 1;
+    size_t size = 1;
     T val = T{};
 
     TNode() = default;
@@ -70,11 +71,13 @@ template <typename T> struct Tree {
             return node;
         }
 
+        ++(node->size);
         Pointer ret = nullptr;
-        if (value < node->val)
+        if (value < node->val) {
             ret = append(/**node=*/node->left, std::move(value), node->depth + 1, /**parent=*/node);
-        else
+        } else {
             ret = append(/**node=*/node->right, std::move(value), node->depth + 1, /**parent=*/node);
+        }
 
         return ret;
     }

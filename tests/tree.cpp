@@ -78,3 +78,48 @@ TEST(TREE, RANGES) {
     for (const auto [node, val] : std::views::zip(tree, std::views::iota(1, 4)))
         EXPECT_EQ(node->val, val);
 }
+
+TEST(TREE, NODE_SIZE_SHOULD_INIT_AS_ONE) {
+    Tree<int> tree{2};
+
+    EXPECT_EQ(tree.root->size, 1);
+}
+
+TEST(TREE, NODE_SIZE_SHOULD_INCREMENT_ON_APPEND) {
+    Tree<int> tree{2};
+
+    tree.append(3);
+    EXPECT_EQ(tree.root->size, 2);
+
+    tree.append(1);
+    EXPECT_EQ(tree.root->size, 3);
+
+    EXPECT_EQ(tree.root->right->size, 1);
+    EXPECT_EQ(tree.root->left->size, 1);
+}
+
+TEST(TREE, NODE_SIZE_SHOULD_CONSTRUCT_WITH_CORRECT_SIZE) {
+    Tree<int> tree{2, 3, 1};
+
+    /* 2 */
+    EXPECT_EQ(tree.root->size, 3);
+
+    /* 3 */
+    EXPECT_EQ(tree.root->right->size, 1);
+
+    /* 1 */
+    EXPECT_EQ(tree.root->left->size, 1);
+}
+
+TEST(TREE, TREE_DEGENERATED_SHOULD_OUTPUT_CORRECT_SIZE) {
+    Tree<int> tree{3, 2, 1};
+
+    /* 3 */
+    EXPECT_EQ(tree.root->size, 3);
+
+    /* 2 */
+    EXPECT_EQ(tree.root->left->size, 2);
+
+    /* 1 */
+    EXPECT_EQ(tree.root->left->left->size, 1);
+}
