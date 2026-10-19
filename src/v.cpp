@@ -1,5 +1,6 @@
 #include "chapters.hpp"
 #include "data_structures.hpp"
+#include <ranges>
 
 using namespace CTCI;
 
@@ -18,29 +19,23 @@ auto V::insertion(InsertionData &info) -> int {
 
 auto V::flipBitToWin(int data) -> size_t {
     BitSet<4> bits(data);
+    Vector<size_t> sequences(1, 0);
 
-    size_t longestSeq = 0;
-
-    auto calculate = [&bits, &longestSeq](size_t start) {
-        bool flipped = false;
-        size_t actualSeq = 0;
-
-        for (auto i = start; i < bits.size(); ++i) {
-            auto bit = bits.get(i);
-
-            if (!bit && flipped)
-                break;
-
-            if (!bit)
-                flipped = true;
-
-            ++actualSeq;
-            longestSeq = std::max(longestSeq, actualSeq);
+    for (auto i : std::views::iota(0UZ, bits.size())) {
+        if (bits.get(i)) {
+            sequences.back()++;
+            continue;
         }
-    };
 
-    for (auto i : std::views::iota(0UZ, bits.size()))
-        calculate(i);
+        sequences.emplace_back(0);
+    }
 
-    return longestSeq;
+    if (sequences.size() == 1)
+        return sequences.front();
+
+    size_t longest = 1;
+    for (auto [first, second] : sequences | std::views::adjacent<2>)
+        longest = std::max(longest, first + second + 1);
+
+    return longest;
 }
