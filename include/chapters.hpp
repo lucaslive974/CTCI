@@ -228,6 +228,7 @@ class V : public Chapter {
         size_t j;
     };
     static auto insertion(InsertionData &info) -> int;
+    static auto flipBitToWin(int data) -> size_t;
 };
 
 } // namespace CTCI
