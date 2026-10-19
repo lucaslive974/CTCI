@@ -24,7 +24,18 @@ template <std::integral Ty, size_t Size> class BitSetImpl {
 
   public:
     BitSetImpl() = default;
-    BitSetImpl(long long data) : _data(data) {};
+
+    template <std::integral T> BitSetImpl(T value) : _data(0) {
+        constexpr auto bits = sizeof(T) * 8;
+        static_assert(bits <= size(), "Input type size greater than capacity");
+
+        for (auto i : std::views::iota(0UZ, bits)) {
+            auto info = calculateBucket(i);
+            auto bit = static_cast<bool>(value & (1 << i));
+
+            _data[info.bucket] |= (bit << info.idx);
+        }
+    };
 
     BitSetImpl(std::initializer_list<Ty> list) {
         for (auto [data, value] : std::views::zip(_data, list))
@@ -50,7 +61,7 @@ template <std::integral Ty, size_t Size> class BitSetImpl {
         _data[info.bucket] &= ~(1 << info.idx);
     }
 
-    [[nodiscard]] size_t size() const { return Size * sizeof(Ty); }
+    [[nodiscard]] constexpr static size_t size() { return Size * (sizeof(Ty) * 8); }
 };
 
 template <size_t Size> using BitSet = BitSetImpl<unsigned char, Size>;
