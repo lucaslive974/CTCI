@@ -18,7 +18,19 @@ auto V::insertion(InsertionData &info) -> uint {
 }
 
 auto V::flipBitToWin(int data) -> size_t {
+    struct Sequence {
+        size_t size = 0;
+        size_t start = 0;
+        size_t end = 0;
+        Sequence(size_t i) : start(i) {};
+    };
+
     BitSet<4> bits(data);
+    auto findNextOne = [&bits](size_t idx) -> size_t {
+        while (idx < bits.size() && !bits.get(idx))
+            ++idx;
+        return idx;
+    };
 
     size_t longest = 1;
 
