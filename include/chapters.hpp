@@ -222,12 +222,12 @@ class V : public Chapter {
     V(std::string name = "Bit Manipulation");
 
     struct InsertionData {
-        int M;
-        int N;
+        uint M;
+        uint N;
         size_t i;
         size_t j;
     };
-    static auto insertion(InsertionData &info) -> int;
+    static auto insertion(InsertionData &info) -> uint;
     static auto flipBitToWin(int data) -> size_t;
 };
 
