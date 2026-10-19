@@ -94,3 +94,30 @@ TEST(ARRAY, RANGE_DIFF) {
     EXPECT_EQ(arr.end() - 3, arr.begin());
     EXPECT_EQ(arr.begin() + 3, arr.end());
 }
+
+TEST(ARRAY, DEFAULT_INITALIZATION) {
+    ArrayT arr;
+
+    EXPECT_EQ(arr[0], 0);
+    EXPECT_EQ(arr[1], 0);
+    EXPECT_EQ(arr[2], 0);
+}
+
+TEST(ARRAY, VALUE_INITIALIZATION) {
+    ArrayT arr(1);
+
+    EXPECT_EQ(arr[0], 1);
+    EXPECT_EQ(arr[1], 1);
+    EXPECT_EQ(arr[2], 1);
+}
+
+struct NonTrivial {
+    int value = 1;
+    NonTrivial() = default;
+    ~NonTrivial() { value = 0; }
+};
+
+TEST(ARRAY, NON_TRIVIAL_DESTRUCTOR) {
+    using Ty = Array<NonTrivial, 3>;
+    EXPECT_NO_FATAL_FAILURE({ Ty arr; });
+}
