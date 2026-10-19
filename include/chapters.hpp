@@ -214,4 +214,20 @@ class IV : public Chapter {
 
     static auto pathsWithSum(const Tree<int> &tree, int target) -> size_t;
 };
+
+class V : public Chapter {
+    template <typename T> using Node = SharedPtr<GNode<T>>;
+
+  public:
+    V(std::string name = "Bit Manipulation");
+
+    struct InsertionData {
+        int M;
+        int N;
+        size_t i;
+        size_t j;
+    };
+    static auto insertion(InsertionData &info) -> int;
+};
+
 } // namespace CTCI
