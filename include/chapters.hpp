@@ -143,31 +143,23 @@ class III : public Chapter {
             Cat() = default;
         };
 
+        struct AnimalStorage {
+            UniquePtr<Animal> animal;
+            size_t seq;
+        };
+
         void enqueue(UniquePtr<Animal> &&ptr);
         auto dequeueAny() -> UniquePtr<Animal>;
-        auto dequeueDog() -> UniquePtr<Animal>;
-        auto dequeueCat() -> UniquePtr<Animal>;
+        auto dequeueDog() -> UniquePtr<Dog>;
+        auto dequeueCat() -> UniquePtr<Cat>;
 
         bool empty();
 
       private:
-        CTCI::Deque<UniquePtr<Animal>> animals;
-        template <typename T> auto dequeueAnimalOfType() -> UniquePtr<AnimalShelter::Animal> {
-            if (empty())
-                return nullptr;
+        CTCI::Queue<AnimalStorage> dogs;
+        CTCI::Queue<AnimalStorage> cats;
 
-            auto head = animals.head;
-            while (head != nullptr) {
-                if (dynamic_cast<T *>(head->val.get())) {
-                    animals.pop(head);
-                    auto ptr = UniquePtr<T>(static_cast<T *>(head->val.release()));
-                    return ptr;
-                }
-                head = head->next;
-            }
-
-            return nullptr;
-        };
+        size_t seq = 0;
     };
 };
 

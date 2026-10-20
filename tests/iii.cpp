@@ -180,9 +180,6 @@ TEST(III, QUEUE_EMPTY) {
 TEST(III, ANIMAL_SHELTER_ENQUEUE_ANIMALS) {
     AnimalShelter shelter;
 
-    auto dog1 = createDog();
-    auto cat1 = createCat();
-
     shelter.enqueue(createDog());
     shelter.enqueue(createCat());
 
@@ -193,11 +190,10 @@ TEST(III, ANIMAL_SHELTER_ENQUEUE_ANIMALS) {
 TEST(III, ANIMAL_SHELTER_DEQUEUE_DOGS_I) {
     AnimalShelter shelter;
 
-    shelter.enqueue(createCat());
     shelter.enqueue(createDog());
 
     internal::testUniquePtrIs<Dog>(shelter.dequeueDog().get());
-    EXPECT_FALSE(shelter.empty());
+    EXPECT_TRUE(shelter.empty());
 }
 
 TEST(III, ANIMAL_SHELTER_DEQUEUE_DOGS_II) {
@@ -230,6 +226,18 @@ TEST(III, ANIMAL_SHELTER_DEQUEUE_EMPTY) {
     AnimalShelter shelter;
 
     EXPECT_EQ(shelter.dequeueAny(), nullptr);
+    EXPECT_TRUE(shelter.empty());
+}
+
+TEST(III, ANIMAL_SHELTER_DEQUEUE_UNTIL_EMPTY) {
+    AnimalShelter shelter;
+
+    shelter.enqueue(createCat());
+    shelter.enqueue(createDog());
+
+    for (auto i : std::views::iota(0, 2))
+        shelter.dequeueAny();
+
     EXPECT_TRUE(shelter.empty());
 }
 
