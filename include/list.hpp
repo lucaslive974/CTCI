@@ -65,7 +65,7 @@ template <typename T> struct List {
     }
 
     void push(T val) {
-        auto node = CTCI::make_shared<NodeType>(val);
+        auto node = CTCI::make_shared<NodeType>(std::move(val));
         push(node);
     }
 
@@ -115,7 +115,7 @@ template <typename T> struct List {
             tail = nullptr;
     }
 
-    auto front() -> T { return head->val; }
+    auto front() -> T & { return head->val; }
 
     [[nodiscard]] bool empty() const { return !head; }
 
