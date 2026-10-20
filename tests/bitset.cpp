@@ -66,3 +66,15 @@ TEST(BIT_SET, MULTI_BYTE_INITIALIZATION) {
     EXPECT_TRUE(bitset.get(31));
     EXPECT_FALSE(bitset.get(23));
 }
+
+TEST(BIT_SET, OR_UNION_OPERATION) {
+    BitSet<4> a(0xFF'00'00'FF);
+    BitSet<4> b(0x00'FF'FF'00);
+    EXPECT_EQ(static_cast<uint>(a | b), 0xFF'FF'FF'FF);
+}
+
+TEST(BIT_SET, AND_INTERSECTION_OPERATION) {
+    BitSet<4> a(0xFF'00'00'FF);
+    BitSet<4> b(0x00'FF'FF'00);
+    EXPECT_EQ(static_cast<uint>(a & b), 0);
+}

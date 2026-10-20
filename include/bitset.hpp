@@ -62,6 +62,33 @@ template <std::integral Ty, size_t Size> class BitSetImpl {
     }
 
     [[nodiscard]] size_t size() { return Size * (sizeof(Ty) * 8); }
+
+    template <std::integral U> operator U() const {
+        static_assert(sizeof(U) <= Size * sizeof(Ty), "Data size greater than destination type");
+
+        U ret = 0;
+        for (auto [i, value] : std::views::enumerate(_data))
+            ret |= value << (i * sizeof(Ty) * 8);
+
+        return ret;
+    }
+
+    BitSetImpl &operator&=(const BitSetImpl &rhs) {
+        for (auto [self, other] : std::views::zip(_data, rhs._data))
+            self &= other;
+
+        return *this;
+    }
+
+    BitSetImpl &operator|=(const BitSetImpl &rhs) {
+        for (auto [self, other] : std::views::zip(_data, rhs._data))
+            self |= other;
+
+        return *this;
+    }
+
+    friend BitSetImpl operator&(const BitSetImpl &lhs, const BitSetImpl &rhs) { return BitSetImpl(lhs) &= rhs; }
+    friend BitSetImpl operator|(const BitSetImpl &lhs, const BitSetImpl &rhs) { return BitSetImpl(lhs) |= rhs; }
 };
 
 template <size_t Size> using BitSet = BitSetImpl<unsigned char, Size>;
