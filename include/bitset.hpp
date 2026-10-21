@@ -65,7 +65,7 @@ template <std::integral Ty, size_t Size> class BitSetImpl {
     [[nodiscard]] size_t size() { return Size * (sizeof(Ty) * 8); }
 
     template <std::integral U> operator U() const {
-        static_assert(sizeof(U) <= Size * sizeof(Ty), "Data size greater than destination type");
+        static_assert(Size * sizeof(Ty) <= sizeof(U), "Data size greater than destination type");
 
         U ret = 0;
         for (auto [i, value] : std::views::enumerate(_data))
@@ -106,7 +106,53 @@ template <std::integral Ty, size_t Size> class BitSetImpl {
                                    [](const auto &pair) { return std::get<0>(pair) == std::get<1>(pair); });
     }
 
+    template <std::integral U> friend bool operator==(const BitSetImpl &lhs, U rhs) { return static_cast<U>(lhs) == rhs; }
+
     friend bool operator!=(const BitSetImpl &lhs, const BitSetImpl &rhs) { return !(lhs == rhs); }
+
+    template <std::integral T> BitSetImpl &operator<<=(T shift) {
+        if (shift >= size())
+            return *this = BitSetImpl(0x0);
+
+        if (shift == 0)
+            return *this;
+
+        auto rest = size() - shift;
+        for (auto i : std::views::iota(0UZ, rest) | std::views::reverse) {
+            if (get(i))
+                set(shift + i);
+            else
+                clear(shift + i);
+        }
+
+        for (auto i : std::views::iota(static_cast<T>(0), shift))
+            clear(i);
+
+        return *this;
+    }
+
+    template <std::integral T> BitSetImpl &operator>>=(T shift) {
+        if (shift >= size())
+            return *this = BitSetImpl(0x0);
+
+        if (shift == 0)
+            return *this;
+
+        constexpr size_t last = (Size * (sizeof(Ty) * 8)) - 1;
+        auto rest = size() - shift;
+
+        for (auto i : std::views::iota(0UZ, rest) | std::views::reverse) {
+            if (get(last - i))
+                set(last - shift - i);
+            else
+                clear(last - shift - i);
+        }
+
+        for (auto i : std::views::iota(size() - shift, size()))
+            clear(i);
+
+        return *this;
+    }
 };
 
 template <size_t Size> using BitSet = BitSetImpl<unsigned char, Size>;

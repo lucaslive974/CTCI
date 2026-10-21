@@ -71,13 +71,13 @@ TEST(BIT_SET, MULTI_BYTE_INITIALIZATION) {
 TEST(BIT_SET, OR_UNION_OPERATION) {
     BitSet<4> a(0xFF'00'00'FF);
     BitSet<4> b(0x00'FF'FF'00);
-    EXPECT_EQ(static_cast<uint>(a | b), 0xFF'FF'FF'FF);
+    EXPECT_EQ(a | b, 0xFF'FF'FF'FF);
 }
 
 TEST(BIT_SET, AND_INTERSECTION_OPERATION) {
     BitSet<4> a(0xFF'00'00'FF);
     BitSet<4> b(0x00'FF'FF'00);
-    EXPECT_EQ(static_cast<uint>(a & b), 0);
+    EXPECT_EQ(a & b, 0);
 }
 
 TEST(BIT_SET, BOOLEAN_CONVERSION) {
@@ -104,5 +104,38 @@ TEST(BIT_SET, INEQUALITY_COMPARATION_OPERATOR) {
 
 TEST(BIT_SET, NEGATION_OPERATOR) {
     BitSet<4> a(0x00'00'00'00);
-    EXPECT_EQ(static_cast<uint>(~a), 0xFF'FF'FF'FF);
+    EXPECT_EQ(~a, 0xFF'FF'FF'FF);
+}
+
+TEST(BIT_SET, BIT_SHIFT_GREATER_THAN_SIZE_SHOULD_ZEROED) {
+    BitSet<4> a(0xFF'FF'FF'FF);
+    auto b = a;
+
+    EXPECT_EQ(a <<= 32, 0);
+    EXPECT_EQ(b >>= 32, 0);
+}
+
+TEST(BIT_SET, BIT_SHIFT_ZERO_SHOULD_REMAIN_UNTOUCHED) {
+    BitSet<4> a(0xFF'FF'FF'FF);
+    BitSet<4> b = a;
+
+    EXPECT_EQ(a <<= 0, b);
+    EXPECT_EQ(a >>= 0, b);
+}
+
+TEST(BIT_SET, LEFT_BIT_SHIFT) {
+    BitSet<4> a(0x00'00'00'FF);
+    EXPECT_EQ(a <<= 4, 0x00'00'0F'F0);
+    EXPECT_EQ(a <<= 4, 0x00'00'FF'00);
+
+    BitSet<4> b(0x00'00'00'FF);
+    EXPECT_EQ(b <<= 24, 0xFF'00'00'00);
+}
+
+TEST(BIT_SET, RIGHT_BIT_SHIFT) {
+    BitSet<4> a(0xFF'00'00'00);
+
+    EXPECT_EQ(a >>= 4, 0x0F'F0'00'00);
+    EXPECT_EQ(a >>= 4, 0x00'FF'00'00);
+    EXPECT_EQ(a >>= 16, 0x00'00'00'FF);
 }
