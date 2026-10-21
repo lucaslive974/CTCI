@@ -153,6 +153,9 @@ template <std::integral Ty, size_t Size> class BitSetImpl {
 
         return *this;
     }
+
+    template <std::integral T> BitSetImpl operator<<(T shift) { return BitSetImpl(*this) <<= shift; }
+    template <std::integral T> BitSetImpl operator>>(T shift) { return BitSetImpl(*this) >>= shift; }
 };
 
 template <size_t Size> using BitSet = BitSetImpl<unsigned char, Size>;

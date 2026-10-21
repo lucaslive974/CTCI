@@ -139,3 +139,12 @@ TEST(BIT_SET, RIGHT_BIT_SHIFT) {
     EXPECT_EQ(a >>= 4, 0x00'FF'00'00);
     EXPECT_EQ(a >>= 16, 0x00'00'00'FF);
 }
+
+TEST(BIT_SET, SHIFTS_TEMPORARIES) {
+    BitSet<4> a(0x00'FF'FF'00);
+
+    EXPECT_EQ(a << 8, 0xFF'FF'00'00);
+    EXPECT_EQ(a >> 8, 0x00'00'FF'FF);
+
+    EXPECT_EQ(a, 0x00'FF'FF'00);
+}
