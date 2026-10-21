@@ -1,5 +1,6 @@
 #include "bitset.hpp"
 
+#include <cstdint>
 #include <gtest/gtest.h>
 
 using namespace CTCI;
@@ -77,4 +78,31 @@ TEST(BIT_SET, AND_INTERSECTION_OPERATION) {
     BitSet<4> a(0xFF'00'00'FF);
     BitSet<4> b(0x00'FF'FF'00);
     EXPECT_EQ(static_cast<uint>(a & b), 0);
+}
+
+TEST(BIT_SET, BOOLEAN_CONVERSION) {
+    BitSet<4> a(0xFF'FF'00'00);
+    EXPECT_TRUE(a);
+
+    BitSet<4> b(0x00'00'00'00);
+    EXPECT_FALSE(b);
+}
+
+TEST(BIT_SET, EQUALITY_COMPARATION_OPERATOR) {
+    BitSet<8> lhs(0xFF'00'00'FF);
+    BitSet<8> rhs(0xFF'00'00'FF);
+
+    EXPECT_EQ(lhs, rhs);
+}
+
+TEST(BIT_SET, INEQUALITY_COMPARATION_OPERATOR) {
+    BitSet<8> lhs(0x00'00'00'FF);
+    BitSet<8> rhs(0x00'00'FF'00);
+
+    EXPECT_NE(lhs, rhs);
+}
+
+TEST(BIT_SET, NEGATION_OPERATOR) {
+    BitSet<4> a(0x00'00'00'00);
+    EXPECT_EQ(static_cast<uint>(~a), 0xFF'FF'FF'FF);
 }

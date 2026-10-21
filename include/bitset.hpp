@@ -1,5 +1,6 @@
 #include "array.hpp"
 
+#include <algorithm>
 #include <concepts>
 #include <cstddef>
 #include <initializer_list>
@@ -73,6 +74,16 @@ template <std::integral Ty, size_t Size> class BitSetImpl {
         return ret;
     }
 
+    operator bool() const {
+        return std::ranges::any_of(_data, [](const auto &value) { return static_cast<bool>(value); });
+    }
+
+    BitSetImpl &operator~() {
+        for (auto &value : _data)
+            value = ~value;
+        return *this;
+    }
+
     BitSetImpl &operator&=(const BitSetImpl &rhs) {
         for (auto [self, other] : std::views::zip(_data, rhs._data))
             self &= other;
@@ -89,6 +100,13 @@ template <std::integral Ty, size_t Size> class BitSetImpl {
 
     friend BitSetImpl operator&(const BitSetImpl &lhs, const BitSetImpl &rhs) { return BitSetImpl(lhs) &= rhs; }
     friend BitSetImpl operator|(const BitSetImpl &lhs, const BitSetImpl &rhs) { return BitSetImpl(lhs) |= rhs; }
+
+    friend bool operator==(const BitSetImpl &lhs, const BitSetImpl &rhs) {
+        return std::ranges::all_of(std::views::zip(lhs._data, rhs._data),
+                                   [](const auto &pair) { return std::get<0>(pair) == std::get<1>(pair); });
+    }
+
+    friend bool operator!=(const BitSetImpl &lhs, const BitSetImpl &rhs) { return !(lhs == rhs); }
 };
 
 template <size_t Size> using BitSet = BitSetImpl<unsigned char, Size>;
