@@ -1,5 +1,6 @@
 #include "chapters.hpp"
 #include "data_structures.hpp"
+#include <limits>
 #include <ranges>
 
 using namespace CTCI;
@@ -40,4 +41,55 @@ auto V::flipBitToWin(uint data) -> size_t {
         return running;
 
     return std::max(longest, running + last + 1);
+}
+
+extern BitSet<4> nextNumber(BitSet<4> bits, uint8_t target) {
+    size_t idx = 0;
+
+    int opposite = 0;
+    while (bits.get(idx) != static_cast<bool>(target)) {
+        ++opposite;
+        ++idx;
+    }
+
+    int same = 0;
+    while (idx < bits.size() && bits.get(idx) == static_cast<bool>(target)) {
+        ++same;
+        ++idx;
+    }
+
+    if (idx == bits.size())
+        return bits;
+
+    using Operation = void (BitSet<4>::*)(size_t);
+    std::pair<Operation, Operation> op = static_cast<bool>(target) ? std::make_pair(&BitSet<4>::set, &BitSet<4>::clear)
+                                                                   : std::make_pair(&BitSet<4>::clear, &BitSet<4>::set);
+    auto &[first, second] = op;
+
+    BitSet<4> output = bits;
+    (output.*first)(idx);
+
+    output &= BitSet<4>(~0) << idx;
+
+    idx = 0;
+    while (same > 1) {
+        (output.*first)(idx++);
+        --same;
+    }
+
+    while (opposite + 1 > 0) {
+        (output.*second)(idx++);
+        --opposite;
+    }
+
+    return output;
+}
+
+auto V::nextNumber(uint data) -> std::pair<uint, uint> {
+    if (std::numeric_limits<uint>::max() == data || data == 0)
+        return {data, data};
+
+    auto next = ::nextNumber(/*bits=*/BitSet<4>(data), /*target=*/1);
+    auto prev = ::nextNumber(/*bits=*/BitSet<4>(data), /*target=*/0);
+    return {next, prev};
 }

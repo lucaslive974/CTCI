@@ -221,6 +221,7 @@ class V : public Chapter {
     };
     static auto insertion(InsertionData &info) -> uint;
     static auto flipBitToWin(uint data) -> size_t;
+    static auto nextNumber(uint data) -> std::pair<uint, uint>;
 };
 
 } // namespace CTCI

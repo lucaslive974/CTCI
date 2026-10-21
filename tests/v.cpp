@@ -30,3 +30,28 @@ TEST(V_FLIP_BIT_TO_WIN, ALL_ONES_INT) { EXPECT_EQ(V::flipBitToWin(-1), 32); }
 TEST(V_FLIP_BIT_TO_WIN, ENDING_IN_ONES) { EXPECT_EQ(V::flipBitToWin(0xFF'00'00'00), 9); }
 
 TEST(V_FLIP_BIT_TO_WIN, TWO_LANES_MERGEABLE) { EXPECT_EQ(V::flipBitToWin(0xFF'FF'FF'7F), 32); }
+
+TEST(V_NEXT_NUMBER, BASE_CASE) {
+    auto res = V::nextNumber(0b0110);
+    EXPECT_EQ(res.first, 0b1001);
+    EXPECT_EQ(res.second, 0b0101);
+}
+
+TEST(V_NEXT_NUMBER, ALL_BITS_EQUAL_SHOULD_RETURN_THE_NUMBER_UNALTERED) {
+    constexpr auto max = std::numeric_limits<uint>::max();
+
+    auto a = V::nextNumber(max);
+    EXPECT_EQ(a.first, max);
+    EXPECT_EQ(a.second, max);
+
+    auto b = V::nextNumber(0);
+    EXPECT_EQ(b.first, 0);
+    EXPECT_EQ(b.second, 0);
+}
+
+TEST(V_NEXT_NUMBER, TRAILING_TARGETS_BITS) {
+   auto res = V::nextNumber(0xFF'FF'00'00);
+
+   EXPECT_EQ(res.first, 0xFF'FF'00'00);
+   EXPECT_EQ(res.second, 0xFF'FE'80'00);
+}
