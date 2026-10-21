@@ -17,7 +17,7 @@ auto V::insertion(InsertionData &info) -> uint {
     return output;
 }
 
-auto V::flipBitToWin(int data) -> size_t {
+auto V::flipBitToWin(uint data) -> size_t {
     BitSet<4> bits(data);
 
     size_t longest = 1;
@@ -35,8 +35,8 @@ auto V::flipBitToWin(int data) -> size_t {
         last = running;
         running = 0;
     }
-    
-    if(running == 32)
+
+    if (running == 32)
         return running;
 
     return std::max(longest, running + last + 1);
