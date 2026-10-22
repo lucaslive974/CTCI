@@ -82,7 +82,7 @@ TEST_F(V_DRAW_LINE, BASE_CASE) {
     V::drawLine(screen, /*a1=*/{.x = 2, .y = 0}, /*a2=*/{.x = 2, .y = 7});
 
     // clang-format off
-    CTCI::BitSet<5> output{
+    CTCI::Bitset<5> output{
         0b0000'0000,
         0b0000'0000,
         0b1111'1111,
@@ -98,7 +98,7 @@ TEST_F(V_DRAW_LINE, NON_FULL_LINE) {
     V::drawLine(screen, /*a1=*/{.x = 2, .y = 1}, /*a2=*/{.x = 2, .y = 6});
 
     // clang-format off
-    CTCI::BitSet<5> output{
+    CTCI::Bitset<5> output{
         0b0000'0000,
         0b0000'0000,
         0b0111'1110, 
@@ -115,7 +115,7 @@ TEST_F(V_DRAW_LINE, DRAW_ON_BORDERS) {
     V::drawLine(screen, /*a1=*/{.x = 4, .y = 0}, /*a2=*/{.x = 4, .y = 7});
 
     // clang-format off
-    CTCI::BitSet<5> output{
+    CTCI::Bitset<5> output{
         0b1111'1111, 
         0b0000'0000,
         0b0000'0000,
@@ -132,7 +132,7 @@ TEST_F(V_DRAW_LINE, DRAW_ON_ENTIRE_SCREEN) {
         V::drawLine(screen, /*a1=*/{.x = i, .y = 0}, /*a2=*/{.x = i, .y = 7});
 
     // clang-format off
-    CTCI::BitSet<5> output{
+    CTCI::Bitset<5> output{
         0b1111'1111, 
         0b1111'1111, 
         0b1111'1111, 

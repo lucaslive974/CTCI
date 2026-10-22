@@ -226,7 +226,7 @@ class V : public Chapter {
     static auto pairwiseSwap(const uint &input) -> uint;
 
     template <size_t ScreenSize> struct Screen {
-        BitSet<ScreenSize / 8> buffer;
+        Bitset<ScreenSize / 8> buffer;
         uint width;
         Screen(uint width) : width(width) {};
     };
