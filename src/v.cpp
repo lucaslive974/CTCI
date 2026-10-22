@@ -106,22 +106,14 @@ auto V::conversion(uint a, uint b) -> size_t { // NOLINT
 };
 
 auto V::pairwiseSwap(const uint &input) -> uint {
-    Bitset<4> bits(input);
+    Bitset<4> data(input);
 
-    for (auto i = 0; i < bits.size() - 1; i += 2) {
-        auto tmp = bits.get(i);
-        auto value = bits.get(i + 1);
+    Bitset<4> oddMask(0x55'55'55'55);
+    Bitset<4> evenMask(~oddMask);
 
-        if (value)
-            bits.set(i);
-        else
-            bits.clear(i);
+    Bitset<4> result;
+    result |= (data & oddMask) << 1;
+    result |= (data & evenMask) >> 1;
 
-        if (tmp)
-            bits.set(i + 1);
-        else
-            bits.clear(i + 1);
-    }
-
-    return bits;
+    return result;
 }

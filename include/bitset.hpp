@@ -78,10 +78,11 @@ template <std::integral Ty, size_t Size> class BitsetImpl {
         return std::ranges::any_of(_data, [](const auto &value) { return static_cast<bool>(value); });
     }
 
-    BitsetImpl &operator~() {
-        for (auto &value : _data)
-            value = ~value;
-        return *this;
+    BitsetImpl operator~() {
+        BitsetImpl tmp;
+        for (auto [self, other] : std::views::zip(tmp._data, _data))
+            self = ~other;
+        return tmp;
     }
 
     BitsetImpl &operator&=(const BitsetImpl &rhs) {
@@ -97,7 +98,7 @@ template <std::integral Ty, size_t Size> class BitsetImpl {
 
         return *this;
     }
-
+    
     friend BitsetImpl operator&(const BitsetImpl &lhs, const BitsetImpl &rhs) { return BitsetImpl(lhs) &= rhs; }
     friend BitsetImpl operator|(const BitsetImpl &lhs, const BitsetImpl &rhs) { return BitsetImpl(lhs) |= rhs; }
 
