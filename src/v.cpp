@@ -104,3 +104,24 @@ auto V::conversion(uint a, uint b) -> size_t { // NOLINT
 
     return res;
 };
+
+auto V::pairwiseSwap(const uint &input) -> uint {
+    BitSet<4> bits(input);
+
+    for (auto i = 0; i < bits.size() - 1; i += 2) {
+        auto tmp = bits.get(i);
+        auto value = bits.get(i + 1);
+
+        if (value)
+            bits.set(i);
+        else
+            bits.clear(i);
+
+        if (tmp)
+            bits.set(i + 1);
+        else
+            bits.clear(i + 1);
+    }
+
+    return bits;
+}

@@ -223,6 +223,7 @@ class V : public Chapter {
     static auto flipBitToWin(uint data) -> size_t;
     static auto nextNumber(uint data) -> std::pair<uint, uint>;
     static auto conversion(uint a, uint b) -> size_t;
+    static auto pairwiseSwap(const uint &input) -> uint;
 };
 
 } // namespace CTCI
