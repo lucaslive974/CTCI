@@ -1,7 +1,5 @@
 #pragma once
 
-// NOLINTBEGIN
-
 #include "associative_containers.hpp"
 #include "bitset.hpp"
 #include "deque.hpp"
@@ -12,5 +10,3 @@
 #include "stack.hpp"
 #include "tree.hpp"
 #include "vector.hpp"
-
-// NOLINTEND
