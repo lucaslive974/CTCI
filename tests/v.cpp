@@ -70,3 +70,76 @@ TEST(V_PAIRWISE_SWAP, SAME_BITS) {
 }
 
 TEST(V_PAIRWISE_SWAP, CONTIGUOS_SEQUENCE) { EXPECT_EQ(V::pairwiseSwap(0b1100), 0b1100); }
+
+class V_DRAW_LINE : public testing::Test {
+
+  protected:
+    V_DRAW_LINE() = default;
+    V::Screen<40> screen{/*width=*/8};
+};
+
+TEST_F(V_DRAW_LINE, BASE_CASE) {
+    V::drawLine(screen, /*a1=*/{.x = 2, .y = 0}, /*a2=*/{.x = 2, .y = 7});
+
+    // clang-format off
+    CTCI::BitSet<5> output{
+        0b0000'0000,
+        0b0000'0000,
+        0b1111'1111,
+        0b0000'0000,
+        0b0000'0000,
+    };
+    // clang-format on
+
+    EXPECT_EQ(output, screen.buffer);
+}
+
+TEST_F(V_DRAW_LINE, NON_FULL_LINE) {
+    V::drawLine(screen, /*a1=*/{.x = 2, .y = 1}, /*a2=*/{.x = 2, .y = 6});
+
+    // clang-format off
+    CTCI::BitSet<5> output{
+        0b0000'0000,
+        0b0000'0000,
+        0b0111'1110, 
+        0b0000'0000,
+        0b0000'0000,
+    };
+    // clang-format on
+
+    EXPECT_EQ(output, screen.buffer);
+}
+
+TEST_F(V_DRAW_LINE, DRAW_ON_BORDERS) {
+    V::drawLine(screen, /*a1=*/{.x = 0, .y = 0}, /*a2=*/{.x = 0, .y = 7});
+    V::drawLine(screen, /*a1=*/{.x = 4, .y = 0}, /*a2=*/{.x = 4, .y = 7});
+
+    // clang-format off
+    CTCI::BitSet<5> output{
+        0b1111'1111, 
+        0b0000'0000,
+        0b0000'0000,
+        0b0000'0000,
+        0b1111'1111, 
+    };
+    // clang-format on
+
+    EXPECT_EQ(output, screen.buffer);
+}
+
+TEST_F(V_DRAW_LINE, DRAW_ON_ENTIRE_SCREEN) {
+    for (auto i : std::views::iota(0UZ, screen.buffer.size() / 8))
+        V::drawLine(screen, /*a1=*/{.x = i, .y = 0}, /*a2=*/{.x = i, .y = 7});
+
+    // clang-format off
+    CTCI::BitSet<5> output{
+        0b1111'1111, 
+        0b1111'1111, 
+        0b1111'1111, 
+        0b1111'1111, 
+        0b1111'1111, 
+    };
+    // clang-format on
+
+    EXPECT_EQ(output, screen.buffer);
+}

@@ -224,6 +224,25 @@ class V : public Chapter {
     static auto nextNumber(uint data) -> std::pair<uint, uint>;
     static auto conversion(uint a, uint b) -> size_t;
     static auto pairwiseSwap(const uint &input) -> uint;
+
+    template <size_t ScreenSize> struct Screen {
+        BitSet<ScreenSize / 8> buffer;
+        uint width;
+        Screen(uint width) : width(width) {};
+    };
+    struct ScreenCoord {
+        size_t x;
+        size_t y;
+    };
+
+    static auto calculateIdx(ScreenCoord &coord, uint width) -> uint { return (coord.x * width) + coord.y; };
+    template <size_t Size> static auto drawLine(Screen<Size> &screen, ScreenCoord a1, ScreenCoord a2) {
+        auto start = calculateIdx(a1, screen.width);
+        auto end = calculateIdx(a2, screen.width);
+
+        for (; start <= end; ++start)
+            screen.buffer.set(start);
+    }
 };
 
 } // namespace CTCI
