@@ -93,3 +93,14 @@ auto V::nextNumber(uint data) -> std::pair<uint, uint> {
     auto prev = ::nextNumber(/*bits=*/BitSet<4>(data), /*target=*/0);
     return {next, prev};
 }
+
+auto V::conversion(uint a, uint b) -> size_t { // NOLINT
+    BitSet<4> aBits(a);
+    BitSet<4> bBits(b);
+
+    size_t res = 0;
+    for (auto i : std::views::iota(0UZ, 32UZ))
+        res += static_cast<size_t>(aBits.get(i) ^ bBits.get(i));
+
+    return res;
+};
