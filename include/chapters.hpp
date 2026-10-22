@@ -245,4 +245,14 @@ class V : public Chapter {
     }
 };
 
+class VI : public Chapter {
+  public:
+    VI(std::string name = "Math and Logic Puzzles"); 
+
+    struct Bottle {
+        float weight;
+    };
+    static auto theHeavyPill(const Array<Bottle, 20> &bottles) -> uint;
+};
+
 } // namespace CTCI
