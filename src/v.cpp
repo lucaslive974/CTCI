@@ -69,7 +69,7 @@ extern Bitset<4> nextNumber(Bitset<4> bits, uint8_t target) {
     Bitset<4> output = bits;
     (output.*first)(idx);
 
-    output &= Bitset<4>(~0) << idx;
+    output &= Bitset<4>(~0U) << idx;
 
     idx = 0;
     while (same > 1) {

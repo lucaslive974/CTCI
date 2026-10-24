@@ -19,9 +19,9 @@ auto VI::poison(const Array<Soda, 1000> &bottles) -> size_t {
     Array<TestStrip, 10> strips;
 
     for (auto [i, bottle] : std::views::enumerate(bottles)) {
-        const auto idx = i + 1;
-        for (auto bit : std::views::iota(0, 10))
-            if (static_cast<bool>(idx & (1 << bit)))
+        const uint idx = i + 1;
+        for (auto bit : std::views::iota(0U, 10U))
+            if (static_cast<bool>(idx & (1U << bit)))
                 strips[bit].test(bottle);
     }
 
