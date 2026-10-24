@@ -250,6 +250,27 @@ class VI : public Chapter {
     VI(std::string name = "Math and Logic Puzzles");
 
     static auto theHeavyPill(double measureWeight) -> uint;
+    template <std::uniform_random_bit_generator URBG> static auto theApocalypse(URBG &urbg) -> std::pair<double, double> {
+        std::uniform_int_distribution<uint> dist{0, 1};
+
+        double boys = 0;
+        double girls = 0;
+
+        size_t familyIdx = 0;
+        while (familyIdx < 10'000) {
+            bool isGirl = dist(urbg) == 1;
+
+            if (isGirl) {
+                ++girls;
+                ++familyIdx;
+            } else {
+                ++boys;
+            }
+        }
+
+        const double total = boys + girls;
+        return {boys / total, girls / total};
+    };
 };
 
 } // namespace CTCI
