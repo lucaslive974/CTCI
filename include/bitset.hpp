@@ -26,9 +26,10 @@ template <std::integral Ty, size_t Size> class BitsetImpl {
   public:
     BitsetImpl() = default;
 
-    template <std::integral T> BitsetImpl(T value) : _data(0) {
+    template <std::integral T>
+        requires(sizeof(T) <= Size * sizeof(Ty))
+    BitsetImpl(T value) : _data(0) {
         constexpr auto bits = sizeof(T) * 8;
-        static_assert(bits <= Size * (sizeof(Ty) * 8), "Input type size greater than capacity");
 
         for (auto i : std::views::iota(0UZ, bits)) {
             auto info = calculateBucket(i);
@@ -64,8 +65,9 @@ template <std::integral Ty, size_t Size> class BitsetImpl {
 
     [[nodiscard]] size_t size() { return Size * (sizeof(Ty) * 8); }
 
-    template <std::integral U> operator U() const {
-        static_assert(Size * sizeof(Ty) <= sizeof(U), "Data size greater than destination type");
+    template <std::integral U>
+        requires(Size * sizeof(Ty) <= sizeof(U))
+    operator U() const {
 
         U ret = 0;
         for (auto [i, value] : std::views::enumerate(_data))
@@ -98,7 +100,7 @@ template <std::integral Ty, size_t Size> class BitsetImpl {
 
         return *this;
     }
-    
+
     friend BitsetImpl operator&(const BitsetImpl &lhs, const BitsetImpl &rhs) { return BitsetImpl(lhs) &= rhs; }
     friend BitsetImpl operator|(const BitsetImpl &lhs, const BitsetImpl &rhs) { return BitsetImpl(lhs) |= rhs; }
 
