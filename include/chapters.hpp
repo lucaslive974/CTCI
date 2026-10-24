@@ -271,6 +271,11 @@ class VI : public Chapter {
         const double total = boys + girls;
         return {boys / total, girls / total};
     };
+
+    struct Soda {
+        bool isPoisoned;
+    };
+    static auto poison(const Array<Soda, 1'000> &bottles) -> size_t;
 };
 
 } // namespace CTCI

@@ -18,3 +18,21 @@ TEST(VI_THE_APOCALYPSE, BASE_CASE) {
     EXPECT_NEAR(res.first, 0.50, 0.05);
     EXPECT_NEAR(res.second, 0.50, 0.05);
 }
+
+TEST(VI_POISON, BASE_CASE) {
+    Array<VI::Soda, 1'000> bottles;
+    bottles[499] = {.isPoisoned = true};
+    EXPECT_EQ(VI::poison(bottles), 500);
+}
+
+TEST(VI_POISON, FIRST_BOTTLE) {
+    Array<VI::Soda, 1'000> bottles;
+    bottles[0] = {.isPoisoned = true};
+    EXPECT_EQ(VI::poison(bottles), 1);
+}
+
+TEST(VI_POISON, LAST_BOTTLE) {
+    Array<VI::Soda, 1'000> bottles;
+    bottles[999] = {.isPoisoned = true};
+    EXPECT_EQ(VI::poison(bottles), 1'000);
+}
