@@ -43,3 +43,11 @@ TEST(STACK, SIZE) {
 
     EXPECT_EQ(stack.size(), 3);
 }
+
+TEST(STACK, CLEAR) {
+    StackInt stack{0, 1, 2};
+    EXPECT_FALSE(stack.empty());
+
+    stack.clear();
+    EXPECT_TRUE(stack.empty());
+}

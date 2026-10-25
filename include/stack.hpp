@@ -16,6 +16,11 @@ template <typename T> class Stack {
     void push(T val) { _data.push_back(val); }
     T peek() const { return _data.back(); }
     void pop() { _data.pop_back(); }
+    void clear() {
+        while (!_data.empty()) {
+            _data.popBack();
+        }
+    }
     [[nodiscard]] bool empty() const { return _data.empty(); }
     [[nodiscard]] size_t size() const { return _data.size(); }
 };
