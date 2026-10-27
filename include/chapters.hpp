@@ -278,4 +278,10 @@ class VI : public Chapter {
     static auto poison(const Array<Soda, 1'000> &bottles) -> size_t;
 };
 
+class VIII : Chapter {
+  public:
+    VIII(std::string name = "Recursion and Dynamic Programming");
+    static auto tripleSteps(size_t steps) -> size_t;
+};
+
 } // namespace CTCI
