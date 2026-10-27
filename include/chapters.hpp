@@ -2,6 +2,7 @@
 
 #include "chapter.hpp"
 #include "data_structures.hpp"
+#include <functional>
 #include <random>
 #include <stdexcept>
 
@@ -282,6 +283,19 @@ class VIII : Chapter {
   public:
     VIII(std::string name = "Recursion and Dynamic Programming");
     static auto tripleSteps(size_t steps) -> size_t;
+
+    struct Spot {
+        size_t x;
+        size_t y;
+
+        friend bool operator==(const Spot &a, const Spot &b) { return a.x == b.x && a.y == b.y; }
+    };
+    struct GridInfo {
+        size_t rowSize;
+        size_t colSize;
+    };
+
+    static auto robotInAGrid(const GridInfo &info, const Vector<Spot> &offLimits = {}) -> Vector<Spot>;
 };
 
 } // namespace CTCI

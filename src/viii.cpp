@@ -1,5 +1,7 @@
 #include "chapters.hpp"
 
+#include <ranges>
+
 using namespace CTCI;
 
 auto VIII::tripleSteps(size_t steps) -> size_t {
@@ -20,4 +22,33 @@ auto VIII::tripleSteps(size_t steps) -> size_t {
     }
 
     return c;
+}
+
+auto VIII::robotInAGrid(const GridInfo &info, const Vector<Spot> &offLimits) -> Vector<Spot> {
+    Vector<Spot> result;
+    Vector<Vector<bool>> limits(info.colSize, Vector(info.rowSize, false));
+
+    for (const auto &spot : offLimits)
+        limits[spot.x][spot.y] = true;
+
+    auto traverse = [&result, &info, &limits](this auto &self, const Spot &spot) -> bool {
+        if (spot.x >= info.colSize || spot.y >= info.rowSize || limits[spot.x][spot.y])
+            return false;
+
+        result.pushBack({.x = spot.x, .y = spot.y});
+        if (spot.x == info.colSize - 1 && spot.y == info.rowSize - 1)
+            return true;
+
+        if (self({spot.x + 1, spot.y}))
+            return true;
+
+        if (self({spot.x, spot.y + 1}))
+            return true;
+
+        result.popBack();
+        return limits[spot.x][spot.y] = false;
+    };
+
+    traverse({.x = 0, .y = 0});
+    return result;
 }
