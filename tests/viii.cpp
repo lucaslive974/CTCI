@@ -29,6 +29,18 @@ TEST(VIII_ROBOT_IN_A_GRID, BASE_CASE) {
     EXPECT_EQ(ans, VIII::robotInAGrid(VIII::GridInfo{4, 4}));
 }
 
+TEST(VIII_ROBOT_IN_A_GRID, SPOT_COMPARISON) {
+    VIII::Spot a{.x = 0, .y = 0};
+    VIII::Spot b{.x = 0, .y = 0};
+    VIII::Spot c{.x = 1, .y = 0};
+    VIII::Spot d{.x = 0, .y = 1};
+
+    EXPECT_EQ(a, b);
+    EXPECT_NE(a, c);
+    EXPECT_NE(a, d);
+    EXPECT_NE(c, d);
+}
+
 TEST(VIII_ROBOT_IN_A_GRID, BLOCK_DOWN) {
     Vector<VIII::Spot> ans{
         {.x = 0, .y = 0}, {.x = 0, .y = 1}, {.x = 1, .y = 1}, {.x = 2, .y = 1},
@@ -37,4 +49,36 @@ TEST(VIII_ROBOT_IN_A_GRID, BLOCK_DOWN) {
     Vector<VIII::Spot> limits{{.x = 1, .y = 0}};
 
     EXPECT_EQ(ans, VIII::robotInAGrid(VIII::GridInfo{4, 4}, limits));
+}
+
+TEST(VIII_ROBOT_IN_A_GRID, X_AXIS_SHOULD_NOT_OVERFLOW) {
+    Vector<VIII::Spot> limits{{.x = 0, .y = 1}, {.x = 1, .y = 1}, {.x = 2, .y = 1}, {.x = 3, .y = 1}};
+
+    auto ans = VIII::robotInAGrid(
+        VIII::GridInfo{
+            .rowSize = 4,
+            .colSize = 4,
+        },
+        limits);
+
+    EXPECT_TRUE(ans.empty());
+}
+
+TEST(VIII_ROBOT_IN_A_GRID, Y_AXIS_SHOULD_NOT_OVERFLOW) {
+    Vector<VIII::Spot> limits{{.x = 1, .y = 0}, {.x = 1, .y = 1}, {.x = 1, .y = 2}, {.x = 1, .y = 3}};
+
+    auto ans = VIII::robotInAGrid(
+        VIII::GridInfo{
+            .rowSize = 4,
+            .colSize = 4,
+        },
+        limits);
+
+    EXPECT_TRUE(ans.empty());
+}
+
+TEST(VIII_ROBOT_IN_A_GRID, WITHOUT_A_VALID_PATH_SHOULD_RETURN_EMPTY) {
+    Vector<VIII::Spot> limits{{.x = 0, .y = 1}, {.x = 1, .y = 0}};
+    auto ans = VIII::robotInAGrid(VIII::GridInfo{.rowSize = 4, .colSize = 4}, limits);
+    EXPECT_TRUE(ans.empty());
 }
