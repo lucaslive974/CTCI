@@ -82,3 +82,33 @@ TEST(VIII_ROBOT_IN_A_GRID, WITHOUT_A_VALID_PATH_SHOULD_RETURN_EMPTY) {
     auto ans = VIII::robotInAGrid(VIII::GridInfo{.rowSize = 4, .colSize = 4}, limits);
     EXPECT_TRUE(ans.empty());
 }
+
+TEST(VIII_FIND_MAGIC_INDEX, MIDDLE_ELEMENT) {
+    Vector<int> arr{0, 1, 2, 3, 4};
+    EXPECT_EQ(VIII::magicIndex(arr), 2);
+}
+
+TEST(VIII_FIND_MAGIC_INDEX, LEFT_SIDE_SEARCH) {
+    Vector<int> arr{-1, 1, 3, 4, 5};
+    EXPECT_EQ(VIII::magicIndex(arr), 1);
+}
+
+TEST(VIII_FIND_MAGIC_INDEX, RIGHT_SIDE_SEARCH) {
+    Vector<int> arr{-1, 0, 1, 3, 5};
+    EXPECT_EQ(VIII::magicIndex(arr), 3);
+}
+
+TEST(VIII_FIND_MAGIC_INDEX, LEFT_SIDE_SHOULD_NOT_ENTER_IN_LOOP) {
+    Vector<int> arr{1, 2, 3, 4, 5};
+    EXPECT_EQ(VIII::magicIndex(arr), -1);
+}
+
+TEST(VIII_FIND_MAGIC_INDEX, NO_MAGIC_INDEX_ON_ARRY_SHOULD_RETURN_MINUS_ONE) {
+    Vector<int> arr{-1, 0, 1, 2, 3};
+    EXPECT_EQ(VIII::magicIndex(arr), -1);
+}
+
+TEST(VIII_FIND_MAGIC_INDEX, RIGHT_SIDE_SHOULD_NOT_OVERFLOW_SIZE) {
+    Vector<int> arr{-1, 0, 1, 2, 3};
+    EXPECT_EQ(VIII::magicIndex(arr), -1);
+}

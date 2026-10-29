@@ -296,6 +296,7 @@ class VIII : Chapter {
     };
 
     static auto robotInAGrid(const GridInfo &info, const Vector<Spot> &offLimits = {}) -> Vector<Spot>;
+    static auto magicIndex(const Vector<int> &arr) -> int;
 };
 
 } // namespace CTCI

@@ -53,3 +53,21 @@ auto VIII::robotInAGrid(const GridInfo &info, const Vector<Spot> &offLimits) -> 
     traverse({.x = 0, .y = 0});
     return result;
 }
+
+auto findMagicIndex(const Vector<int> &arr, int start, int end) -> int {
+    if (start > end)
+        return -1;
+
+    int middle = ((end - start) / 2) + start;
+
+    auto &val = arr[middle];
+    if (val == middle)
+        return middle;
+
+    if (val < middle)
+        return findMagicIndex(arr, middle + 1, end);
+
+    return findMagicIndex(arr, start, middle - 1);
+}
+
+auto VIII::magicIndex(const Vector<int> &arr) -> int { return findMagicIndex(arr, 0, static_cast<int>(arr.size()) - 1); }
