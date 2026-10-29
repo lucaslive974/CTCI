@@ -46,7 +46,8 @@ auto VIII::robotInAGrid(const GridInfo &info, const Vector<Spot> &offLimits) -> 
             return true;
 
         result.popBack();
-        return limits[spot.x][spot.y] = false;
+        limits[spot.x][spot.y] = true;
+        return false;
     };
 
     traverse({.x = 0, .y = 0});
