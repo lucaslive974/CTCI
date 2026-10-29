@@ -202,3 +202,11 @@ TEST(SET, ERASE_KEY_NON_INEXISTENT_DOES_NOTHING) {
     Set<int> set{2, 3};
     EXPECT_NO_FATAL_FAILURE({ set.erase(1); });
 }
+
+TEST(SET, CONST_FOR_RANGE) {
+    const Set<int> set{1, 2, 3};
+    EXPECT_EQ(set.size(), 3);
+
+    for (auto [q, v] : std::views::zip(set, std::views::iota(1, 4)))
+        EXPECT_EQ(q, v);
+}

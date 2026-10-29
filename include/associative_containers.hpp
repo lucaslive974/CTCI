@@ -157,8 +157,10 @@ template <bool IsSet, concepts::Hashable Key, typename ValueType> class Map {
     [[nodiscard]] size_t size() const noexcept { return _size; }
 
     template <bool IsConst> class Iterator {
+        using InternalData = std::conditional_t<IsConst, const Buckets, Buckets>;
+
         Deque<Entry>::Pointer actual = nullptr;
-        Vector<Deque<Entry>> *buckets;
+        InternalData *buckets;
         size_t nBucket = 0;
 
         void next() {
@@ -176,8 +178,8 @@ template <bool IsSet, concepts::Hashable Key, typename ValueType> class Map {
         using reference = std::conditional_t<IsConst, const Entry &, Entry &>;
 
         Iterator() : actual(nullptr) {}
-        Iterator(Vector<Deque<Entry>> *buckets) : buckets(buckets) { next(); }
-        explicit Iterator(Vector<Deque<Entry>> *buckets, Deque<Entry>::Pointer ptr, size_t nBucket)
+        Iterator(InternalData *buckets) : buckets(buckets) { next(); }
+        explicit Iterator(InternalData *buckets, Deque<Entry>::Pointer ptr, size_t nBucket)
             : buckets(buckets), nBucket(nBucket), actual(std::move(ptr)) {}
 
         Iterator &operator++() {
