@@ -1,5 +1,6 @@
 #pragma once
 
+#include "iterators.hpp"
 #include "list.hpp"
 #include "memory.hpp"
 #include "vector.hpp"
@@ -18,21 +19,22 @@ template <typename T> struct DNode {
 };
 
 template <typename T> struct Deque {
-    using nodeType = DNode<T>;
-    using nodePtr = SharedPtr<nodeType>;
-    nodePtr head = nullptr;
-    nodePtr tail = nullptr;
+    using ValueType = T;
+    using NodeType = DNode<T>;
+    using Pointer = SharedPtr<NodeType>;
+    Pointer head = nullptr;
+    Pointer tail = nullptr;
 
     Deque() = default;
 
     Deque(std::initializer_list<T> list) {
         for (auto el : list)
-            append(el);
+            push(el);
     }
 
     Deque(const Vector<T> &vec) {
         for (auto el : vec)
-            append(el);
+            push(el);
     }
 
     ~Deque() {
@@ -44,12 +46,12 @@ template <typename T> struct Deque {
 
     [[nodiscard]] bool empty() const { return head == nullptr; }
 
-    void append(T val) {
-        auto ptr = CTCI::make_shared<nodeType>(std::move(val));
-        append(std::move(ptr));
+    void push(T val) {
+        auto ptr = CTCI::make_shared<NodeType>(std::move(val));
+        push(std::move(ptr));
     }
 
-    void append(nodePtr ptr) {
+    void push(Pointer ptr) {
         if (empty()) {
             head = ptr;
             tail = ptr;
@@ -80,7 +82,7 @@ template <typename T> struct Deque {
         }
     }
 
-    void popMiddle(nodePtr &ptr) {
+    void popMiddle(Pointer &ptr) {
         auto &prev = ptr->prev;
         auto &next = ptr->next;
 
@@ -88,7 +90,7 @@ template <typename T> struct Deque {
         next->prev = prev;
     }
 
-    void pop(nodePtr &ptr) {
+    void pop(Pointer &ptr) {
         if (ptr == head)
             return popFront();
 
@@ -97,6 +99,15 @@ template <typename T> struct Deque {
 
         return popMiddle(ptr);
     }
+
+    using ConstForwardIterator = iterators::HeapIteratorImpl</**isConst=*/true, Pointer, ValueType>;
+    using ForwardIterator = iterators::HeapIteratorImpl</**isConst=*/false, Pointer, ValueType>;
+
+    ConstForwardIterator begin() const { return ConstForwardIterator{head}; }
+    ForwardIterator begin() { return ForwardIterator{head}; }
+
+    ConstForwardIterator end() const { return ConstForwardIterator{nullptr}; }
+    ForwardIterator end() { return ForwardIterator{nullptr}; }
 };
 
 } // namespace CTCI

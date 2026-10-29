@@ -1,11 +1,10 @@
 #pragma once
 
+#include "iterators.hpp"
 #include "memory.hpp"
 #include "vector.hpp"
 
 #include <cstddef>
-#include <iterator>
-#include <type_traits>
 
 namespace CTCI {
 
@@ -119,42 +118,8 @@ template <typename T> struct List {
 
     [[nodiscard]] bool empty() const { return !head; }
 
-    template <bool isConst> class Iterator {
-        Pointer node;
-
-      public:
-        using iterator_category = std::forward_iterator_tag;
-        using difference_type = std::ptrdiff_t;
-        using value_type = ValueType;
-        using pointer = std::conditional_t<isConst, const ValueType *, ValueType *>;
-        using reference = std::conditional_t<isConst, const ValueType &, ValueType &>;
-
-        Iterator() : node(nullptr) {}
-        explicit Iterator(std::conditional_t<isConst, const Pointer, Pointer> node) : node(node) {}
-
-        reference operator*() const { return node->val; }
-        reference operator*() { return node->val; }
-
-        pointer operator->() const { return &node->val; }
-        pointer operator->() { return &node->val; }
-
-        Iterator &operator++() {
-            node = node->next;
-            return *this;
-        }
-
-        Iterator &operator++(int) {
-            Iterator tmp = *this;
-            ++(*this);
-            return tmp;
-        }
-
-        friend bool operator==(const Iterator &a, const Iterator &b) { return a.node == b.node; }
-        friend bool operator!=(const Iterator &a, const Iterator &b) { return a.node != b.node; }
-    };
-
-    using ConstForwardIterator = Iterator</**isConst=*/true>;
-    using ForwardIterator = Iterator</**isConst=*/false>;
+    using ConstForwardIterator = iterators::HeapIteratorImpl</**isConst=*/true, Pointer, ValueType>;
+    using ForwardIterator = iterators::HeapIteratorImpl</**isConst=*/false, Pointer, ValueType>;
 
     ConstForwardIterator begin() const { return ConstForwardIterator{head}; }
     ForwardIterator begin() { return ForwardIterator{head}; }

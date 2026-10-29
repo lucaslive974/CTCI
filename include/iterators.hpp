@@ -1,6 +1,8 @@
 #pragma once
 
 #include <iterator>
+#include <type_traits>
+#include <utility>
 
 namespace CTCI::iterators {
 
@@ -83,4 +85,45 @@ template <bool IsConst, typename Ty> class ContiguousIteratorImpl {
         return ContiguousIteratorImpl{a.data, a.pos - n};
     }
 };
+
+template <bool isConst, typename Pointer, typename Ty>
+    requires requires(Pointer ptr) {
+        { ptr->next };
+        { ptr == std::declval<Pointer>() } -> std::same_as<bool>;
+        { ptr != std::declval<Pointer>() } -> std::same_as<bool>;
+    } && std::same_as<std::remove_cv_t<decltype(std::declval<Pointer>()->val)>, Ty>
+class HeapIteratorImpl {
+    Pointer node;
+
+  public:
+    using iterator_category = std::forward_iterator_tag;
+    using difference_type = std::ptrdiff_t;
+    using value_type = Ty;
+    using pointer = std::conditional_t<isConst, const Ty *, Ty *>;
+    using reference = std::conditional_t<isConst, const Ty &, Ty &>;
+
+    HeapIteratorImpl() : node(nullptr) {}
+    explicit HeapIteratorImpl(std::conditional_t<isConst, const Pointer, Pointer> node) : node(node) {}
+
+    reference operator*() const { return node->val; }
+    reference operator*() { return node->val; }
+
+    pointer operator->() const { return &node->val; }
+    pointer operator->() { return &node->val; }
+
+    HeapIteratorImpl &operator++() {
+        node = node->next;
+        return *this;
+    }
+
+    HeapIteratorImpl &operator++(int) {
+        HeapIteratorImpl tmp = *this;
+        ++(*this);
+        return tmp;
+    }
+
+    friend bool operator==(const HeapIteratorImpl &a, const HeapIteratorImpl &b) { return a.node == b.node; }
+    friend bool operator!=(const HeapIteratorImpl &a, const HeapIteratorImpl &b) { return a.node != b.node; }
+};
+
 } // namespace CTCI::iterators

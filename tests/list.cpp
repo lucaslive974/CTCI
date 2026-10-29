@@ -221,3 +221,10 @@ TEST(DEQUE, EMPTY) {
 
     EXPECT_TRUE(deque.empty());
 }
+
+TEST(DEQUE, FOR_RANGE_LOOP) {
+    CTCI::Deque<int> deque{0, 1, 2};
+
+    for (auto [q, v] : std::views::zip(deque, std::views::iota(0, 3)))
+        EXPECT_EQ(q, v);
+}
