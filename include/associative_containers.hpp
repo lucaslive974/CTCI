@@ -162,6 +162,7 @@ template <bool IsSet, concepts::Hashable Key, typename ValueType> class Map {
         Deque<Entry>::Pointer actual = nullptr;
         InternalData *buckets;
         size_t nBucket = 0;
+        size_t totalSize = 0;
 
         void next() {
             while (actual == nullptr && nBucket < buckets->size()) {
@@ -178,9 +179,9 @@ template <bool IsSet, concepts::Hashable Key, typename ValueType> class Map {
         using reference = std::conditional_t<IsConst, const Entry &, Entry &>;
 
         Iterator() : actual(nullptr) {}
-        Iterator(InternalData *buckets) : buckets(buckets) { next(); }
-        explicit Iterator(InternalData *buckets, Deque<Entry>::Pointer ptr, size_t nBucket)
-            : buckets(buckets), nBucket(nBucket), actual(std::move(ptr)) {}
+        Iterator(InternalData *buckets, size_t size) : buckets(buckets), totalSize(size) { next(); }
+        explicit Iterator(InternalData *buckets, Deque<Entry>::Pointer ptr, size_t nBucket, size_t size) // NOLINT
+            : buckets(buckets), nBucket(nBucket), totalSize(size), actual(std::move(ptr)) {}
 
         Iterator &operator++() {
             actual = actual->next;
@@ -199,6 +200,8 @@ template <bool IsSet, concepts::Hashable Key, typename ValueType> class Map {
 
         pointer operator->() const { return &actual->val; }
         pointer operator->() { return &actual->val; }
+
+        size_t size() { return totalSize; }
 
         friend bool operator==(const Iterator &a, const Iterator &b) { return a.actual == b.actual; };
         friend bool operator!=(const Iterator &a, const Iterator &b) { return a.actual != b.actual; };
@@ -224,15 +227,15 @@ template <bool IsSet, concepts::Hashable Key, typename ValueType> class Map {
             head = head->next;
         }
 
-        return ItTy{const_cast<Buckets *>(&buckets), const_cast<Deque<Entry>::Pointer &>(head), hashKey};
+        return ItTy{const_cast<Buckets *>(&buckets), const_cast<Deque<Entry>::Pointer &>(head), hashKey, _size};
     }
 
   public:
-    ForwardIterator begin() { return {&buckets}; }
+    ForwardIterator begin() { return {&buckets, _size}; }
     ForwardIterator end() { return {}; }
     ForwardIterator find(Key key) { return find<ForwardIterator>(key); };
 
-    ConstForwardIterator begin() const { return {&buckets}; }
+    ConstForwardIterator begin() const { return {&buckets, _size}; }
     ConstForwardIterator end() const { return {}; }
     ConstForwardIterator find(Key key) const { return find<ConstForwardIterator>(key); }
 };

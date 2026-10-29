@@ -112,3 +112,43 @@ TEST(VIII_FIND_MAGIC_INDEX, RIGHT_SIDE_SHOULD_NOT_OVERFLOW_SIZE) {
     Vector<int> arr{-1, 0, 1, 2, 3};
     EXPECT_EQ(VIII::magicIndex(arr), -1);
 }
+
+TEST(VIII_POWER_SET, BASE_CASE) {
+    // clang-format off
+    Vector<Set<int>> exp = {
+        {},   
+        {1},
+        {1, 2}, 
+        {1, 2, 3}, 
+        {1, 2, 3, 4},
+
+        {1, 2, 4}, 
+
+        {1, 3}, 
+        {1, 3, 4},
+
+        {1, 4}, 
+        
+        {2},
+        {2, 3},
+        {2, 3, 4},
+        
+        {2, 4},
+        
+        {3},
+        {3, 4}, 
+        
+        {4},
+    };
+    // clang-format on
+
+    Set<int> set{1, 2, 3, 4};
+    auto ans = VIII::powerSet(set);
+
+    for (auto [setA, setB] : std::views::zip(ans, exp)) {
+        EXPECT_EQ(setA.size(), setB.size());
+
+        for (const auto &val : setA)
+            EXPECT_TRUE(setB.contains(val));
+    }
+}

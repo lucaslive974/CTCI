@@ -131,16 +131,24 @@ class Vector {
         _alloc.deallocate(_data, _capacity);
     }
 
-    Vector(std::initializer_list<Ty> list) : Vector(list.begin(), list.end()) {}
+    Vector(std::initializer_list<Ty> list) : Vector(list.begin(), list.end(), list.size()) {}
+
+    template <std::ranges::bidirectional_range R>
+        requires(!std::same_as<std::remove_cvref_t<R>, Vector> && !std::ranges::sized_range<R>)
+    Vector(R &&rng) : Vector(rng.begin(), rng.end(), rng.end() - rng.begin()) {}
 
     template <std::ranges::range R>
-        requires(!std::same_as<std::remove_cvref_t<R>, Vector>)
-    Vector(R &&rng) : Vector(rng.begin(), rng.end()) {}
+        requires(!std::same_as<std::remove_cvref_t<R>, Vector> && std::ranges::sized_range<R>)
+    Vector(R &&rng) : Vector(rng.begin(), rng.end(), std::ranges::size(rng)) {}
 
     template <typename Iterator>
         requires std::input_iterator<Iterator>
-    Vector(Iterator begin, Iterator end) {
-        _init(end - begin);
+    Vector(Iterator begin, Iterator end) : Vector(begin, end, end - begin) {}
+
+    template <typename Iterator>
+        requires std::input_iterator<Iterator>
+    Vector(Iterator begin, Iterator end, size_t size) {
+        _init(size);
 
         size_t i = 0;
         while (begin != end) {

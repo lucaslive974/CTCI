@@ -71,3 +71,24 @@ auto findMagicIndex(const Vector<int> &arr, int start, int end) -> int {
 }
 
 auto VIII::magicIndex(const Vector<int> &arr) -> int { return findMagicIndex(arr, 0, static_cast<int>(arr.size()) - 1); }
+
+auto VIII::powerSet(const Set<int> &set) -> Vector<Set<int>> {
+    Vector<Set<int>> res{{}};
+    Vector<int> els{set};
+
+    Set<int> subset;
+    auto recurse = [&res, &els, &subset](this auto &self, size_t el) -> void {
+        subset.insert(els[el]);
+        res.pushBack(subset);
+
+        for (auto i : std::views::iota(el + 1, els.size()))
+            self(i);
+
+        subset.erase(els[el]);
+    };
+
+    for (auto i : std::views::iota(0UZ, set.size()))
+        recurse(i);
+
+    return res;
+}
