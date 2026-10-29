@@ -96,6 +96,28 @@ TEST(MAP, CLEAR) {
     EXPECT_EQ(map.size(), 0);
 }
 
+TEST(MAP, ERASE) {
+    HashMap<int, int> map{{1, 1}, {2, 2}, {3, 3}};
+    map.erase(2);
+
+    EXPECT_EQ(map.size(), 2);
+    for (auto [pair, exp] : std::views::zip(map, Vector<std::pair<int, int>>{{1, 1}, {3, 3}}))
+        EXPECT_EQ(pair, exp);
+}
+
+TEST(MAP, ERASE_ON_COLLIDED_KEYS) {
+    HashMap<int, int> map{{0, 0}, {101, 101}};
+    map.erase(101);
+
+    EXPECT_EQ(map.size(), 1);
+    EXPECT_TRUE(map.contains(0));
+}
+
+TEST(MAP, ERASE_KEY_NON_INEXISTENT_DOES_NOTHING) {
+    HashMap<int, int> map;
+    EXPECT_NO_FATAL_FAILURE({ map.erase(1); });
+}
+
 TEST(MAP, FOR_RANGE_ITERATOR) {
     HashMap<int, int> map{{2, 2}, {105, 105}};
 
@@ -156,4 +178,27 @@ TEST(SET, FIND) {
     EXPECT_NE(set.find(1), set.end());
     EXPECT_NE(set.find(102), set.end());
     EXPECT_EQ(set.find(3), set.end());
+}
+
+TEST(SET, ERASE) {
+    Set<int> set{0, 1, 2};
+    set.erase(2);
+
+    EXPECT_EQ(set.size(), 2);
+
+    for (auto [q, v] : std::views::zip(set, Vector{0, 1}))
+        EXPECT_EQ(q, v);
+}
+
+TEST(SET, ERASE_ON_COLLIDED_KEYS) {
+    Set<int> set{0, 101};
+
+    set.erase(101);
+    EXPECT_EQ(set.size(), 1);
+    EXPECT_TRUE(set.contains(0));
+}
+
+TEST(SET, ERASE_KEY_NON_INEXISTENT_DOES_NOTHING) {
+    Set<int> set{2, 3};
+    EXPECT_NO_FATAL_FAILURE({ set.erase(1); });
 }

@@ -1,8 +1,8 @@
 #pragma once
 
 #include "concepts.hpp"
+#include "deque.hpp"
 #include "exceptions.hpp"
-#include "list.hpp"
 
 #include <initializer_list>
 #include <type_traits>
@@ -12,7 +12,7 @@ namespace CTCI {
 template <bool IsSet, concepts::Hashable Key, typename ValueType> class Map {
   private:
     using Entry = std::conditional_t<IsSet, Key, std::pair<Key, ValueType>>;
-    using Bucket = List<Entry>;
+    using Bucket = Deque<Entry>;
     using Buckets = Vector<Bucket>;
 
     Buckets buckets{101};
@@ -63,6 +63,23 @@ template <bool IsSet, concepts::Hashable Key, typename ValueType> class Map {
         }
     }
 
+    void erase(Bucket &bucket, Key key) {
+        auto head = bucket.head;
+
+        if constexpr (IsSet) {
+            while (head && head->val != key)
+                head = head->next;
+        } else {
+            while (head && head->val.first != key)
+                head = head->next;
+        }
+
+        if (head) {
+            bucket.pop(head);
+            _loadFactor = calculateLoadFactor(--_size);
+        }
+    }
+
   public:
     Map() = default;
     Map(size_t size) : _totalSize(size), buckets(size) {}
@@ -97,6 +114,11 @@ template <bool IsSet, concepts::Hashable Key, typename ValueType> class Map {
             auto &bucket = buckets[hash(entry.first)];
             insert(bucket, std::move(entry));
         }
+    }
+
+    void erase(Key key) {
+        auto &bucket = buckets[hash(key)];
+        erase(bucket, std::move(key));
     }
 
     [[nodiscard]] bool contains(Key key) const {
@@ -135,8 +157,8 @@ template <bool IsSet, concepts::Hashable Key, typename ValueType> class Map {
     [[nodiscard]] size_t size() const noexcept { return _size; }
 
     template <bool IsConst> class Iterator {
-        List<Entry>::Pointer actual = nullptr;
-        Vector<List<Entry>> *buckets;
+        Deque<Entry>::Pointer actual = nullptr;
+        Vector<Deque<Entry>> *buckets;
         size_t nBucket = 0;
 
         void next() {
@@ -154,8 +176,8 @@ template <bool IsSet, concepts::Hashable Key, typename ValueType> class Map {
         using reference = std::conditional_t<IsConst, const Entry &, Entry &>;
 
         Iterator() : actual(nullptr) {}
-        Iterator(Vector<List<Entry>> *buckets) : buckets(buckets) { next(); }
-        explicit Iterator(Vector<List<Entry>> *buckets, List<Entry>::Pointer ptr, size_t nBucket)
+        Iterator(Vector<Deque<Entry>> *buckets) : buckets(buckets) { next(); }
+        explicit Iterator(Vector<Deque<Entry>> *buckets, Deque<Entry>::Pointer ptr, size_t nBucket)
             : buckets(buckets), nBucket(nBucket), actual(std::move(ptr)) {}
 
         Iterator &operator++() {
@@ -200,7 +222,7 @@ template <bool IsSet, concepts::Hashable Key, typename ValueType> class Map {
             head = head->next;
         }
 
-        return ItTy{const_cast<Buckets *>(&buckets), const_cast<List<Entry>::Pointer &>(head), hashKey};
+        return ItTy{const_cast<Buckets *>(&buckets), const_cast<Deque<Entry>::Pointer &>(head), hashKey};
     }
 
   public:
