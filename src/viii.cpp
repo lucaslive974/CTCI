@@ -72,11 +72,11 @@ auto findMagicIndex(const Vector<int> &arr, int start, int end) -> int {
 
 auto VIII::magicIndex(const Vector<int> &arr) -> int { return findMagicIndex(arr, 0, static_cast<int>(arr.size()) - 1); }
 
-auto VIII::powerSet(const Set<int> &set) -> Vector<Set<int>> {
-    Vector<Set<int>> res{{}};
+auto VIII::powerSet(const UnorderedSet<int> &set) -> Vector<UnorderedSet<int>> {
+    Vector<UnorderedSet<int>> res{{}};
     Vector<int> els{set};
 
-    Set<int> subset;
+    UnorderedSet<int> subset;
     auto recurse = [&res, &els, &subset](this auto &self, size_t el) -> void {
         subset.insert(els[el]);
         res.pushBack(subset);

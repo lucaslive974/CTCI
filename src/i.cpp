@@ -10,7 +10,7 @@ I::I(std::string name) : Chapter(std::move(name)) {};
 
 auto I::isUnique(const std::string &s) -> bool {
     // Default
-    Set<char> characters;
+    UnorderedSet<char> characters;
     for (const auto &c : s) {
         if (characters.contains(c))
             return false;
@@ -22,11 +22,11 @@ auto I::isUnique(const std::string &s) -> bool {
 };
 
 auto I::checkPermutation(const std::string &s1, const std::string &s2) -> bool {
-    HashMap<char, unsigned int> freq1;
+    UnorderedMap<char, unsigned int> freq1;
     for (const auto &c : s1)
         ++freq1[c];
 
-    HashMap<char, unsigned int> freq2;
+    UnorderedMap<char, unsigned int> freq2;
     for (const auto &c : s2)
         ++freq2[c];
 
@@ -58,7 +58,7 @@ auto I::urlify(std::string s, size_t length) -> std::string {
 }
 
 auto I::palindromePerm(const std::string &s) -> bool {
-    HashMap<char, unsigned int> freq;
+    UnorderedMap<char, unsigned int> freq;
     size_t n = 0;
     for (const auto &c : s) {
         if (std::isspace(c) != 0)

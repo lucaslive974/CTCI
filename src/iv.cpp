@@ -13,7 +13,7 @@ auto IV::routeBetweenNodes(const Node<int> &orig, const Node<int> &dest) -> bool
     Queue<Node<int>> queue;
     queue.push(orig);
 
-    Set<Node<int>> visited{orig};
+    UnorderedSet<Node<int>> visited{orig};
 
     while (!queue.empty()) {
         auto node = queue.front();
@@ -122,7 +122,7 @@ auto IV::sucessor(const Tree<int>::Pointer &node) -> Tree<int>::Pointer { return
 auto IV::buildOrder(const BuildInfo &info) -> List<Project> {
     Graph<Project> graph{info.projects};
 
-    HashMap<Project, size_t> inDegree;
+    UnorderedMap<Project, size_t> inDegree;
     for (const auto &dependencie : info.dependencies) {
         graph.appendEdge(dependencie);
         inDegree[dependencie.second]++;
@@ -154,7 +154,7 @@ auto IV::buildOrder(const BuildInfo &info) -> List<Project> {
 }
 
 auto IV::findCommonAncestor(TreeNode &a, TreeNode &b) -> TreeNode { // NOLINT
-    Set<TreeNode> path;
+    UnorderedSet<TreeNode> path;
 
     auto head = a;
     while (head != nullptr) {

@@ -8,7 +8,7 @@ auto II::removeDups(CTCI::List<int> &list) -> void {
     if (list.empty())
         return;
 
-    HashMap<int, int> freq;
+    UnorderedMap<int, int> freq;
 
     auto head = list.head;
     while (head != nullptr) {
@@ -151,7 +151,7 @@ auto II::palindrome(List<char> &list) -> bool {
 }
 
 auto II::intersection(List<int> &a, List<int> &b) -> SharedPtr<Node<int>> { // NOLINT
-    Set<void *> existents;
+    UnorderedSet<void *> existents;
 
     auto head = a.head;
     while (head != nullptr) {

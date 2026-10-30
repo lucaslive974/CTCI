@@ -9,7 +9,7 @@
 
 namespace CTCI {
 
-template <bool IsSet, concepts::Hashable Key, typename ValueType> class Map {
+template <bool IsSet, concepts::Hashable Key, typename ValueType> class UnorderedMapImpl {
   private:
     using Entry = std::conditional_t<IsSet, Key, std::pair<Key, ValueType>>;
     using Bucket = Deque<Entry>;
@@ -81,10 +81,10 @@ template <bool IsSet, concepts::Hashable Key, typename ValueType> class Map {
     }
 
   public:
-    Map() = default;
-    Map(size_t size) : _totalSize(size), buckets(size) {}
-    Map(std::initializer_list<Entry> list) { insert(list); }
-    Map(size_t size, std::initializer_list<Entry> list) : _totalSize(size), buckets(size) { insert(list); }
+    UnorderedMapImpl() = default;
+    UnorderedMapImpl(size_t size) : _totalSize(size), buckets(size) {}
+    UnorderedMapImpl(std::initializer_list<Entry> list) { insert(list); }
+    UnorderedMapImpl(size_t size, std::initializer_list<Entry> list) : _totalSize(size), buckets(size) { insert(list); }
 
     template <bool S = IsSet>
         requires(!S)
@@ -240,7 +240,7 @@ template <bool IsSet, concepts::Hashable Key, typename ValueType> class Map {
     ConstForwardIterator find(Key key) const { return find<ConstForwardIterator>(key); }
 };
 
-template <concepts::Hashable Key, typename Value> using HashMap = Map</**IsSet=*/false, Key, Value>;
-template <concepts::Hashable Key> using Set = Map</**IsSet=*/true, Key, Key>;
+template <concepts::Hashable Key, typename Value> using UnorderedMap = UnorderedMapImpl</**IsSet=*/false, Key, Value>;
+template <concepts::Hashable Key> using UnorderedSet = UnorderedMapImpl</**IsSet=*/true, Key, Key>;
 
 } // namespace CTCI

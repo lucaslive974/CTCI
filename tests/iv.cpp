@@ -546,7 +546,7 @@ TEST_F(IV_GET_RANDOM_NUMBER, EMPTY_TREE_SHOULD_RETURN_NULLPTR) {
 
 TEST_F(IV_GET_RANDOM_NUMBER, ALL_NODES_SHOULD_HAVE_SAME_PROBABILITY) {
     Tree<int> customTree{4, 2, 3, 1, 6};
-    HashMap<Tree<int>::Pointer, size_t> map;
+    UnorderedMap<Tree<int>::Pointer, size_t> map;
 
     for (auto step : std::views::iota(0, 10'000)) {
         auto node = IV::getRandomNode(customTree, ctx);

@@ -115,7 +115,7 @@ TEST(VIII_FIND_MAGIC_INDEX, RIGHT_SIDE_SHOULD_NOT_OVERFLOW_SIZE) {
 
 TEST(VIII_POWER_SET, BASE_CASE) {
     // clang-format off
-    Vector<Set<int>> exp = {
+    Vector<UnorderedSet<int>> exp = {
         {},   
         {1},
         {1, 2}, 
@@ -142,7 +142,7 @@ TEST(VIII_POWER_SET, BASE_CASE) {
     };
     // clang-format on
 
-    Set<int> set{1, 2, 3, 4};
+    UnorderedSet<int> set{1, 2, 3, 4};
     auto ans = VIII::powerSet(set);
 
     for (auto [setA, setB] : std::views::zip(ans, exp)) {

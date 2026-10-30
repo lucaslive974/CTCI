@@ -17,7 +17,7 @@ template <typename T> struct GNode {
 template <concepts::Hashable T, bool Directed = true> class Graph {
     using ValueType = T;
     using NodeType = GNode<T>;
-    HashMap<ValueType, SharedPtr<NodeType>> nodes;
+    UnorderedMap<ValueType, SharedPtr<NodeType>> nodes;
 
   public:
     Graph() = default;

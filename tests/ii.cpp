@@ -102,8 +102,8 @@ TEST(II, PARTITION_LIST) {
     CTCI::List<int> list{3, 5, 8, 5, 10, 2, 1};
     II::partition(list, k);
 
-    CTCI::HashMap<int, int> leftNums;
-    CTCI::HashMap<int, int> rightNums;
+    CTCI::UnorderedMap<int, int> leftNums;
+    CTCI::UnorderedMap<int, int> rightNums;
 
     bool isRightSide = false;
 
