@@ -155,13 +155,21 @@ TEST(VIII_POWER_SET, BASE_CASE) {
 
 TEST(VIII_RECURSIVE_MULTIPLY, BASE_CASE) {
     EXPECT_EQ(VIII::recursiveMultiply(2, 2), 4);
+    EXPECT_EQ(VIII::recursiveMultiply(2, 5), 10);
 
     EXPECT_EQ(VIII::recursiveMultiply(3, 2), 6);
     EXPECT_EQ(VIII::recursiveMultiply(3, 3), 9);
 
     EXPECT_EQ(VIII::recursiveMultiply(4, 2), 8);
+    EXPECT_EQ(VIII::recursiveMultiply(4, 4), 16);
 }
 
 TEST(VIII_RECURSIVE_MULTIPLY, MULTIPLY_BY_ONE) { EXPECT_EQ(VIII::recursiveMultiply(3, 1), 3); }
 
-TEST(VIII_RECURSIVE_MULTIPLY, MULTIPLY_BY_ZERO) { EXPECT_EQ(VIII::recursiveMultiply(3, 0), 0); }
+TEST(VIII_RECURSIVE_MULTIPLY, MULTIPLY_BY_ZERO_LHS) { EXPECT_EQ(VIII::recursiveMultiply(3, 0), 0); }
+
+TEST(VIII_RECURSIVE_MULTIPLY, MULTIPLY_BY_ZERO_RHS) { EXPECT_EQ(VIII::recursiveMultiply(0, 3), 0); }
+
+TEST(VIII_RECURSIVE_MULTIPLY, MULTIPLY_BY_NEGATIVE) { EXPECT_EQ(VIII::recursiveMultiply(3, -2), -6); }
+
+TEST(VIII_RECURSIVE_MULTIPLY, MULTIPLY_NEGATIVE_BY_NEGATIVE) { EXPECT_EQ(VIII::recursiveMultiply(-3, -3), 9); }

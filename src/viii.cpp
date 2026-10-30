@@ -94,17 +94,31 @@ auto VIII::powerSet(const UnorderedSet<int> &set) -> Vector<UnorderedSet<int>> {
 }
 
 auto VIII::recursiveMultiply(int lhs, int rhs) -> int {
-    int curr = 0;
-    auto multiply = [&curr, &lhs](this auto &self, int plus) -> int {
-        if (plus == 0)
-            return curr;
+    if (lhs == 0 || rhs == 0)
+        return 0;
 
-        curr += lhs;
-        if (plus == 1)
-            return curr;
+    bool isNegative = (lhs < 0) ^ (rhs < 0);
 
-        return self(plus - 1);
+    unsigned int absLhs = (lhs < 0) ? -static_cast<unsigned int>(lhs) : static_cast<unsigned int>(lhs);
+    unsigned int absRhs = (rhs < 0) ? -static_cast<unsigned int>(rhs) : static_cast<unsigned int>(rhs);
+
+    unsigned int smaller = std::min(absLhs, absRhs);
+    unsigned int bigger = std::max(absLhs, absRhs);
+
+    auto multiply = [&bigger](this auto &self, unsigned int count) -> unsigned int {
+        if (count == 1)
+            return bigger;
+
+        unsigned int half = self(count >> 1);
+        unsigned int sum = half + half;
+
+        if (count & 1)
+            sum += bigger;
+
+        return sum;
     };
 
-    return multiply(rhs);
+    unsigned int absResult = multiply(smaller);
+
+    return isNegative ? -static_cast<int>(absResult) : static_cast<int>(absResult);
 }
