@@ -152,3 +152,16 @@ TEST(VIII_POWER_SET, BASE_CASE) {
             EXPECT_TRUE(setB.contains(val));
     }
 }
+
+TEST(VIII_RECURSIVE_MULTIPLY, BASE_CASE) {
+    EXPECT_EQ(VIII::recursiveMultiply(2, 2), 4);
+
+    EXPECT_EQ(VIII::recursiveMultiply(3, 2), 6);
+    EXPECT_EQ(VIII::recursiveMultiply(3, 3), 9);
+
+    EXPECT_EQ(VIII::recursiveMultiply(4, 2), 8);
+}
+
+TEST(VIII_RECURSIVE_MULTIPLY, MULTIPLY_BY_ONE) { EXPECT_EQ(VIII::recursiveMultiply(3, 1), 3); }
+
+TEST(VIII_RECURSIVE_MULTIPLY, MULTIPLY_BY_ZERO) { EXPECT_EQ(VIII::recursiveMultiply(3, 0), 0); }

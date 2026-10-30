@@ -92,3 +92,19 @@ auto VIII::powerSet(const UnorderedSet<int> &set) -> Vector<UnorderedSet<int>> {
 
     return res;
 }
+
+auto VIII::recursiveMultiply(int lhs, int rhs) -> int {
+    int curr = 0;
+    auto multiply = [&curr, &lhs](this auto &self, int plus) -> int {
+        if (plus == 0)
+            return curr;
+
+        curr += lhs;
+        if (plus == 1)
+            return curr;
+
+        return self(plus - 1);
+    };
+
+    return multiply(rhs);
+}
